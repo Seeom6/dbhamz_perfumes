@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Satoshi", "sans-serif";
+
+  --color-primary: #e4bd3a;
+  --color-secondary: #fee45a;
+  --color-third: #353434;
+  --color-ford: #7d7d7d;
+  --color-fifed: #F8F8F8;
+  --color-dashboard: #5932EA;
+
+  --shadow-regularShadow: 0px 0px 4px 0 rgba(0, 0, 0, 0.25);
+  --shadow-btn: 0px 2px 2px 0 rgba(0, 0, 0, 0.12);
+  --shadow-input : 0px 2px 4px 0px rgba(0, 0, 0, 0.08) ,inset 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
+  --shadow-third : 0px 2px 45px 0px rgba(0, 0, 0, 0.06);
+
+  --text-extraSmall: 8px;
+  --text-small: 12px;
+  --text-regular: 14px;
+  --text-medium: 16px;
+  --text-large: 18px;
+  --text-sl: 24px;
+  --text-extraLarge: 32px;
+
+  --breakpoint-3xl: 1920px;
+  --color-avocado-200: oklch(0.98 0.04 113.22);
+  --color-avocado-300: oklch(0.94 0.11 115.03);
+  --color-avocado-400: oklch(0.92 0.19 114.08);
+  --color-avocado-500: oklch(0.84 0.18 117.33);
+  --color-avocado-600: oklch(0.53 0.12 118.34);
+  --ease-fluid: cubic-bezier(0.3, 0, 0, 1);
+  --ease-snappy: cubic-bezier(0.2, 0, 0, 1);
+  /* ... */
+}
+body {
+  width: 100%;
+  box-sizing: 0px;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: black !important;
+  font-weight: bold;
+}
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 20px !important;
+  font-weight: bold;
+}
+
+.brandsOwner {
+  @apply rounded-lg h-44 sm:h-52 md:h-96 lg:h-[500px] w-full flex ;
+}
+
+.titleText{
+  @apply text-medium md:text-large lg:text-extraLarge
+}
+.regularText{
+  @apply text-extraSmall md:text-medium lg:text-large
+}
+.inputClass{
+  @apply w-full px-3 h-10 rounded-lg bg-white outline-0 focus:border focus:border-dashboard
+}
+.button-class{
+  @apply h-10 text-large text-small rounded-lg text-white font-bold
+}
+/* Hide scrollbar for Chrome, Safari, and Opera */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge, and Firefox */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
