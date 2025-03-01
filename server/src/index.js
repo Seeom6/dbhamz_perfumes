@@ -19,11 +19,12 @@ const app = express();
 
 appConfig(app)
 appRouter(app)
- app.use(express.static(path.join(__dirname , "/uploads")))
+ app.use(express.static(path.join(__dirname , "/uploads" , "client" , ".." , "build")))
 
 // globalError
 app.all("*", (req, res, next) => {
-  return next(new ApiError(`Can't find this path ${req.originalUrl}`, 404));
+ res.sendFile(path.join(__dirname , ".." , "client" , "build" , "index.html"))
+  // return next(new ApiError(`Can't find this path ${req.originalUrl}`, 404));
 });
 
 app.use(globalError);
