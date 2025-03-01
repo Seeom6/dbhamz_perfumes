@@ -3,7 +3,7 @@ import { HandleError } from "./GlobalError";
 
 axios.defaults.withCredentials = true;
 const globalAxios = axios.create({
-  baseURL: "http://debehames-perfume.com/app/v1",
+  baseURL: "http://191.101.80.32:3066//app/v1",
 });
 export default globalAxios;
 
