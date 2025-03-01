@@ -3,7 +3,7 @@ import CountryDropdown from "./headerComponents/Dropdown";
 import SearchBar from "./headerComponents/SearchBar";
 import Links from "./headerComponents/Links";
 import logo from '../assets/logo.png'
-import Menu from "./headerComponents/menu";
+import Menu from "./headerComponents/Menu";
 import { useLocation, useNavigate } from "react-router-dom";
 import { NotAccessRoute } from "../utils/data";
 
