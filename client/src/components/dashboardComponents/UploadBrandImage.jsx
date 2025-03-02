@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
-import fileUpload from "../../assets/file-upload.svg";
+import fileUpload from "/assets/file-upload.svg";
 
 const UploadBrandImage = ({ setBrandData }) => {
   const [imageUri, setImageUri] = useState(""); // State to store the uploaded image URL

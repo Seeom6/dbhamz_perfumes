@@ -1,25 +1,25 @@
-import image1 from "../assets/png1.jpg";
-import image2 from "../assets/png2.jpg";
-import image3 from "../assets/png3.jpg";
-import image4 from "../assets/png4.png";
+import image1 from "/assets/png1.jpg";
+import image2 from "/assets/png2.jpg";
+import image3 from "/assets/png3.jpg";
+import image4 from "/assets/png4.png";
 
-import brand from "../assets/brand.png";
-import brand1 from "../assets/brand1.png";
-import brand2 from "../assets/brand2.png";
-import brand3 from "../assets/brand3.png";
-import brand4 from "../assets/brand4.png";
+import brand from "/assets/brand.png";
+import brand1 from "/assets/brand1.png";
+import brand2 from "/assets/brand2.png";
+import brand3 from "/assets/brand3.png";
+import brand4 from "/assets/brand4.png";
 
-import perfume1 from "../assets/perfume1.png";
-import perfume2 from "../assets/perfume2.png";
-import perfume3 from "../assets/perfume3.png";
-import perfume4 from "../assets/perfume4.png";
-import perfume5 from "../assets/perfume5.png";
-import perfume6 from "../assets/perfume6.png";
-import perfume7 from "../assets/perfume7.png";
-import perfume8 from "../assets/perfume8.png";
-import perfume9 from "../assets/perfume9.png";
+import perfume1 from "/assets/perfume1.png";
+import perfume2 from "/assets/perfume2.png";
+import perfume3 from "/assets/perfume3.png";
+import perfume4 from "/assets/perfume4.png";
+import perfume5 from "/assets/perfume5.png";
+import perfume6 from "/assets/perfume6.png";
+import perfume7 from "/assets/perfume7.png";
+import perfume8 from "/assets/perfume8.png";
+import perfume9 from "/assets/perfume9.png";
 
-import profileImg from "../assets/profileImg.png";
+import profileImg from "/assets/profileImg.png";
 
 import { PiKeyFill } from "react-icons/pi";
 import { BsPersonFill } from "react-icons/bs";

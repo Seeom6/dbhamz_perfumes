@@ -29,7 +29,7 @@ const GetSpecialProducts = ({data}) => {
         return (
           <SwiperSlide key={idx} className="w-[230px] p-2 rounded-lg bg-[#f5f5f5] h-36 md:h-[400px] flex gap-3 p-">
             <div className="w-full py-1">
-              <img className="rounded-3xl w-full h-full object-cover" src={item.img} alt="" />
+              <img className="rounded-lg w-full h-full object-cover" src={item.img} alt="" />
             </div>
             <div>
                 <p className="text-regular text-ford font-semibold">{item.brandName}</p>

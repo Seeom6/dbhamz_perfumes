@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import perfume6 from "../../assets/perfume6.png";
+import perfume6 from "/assets/perfume6.png";
 import { FiPlus, FiMinus } from "react-icons/fi";
 import { LuShoppingBag } from "react-icons/lu";
 import { useAddCart, useUpdateCartQuantity } from "../../utils/Api/CartEndPoint";

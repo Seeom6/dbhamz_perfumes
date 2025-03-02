@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
-import dbhamz1 from "../assets/dbhamz1.png";
-import dbhamz2 from "../assets/dbhamz2.png";
+import dbhamz1 from "/assets/dbhamz1.png";
+import dbhamz2 from "/assets/dbhamz2.png";
 
 const AboutUs = () => {
   const pathname = useLocation().pathname;

@@ -1,6 +1,6 @@
 import React from "react";
 import HeaderImage from "../components/HeaderImage";
-import aboutImage from "../assets/perfume10.png";
+import aboutImage from "/assets/perfume10.png";
 import AboutUs from "../components/AboutUs";
 import Comments from "../components/Comments";
 

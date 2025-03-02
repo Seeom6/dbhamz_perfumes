@@ -1,5 +1,5 @@
 import { useState } from "react";
-import logo from "../assets/logo.png";
+import logo from "/assets/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 
 import { toast } from "react-toastify";
@@ -10,6 +10,7 @@ import { useLogin } from "../utils/Api/AuthenticationEndPoint";
 
 const LoginPage = () => {
   const navigation = useNavigate();
+
   const [selectedCountry, setSelectedCountry] = useState({
     code: "+966", // Default country code (Saudi Arabia)
     flag: "SA", // Default flag (Saudi Arabia)
@@ -40,8 +41,8 @@ const LoginPage = () => {
     }));
   };
 
-  const { mutate: LoginMutation, isPending } = useLogin();
-
+  const { mutate: LoginMutation, isPending , data: myData } = useLogin();
+ 
   const formSubmitted = (e) => {
     e.preventDefault();
 
@@ -56,9 +57,12 @@ const LoginPage = () => {
     };
 
     LoginMutation(data, {
-      onSuccess: () => {
+      
+      onSuccess: async(res) => {
         toast.success("مرحباً بك مجدداً");
-        navigation("/");
+        if(res?.data?.data?.roles === "admin"){
+           navigation("/dashboard")}
+        else {navigation("/")}
       },
       onError: () => {
         toast.error("تسجيل دخول خاطئ");

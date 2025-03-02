@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import logo from "../../assets/logo.png";
+import logo from "/assets/logo.png";
 import { dashboardLinks } from "../../utils/data.jsx";
 import { NavLink } from "react-router-dom";
 import { IoClose } from "react-icons/io5";

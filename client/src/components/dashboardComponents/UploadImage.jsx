@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
-import fileUpload from "../../assets/file-upload.svg";
+import fileUpload from "/assets/file-upload.svg";
 
 const UploadImage = ({ setProductData, reset }) => {
   const [imagesUri, setImagesUri] = useState([]);

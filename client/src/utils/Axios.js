@@ -3,7 +3,8 @@ import { HandleError } from "./GlobalError";
 
 axios.defaults.withCredentials = true;
 const globalAxios = axios.create({
-  baseURL: "http://191.101.80.32:3066/app/v1",
+  baseURL: "https://api.dbhamze.com/app/v1",
+  // baseURL: "http://localhost:3066/app/v1",
 });
 export default globalAxios;
 
@@ -453,3 +454,47 @@ export const getMe = async () => {
     }
   }
 };
+
+export const GetOnCart = async (cartId) => {
+  try {
+    const res = await globalAxios.get(`/cart/${cartId}`);
+    const data = res?.data?.data;
+    return data;
+  } catch (err) {
+    if (err) {
+      // Server responded with a status code outside the 2xx range
+      const errorMessage = HandleError(err) || "An unknown error occurred";
+      throw new Error(errorMessage); // Throw the error
+    } else if (err.request) {
+      // The request was made but no response was received
+      throw new Error(
+        "No response from the server. Please check your connection."
+      );
+    } else {
+      // Something happened in setting up the request
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
+  }
+};
+
+export const CreateOrder = async(cartId , shippingData)=>{
+  try {
+    const res = await globalAxios.post(`/order//checkout-payment/${cartId}`, shippingData);
+    const data = res?.data?.data;
+    return data;
+  } catch (error) {
+    if (error) {
+      // Server responded with a status code outside the 2xx range
+      const errorMessage = HandleError(error) || "An unknown error occurred";
+      throw new Error(errorMessage); // Throw the error
+    } else if (error.request) {
+      // The request was made but no response was received
+      throw new Error(
+        "No response from the server. Please check your connection."
+      );
+    } else {
+      // Something happened in setting up the request
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
+  }
+}

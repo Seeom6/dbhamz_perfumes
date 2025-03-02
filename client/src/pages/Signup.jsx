@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom"; // Import Link from react-router-dom
 import { useSignup } from "../utils/Api/AuthenticationEndPoint";
-import logo from "../assets/logo.png";
+import logo from "/assets/logo.png";
 import CustomSingleValue from "../components/CustomFlag";
 import Loading from "../components/Loading";
 import { toast } from "react-toastify";

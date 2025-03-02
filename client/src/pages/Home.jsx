@@ -19,11 +19,11 @@ const Home = () => {
 
   const { data: myData, isError, error, isLoading } = useAllProducts();
   
-  if (isLoading) return <Loading elements={"h-screen"} />;
-  if (isError) return <Error error={error} />;
+  // if (isLoading) return <Loading elements={"h-screen"} />;
+  // if (isError) return <Error error={error} />;
 
-  const offset = currentPage * itemsPerPage;
-  const currentData = myData.slice(offset, offset + itemsPerPage);
+      const offset = currentPage * itemsPerPage;
+  const currentData = myData?.slice(offset, offset + itemsPerPage);
 
   // Handle page change
   const handlePageClick = ({ selected }) => {
@@ -67,6 +67,7 @@ const Home = () => {
           {isLoading ? (
             <Loading />
           ) : (
+            !isError &&
             <div className="w-full ">
               <div className="w-full">
                 <ProductGrid products={currentData} />

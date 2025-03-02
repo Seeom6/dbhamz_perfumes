@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import dbhamz from "../assets/dbhamz2.png";
+import dbhamz from "/assets/dbhamz2.png";
 import HeaderImage from "../components/HeaderImage";
 import CartElements from "../components/featuredComponents/CartElements";
 import {
@@ -82,11 +82,12 @@ const Cart = () => {
     );
   };
 
-  const handleClickToOrder = ()=>{
+
+  const handleClickToOrder = (cartId)=>{
     if(myCart?.cartItems.length <= 0 ){
       return toast.error("يجب ان تشتري على الأقل منتج واحد")
     }
-    navigate("/order")
+    navigate(`/order/${cartId}`)
   }
 
   if (isLoading) return <Loading elements={"h-screen"} />;
@@ -189,7 +190,7 @@ const Cart = () => {
 
         {/* Checkout Button */}
         <div className="w-full flex justify-center">
-          <button onClick={handleClickToOrder} className="text-center flex justify-center items-center button-class bg-primary w-4/5 md:w-2/5">
+          <button disabled={myCart?._id ? false : true} onClick={()=>handleClickToOrder(myCart?._id )} className="text-center flex justify-center items-center button-class bg-primary w-4/5 md:w-2/5">
               إتمام الطلب
           </button>
         </div>

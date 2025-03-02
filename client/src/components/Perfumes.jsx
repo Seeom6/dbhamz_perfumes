@@ -1,6 +1,6 @@
-import bigPerfume1 from "../assets/bigPerfume1.png";
-import bigPerfume2 from "../assets/bigPerfume2.png";
-import bigPerfume3 from "../assets/bigPerfume3.png";
+import bigPerfume1 from "/assets/bigPerfume1.png";
+import bigPerfume2 from "/assets/bigPerfume2.png";
+import bigPerfume3 from "/assets/bigPerfume3.png";
 
 const Perfumes = () => {
   return (

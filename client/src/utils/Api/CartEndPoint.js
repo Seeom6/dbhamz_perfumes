@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { AddCart, ApplyCoupon, deleteProductInCart, GetCart, UpdateCartQuantity } from "../Axios";
+import { AddCart, ApplyCoupon, CreateOrder, deleteProductInCart, GetCart, GetOnCart, UpdateCartQuantity } from "../Axios";
 
 export const useAddCart = () => {
   return useMutation({
@@ -13,6 +13,13 @@ export const useGetCart = () => {
   return useQuery({
     queryKey: ["cart"],
     queryFn: async () => await GetCart(),
+  });
+};
+
+export const useGetOneCart = (cartId) => {
+  return useQuery({
+    queryKey: ["cart"],
+    queryFn:  () =>  GetOnCart(cartId),
   });
 };
 
@@ -43,3 +50,10 @@ export const useApplyCoupon = ()=>{
     mutationFn:async (coupon)=> await ApplyCoupon(coupon)
   })
 }
+
+export const useCreateOrder = () => {
+  return useMutation({
+    mutationFn: async ({ cartId, shippingData }) =>
+      await CreateOrder(cartId, shippingData),
+  });
+};

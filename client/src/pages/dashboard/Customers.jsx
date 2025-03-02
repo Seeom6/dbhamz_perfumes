@@ -9,7 +9,6 @@ const Customers = () => {
 
   const { data : userData , error  , isError , isLoading} = useGetUsers();
   
-  console.log(userData)
   return (
     <div>
       <Stats/>

@@ -13,6 +13,7 @@ const ProductCard = ({ product }) => {
   const { mutate: addCart, isPending, error } = useAddCart();
   const {data : getMe} = useGetMe()
   const addProductToCart = (productId, quantity) => {
+    if(!getMe) return toast.error("يجب عليك تسجيل اولاً")
     addCart(
       { productId, quantity },
       {
@@ -56,7 +57,7 @@ const ProductCard = ({ product }) => {
         <Loading width="15" height="15" />
       ) : 
         <button
-        disabled={getMe?.roles === "user" ?false  : true}
+        // disabled={getMe?.roles === "user" ?false  : true}
           onClick={() => addProductToCart(product?._id, 1)}
           className="w-full shadow-btn my-2 bg-white text-primary font-bold py-0.5 rounded-md flex justify-center items-center gap-2 border-2"
         >

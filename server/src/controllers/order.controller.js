@@ -57,7 +57,7 @@ export const checkOutSession = asyncHandler(async (req, res, next) => {
       user: req.user._id,
       cartItems: cart.cartItems,
       taxPrice,
-      shippingPrice,
+      shippingData : req.body.shippingData,
       totalOrderPrice,
       paymentMethod: "card",
       isPaid: false,

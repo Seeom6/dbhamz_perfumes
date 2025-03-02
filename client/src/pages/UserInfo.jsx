@@ -1,6 +1,6 @@
 import React from "react";
 import HeaderImage from "../components/HeaderImage";
-import dbhamz from "../assets/dbhamz2.png";
+import dbhamz from "/assets/dbhamz2.png";
 import UserForm from "../components/featuredComponents/UserForm";
 
 const UserInfo = () => {

@@ -5,7 +5,7 @@ import morgan from "morgan";
 import cors from "cors"
 
 const corsOption = {
-    origin: 'https://dbhamz.com', // Allow only this origin
+    origin: [, "http://localhost:5173" ,'https://dbhamz.com' ], // Allow only this origin
     methods: ['GET', 'POST', 'PATCH', 'DELETE'], // Allowed HTTP methods
     allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
     credentials: true, // Allow cookies and credentials

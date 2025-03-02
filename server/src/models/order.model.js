@@ -22,9 +22,32 @@ const orderSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  shippingPrice: {
-    type: Number,
-    default: 0,
+  shippingData: {
+    fullName :{
+      type  : String,
+      required: true
+    },
+    phoneNumber: {
+      type : String,
+      required : true,
+    },
+    country: {
+      type : String,
+      required: true,
+    },
+    city:{
+      type: String,
+      required: true,
+    },
+    neighborhood:{
+      type: String,
+      required : true
+    },
+    street:{
+      type: String,
+      required: true,
+    },
+    reviews : String,
   },
   totalOrderPrice:{
     type: Number

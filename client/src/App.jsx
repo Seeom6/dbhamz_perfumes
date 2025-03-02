@@ -23,13 +23,14 @@ import Customers from "./pages/dashboard/Customers";
 import { useGetMe } from "./utils/Api/AuthenticationEndPoint";
 import Loading from "./components/Loading";
 import Error from "./components/Error";
+import OrderData from "./pages/order/OrderData";
 
 function App() {
 
 
   const {data: getMe , isError , error , isLoading } = useGetMe()
-  if (isLoading) return <Loading elements={"h-screen"} />;
-  if (isError) return <Error error={error} />
+  // if (isLoading) return <Loading elements={"h-screen"} />;
+  // if (isError) return <Error error={error} />
 
 
   return (
@@ -43,11 +44,12 @@ function App() {
           <Route path="/products" element={<AllProducts />} />
           <Route path="/products/:id" element={<SingleProduce />} />
           <Route path="/special-products" element={<SpecialProducts />} />
-          <Route path="/cart" element={<Cart />} />
+          <Route path="/cart" element={<Cart/>} />
           <Route path="/user-info" element={<UserInfo />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage getMe={getMe}/>} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/dashboard" element={<Dashboard />}>
+          <Route path="/order/:cartId" element={<OrderData/>} />
+          <Route path="/dashboard" element={<Dashboard get={getMe}/>}>
             <Route index element={<AddProduct />} />
             <Route path="/dashboard/products" element={<DashboardProducts />} />
             <Route path="/dashboard/add-brand" element={<AddBrand />} />

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import HeaderImage from "../components/HeaderImage";
-import aboutImage from "../assets/perfumeSpecial.png";
+import aboutImage from "/assets/perfumeSpecial.png";
 import ProductGrid from "./../components/product/ProductGrid";
 import Filtration from "../components/Filtration";
 import Loading from "../components/Loading";
@@ -27,7 +27,6 @@ const AllProducts = () => {
 
   // Handle filter submission
   const handleFilterSubmit = (newFilters) => {
-    console.log("Filters:", newFilters);
     setFilters(newFilters); // Update filter state
     refetch(); // Refetch products with the new filters
   };

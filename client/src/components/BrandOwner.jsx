@@ -1,6 +1,6 @@
-import perfume6 from "../assets/perfume6.png";
-import perfume7 from "../assets/perfume7.png";
-import perfume9 from "../assets/perfume9.png";
+import perfume6 from "/assets/perfume6.png";
+import perfume7 from "/assets/perfume7.png";
+import perfume9 from "/assets/perfume9.png";
 const BrandOwner = () => {
   return (
     <div className="w-full flex justify-between items-center gap-1 lg:gap-8">
