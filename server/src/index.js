@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 
 import dbConnection from "./config/dbConnection.js";
 import globalError from "./middleware/error.middleware.js";
-import ApiError from "./lib/ApiError.js";
 import {appRouter} from "./routes/index.js";
 import {appConfig} from "./config/appConfig.js";
 import {fileURLToPath} from "node:url";
@@ -19,11 +18,11 @@ const app = express();
 
 appConfig(app)
 appRouter(app)
- app.use(express.static(path.join(__dirname , "/uploads" , '../../client/build')))
+ app.use(express.static(path.join(__dirname , "/uploads" )))
 
 // globalError
 app.all("*", (req, res, next) => {
- res.sendFile(path.join(__dirname , '../../client/build', 'index.html'))
+ res.sendFile(path.join(__dirname , '../../client/dist', 'index.html'))
   // return next(new ApiError(`Can't find this path ${req.originalUrl}`, 404));
 });
 

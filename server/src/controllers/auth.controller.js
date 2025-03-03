@@ -3,19 +3,19 @@ import asyncHandler from "express-async-handler";
 import bcrypt from "bcryptjs";
 
 import ApiError from "./../lib/ApiError.js";
-import User from "./../models/user.model.js";
 import generateToken from "./../middleware/generateToken.middleware.js";
-import {UserService} from "../service/user.service.js";
+import User from "../models/user.model.js";
 
 // # Signup User
 // # POST   /app/register
 // # public
 export const signup = asyncHandler(async (req, res, next) => {
+  const phoneNumber = req.body.phone
+  
+  const getPhone = await User.findOne({phone : phoneNumber})
 
-  const isEmailExist = await UserService.getUserByEmail(req.body.email, false);
-  if(isEmailExist){
-    throw new ApiError("email already exists", 401);
-  }
+  if(getPhone) return next(new ApiError("هذا الرقم مسجل من قبل"))
+
   const user = await User.create({
     firstName: req.body.firstName,
     lastName: req.body.lastName,

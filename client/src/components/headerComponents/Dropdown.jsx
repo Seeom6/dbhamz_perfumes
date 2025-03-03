@@ -28,7 +28,7 @@ const CountryDropdown = () => {
                   key={idx}
                   className="flex md:py-1 w-full justify-between hover:bgblue-300 cursor-pointer text-extraSmall md:text-medium rounded-r-lg border-l-transparent"
                 >
-                  <p className="font-bold">{item.flag}</p>
+                  <p className="font-bold text-small">{item.flag}</p>
                   {<CustomSingleValue data={item.flag} />}
                 </button>
               ))}

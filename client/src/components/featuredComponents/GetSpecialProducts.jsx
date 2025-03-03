@@ -1,12 +1,21 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
-
+import {
+  A11y,
+  Controller,
+  Navigation,
+  Pagination,
+  Scrollbar,
+} from "swiper/modules";
 import { LuShoppingBag } from "react-icons/lu";
 
 
 const GetSpecialProducts = ({data}) => {
   return (
     <Swiper
+    modules={[Navigation, Scrollbar, A11y]}
+    scrollbar={{ draggable: true }}
+
       className=" m-0 max-h-[5000px] h-fit w-full  flex justify-center items-center"
       breakpoints={{
         340: {
@@ -22,7 +31,6 @@ const GetSpecialProducts = ({data}) => {
           spaceBetween: 15,
         },
       }}
-      pagination={{ clickable: true }}
       autoplay={{ delay: 2000 }}
     >
       {data.map((item, idx) => {

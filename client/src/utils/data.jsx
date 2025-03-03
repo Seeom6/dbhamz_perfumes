@@ -1,7 +1,7 @@
-import image1 from "/assets/png1.jpg";
-import image2 from "/assets/png2.jpg";
-import image3 from "/assets/png3.jpg";
-import image4 from "/assets/png4.png";
+import image1 from "/assets/perfume6.png";
+import image2 from "/assets/perfume2.png";
+import image3 from "/assets/perfume9.png";
+import image4 from "/assets/perfumeSpecial.png";
 
 import brand from "/assets/brand.png";
 import brand1 from "/assets/brand1.png";

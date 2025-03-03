@@ -55,7 +55,7 @@ export const signupValidator = [
     );
 
     if (!isValid) {
-      throw new Error("Phone number is not correct for SA, AE, OM, KW, or QA");
+      throw new Error("الرقم غير صحيح او هذا الرقم غير موجود");
     }
     return true;
   })

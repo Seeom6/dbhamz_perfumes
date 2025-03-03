@@ -6,7 +6,8 @@ import ReactCountryFlag from "react-country-flag";
       <ReactCountryFlag
         countryCode={data}
         svg
-        className="w-[24px] h-[24px] mr-0.5 md:mr-2.5"
+        className=" mr-0.5 md:mr-2.5"
+       style={{width: "15px" , height: "15px"}}
       />
     </div>
   );

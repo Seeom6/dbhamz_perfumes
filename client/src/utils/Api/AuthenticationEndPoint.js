@@ -29,7 +29,7 @@ export const useSignup = () => {
         mutationFn: (form)=> Signup(form),
         onSuccess: () => {
           queryClient.invalidateQueries({queryKey: ["protect"]})
-        },
+        }
       });
   };
 

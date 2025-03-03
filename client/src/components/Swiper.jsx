@@ -1,4 +1,4 @@
-import { Swiper, SwiperSlide } from "swiper/react";
+import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
 import {
   A11y,
   Controller,
@@ -7,10 +7,12 @@ import {
   Scrollbar,
 } from "swiper/modules";
 import "swiper/swiper-bundle.css";
-
+import 'swiper/css/navigation';
 import { offersInfo } from "./../utils/data.jsx";
 
 const MySwiper = () => {
+  const swiper = useSwiper();
+
   return (
     <Swiper
     className=" m-0 max-h-[175px] lg:max-h-[388px] h-full w-full rounded-3xl flex justify-center items-center"
@@ -28,11 +30,11 @@ const MySwiper = () => {
       {offersInfo.map((item , idx) => {
         return (
           <SwiperSlide key={idx} >
-            <img className="rounded-3xl" src={item.image} alt="" />
+            <img className="rounded-3xl w-full" src={item.image} alt="" />
           </SwiperSlide>
         );
       })}
-      <div className="swiper-button-next p-6 rounded-full bg-gray-300"></div>
+      <div onClick={() => swiper.slideNext()} className="swiper-button-next p-6 rounded-full bg-gray-300"></div>
       <div className="swiper-button-prev p-6 rounded-full bg-gray-300"></div>
     </Swiper>
   );
