@@ -4,9 +4,22 @@ import CartService  from "../service/cart.service.js"
 import {CartModel} from "../models/cart.model.js";
 import { getOneItem } from "./general.controller.js";
 
-export const addProductToCart = asyncHandler(async (req, res)=>{
-  const cart = await CartService.addProductToCart(req.body,req.user)
-  res.status(200).json({ numberOfItem: cart.cartItems.length, data: cart })
+export const addProductToCart = asyncHandler(async (req, res, next)=>{
+  try {
+    const cart = await CartService.addProductToCart(req.body, req.user)
+    res.status(200).json({ numberOfItem: cart.cartItems.length, data: cart })
+  }catch (error){
+    next(error)
+  }
+})
+
+export const createCart = asyncHandler(async (req, res, next)=>{
+  try {
+    const cart = await CartService.createCart(req.body, req.user)
+    res.status(201).json({ data: cart })
+  }catch (error){
+    next(error)
+  }
 
 })
 

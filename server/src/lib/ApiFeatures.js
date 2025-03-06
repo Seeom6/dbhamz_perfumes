@@ -1,3 +1,5 @@
+import * as queryString from "node:querystring";
+
 class ApiFeatures {
   constructor(mongooseQuery, queryString) {
     this.mongooseQuery = mongooseQuery;
@@ -10,9 +12,17 @@ class ApiFeatures {
     const excludesFields = ["page", "sort", "limit", "fields"];
     excludesFields.forEach((field) => delete queryStringObj[field]);
     // @ Apply filtration
-    let queryStr = JSON.stringify(queryStringObj);
-    // queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => "$" + match);
-    this.mongooseQuery = this.mongooseQuery.find(JSON.parse(queryStr));
+    let queryStr = {}
+    Object.keys(queryStringObj).forEach((field) => {
+      if(typeof queryStringObj[field] == "string"){
+        queryStr[field] = {
+          $regex: new RegExp(queryStringObj[field], "i"),
+        }
+      }else {
+        // queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => "$" + match);
+      }
+    })
+    this.mongooseQuery = this.mongooseQuery.find(queryStr);
 
     return this;
   }

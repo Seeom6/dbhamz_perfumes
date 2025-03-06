@@ -12,6 +12,17 @@ const getCouponByName = async (name, throwError = true)=>{
     return coupon
 }
 
+const getCouponById = async (id, throwError = true)=>{
+    const coupon = await CouponModel.findOne({
+        _id: id,
+    })
+    if(!coupon && throwError){
+        throw new ApiError(`Coupon with name ${name} not found`, 404)
+    }
+    return coupon
+}
+
 export const CouponService = {
-    getCouponByName
+    getCouponByName,
+    getCouponById,
 }

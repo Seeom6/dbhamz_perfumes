@@ -23,13 +23,7 @@ const UploadImage = ({ setProductData, reset }) => {
     onDrop,
   });
 
-  const nextImage = () => {
-    setCurrentIndex((prev) => (prev + 1) % imagesUri.length);
-  };
 
-  const prevImage = () => {
-    setCurrentIndex((prev) => (prev === 0 ? imagesUri.length - 1 : prev - 1));
-  };
 
   useEffect(() => {
     setProductData((prev) => ({
@@ -65,24 +59,9 @@ const UploadImage = ({ setProductData, reset }) => {
               <p>أجلب و ارمي هنا</p>
             </div>
           )}
-          <input {...getInputProps()} required type="file" accept="image/*" />
+          <input {...getInputProps()} type="file" accept="image/*" />
         </div>
-        {imagesUri.length > 0 && (
-          <>
-            <button
-              onClick={nextImage}
-              className="absolute top-1/2 right-[-25px] md:right-28 lg:right-4 transform -translate-y-1/2 bg-white p-1 md:p-2 rounded-full shadow-lg"
-            >
-              &lt;
-            </button>
-            <button
-              onClick={prevImage}
-              className="absolute top-1/2 left-[-25px] md:left-28 lg:left-4 transform -translate-y-1/2 bg-white p-1 md:p-2 rounded-full shadow-lg"
-            >
-              &gt;
-            </button>
-          </>
-        )}
+ 
       </div>
       {imagesUri.length > 0 && (
         <div className="flex flex-wrap justify-center mt-4">

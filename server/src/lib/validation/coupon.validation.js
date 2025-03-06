@@ -29,7 +29,7 @@ export const createCouponValidation = [
             if (!moment(value, "YYYY-MM-DD HH:mm:ss", true).isValid()) {
                 throw new ApiError("invalid Date");
             }const dateValue = moment(value, "YYYY-MM-DD HH:mm:ss").toDate();
-            if (dateValue < new Date.now()) {
+            if (dateValue < new Date()) {
                 throw new ApiError("date must be in future");
             }
 
@@ -55,6 +55,7 @@ export const updateCouponValidation = [
             if(val < 1 || val > 100){
                 throw new ApiError("discount must be less than 100 and greater than 0", 400);
             }
+            return true;
         }),
     check("expired")
         .notEmpty()

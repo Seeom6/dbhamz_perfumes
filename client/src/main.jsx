@@ -6,11 +6,14 @@ import App from "./App";
 import "./index.css";
 import "swiper/swiper-bundle.css";
 import "react-toastify/dist/ReactToastify.css";
+import { CurrencyProvider } from "./context/CurrencyContext";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <QueryProvider>
-      <App />
+      <CurrencyProvider>
+        <App />
+      </CurrencyProvider>
     </QueryProvider>
   </StrictMode>
 );

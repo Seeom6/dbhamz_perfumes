@@ -10,7 +10,6 @@ const Dashboard = () => {
       <LeftSidBar setSidebarOpen={setSidebarOpen}  sidebarOpen={sidebarOpen}/>
       <div className='w-full mt-10'>
       <DashboardHeader setSidebarOpen={setSidebarOpen}  sidebarOpen={sidebarOpen}/>
-
       <Outlet/>
       </div>
     </div>

@@ -13,17 +13,21 @@ const AllProducts = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 9;
 
+  
+
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
   const [filters, setFilters] = useState({});
 
+
   // Fetch products with filters
   const { data: products, isError, error, isLoading, refetch } = useAllProducts(filters);
+
 
   if (isLoading) return <Loading elements={"h-screen"} />;
   if (isError) return <Error error={error} />;
 
   const offset = currentPage * itemsPerPage;
-  const currentData = products.slice(offset, offset + itemsPerPage);
+  const currentData = products?.slice(offset, offset + itemsPerPage);
 
   // Handle filter submission
   const handleFilterSubmit = (newFilters) => {

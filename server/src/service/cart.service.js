@@ -1,8 +1,8 @@
 import ProductModel from "../models/product.model.js";
 import {CartModel} from "../models/cart.model.js";
-import asyncHandler from "express-async-handler";
 import ApiError from "../lib/ApiError.js";
 import {CouponModel} from "../models/coupon.model.js";
+import  productService from "../service/product.service.js"
 
 const cartCalculator = async (cart, coupon) => {
     let total = 0;
@@ -11,17 +11,28 @@ const cartCalculator = async (cart, coupon) => {
         total += totalPriceForItem;
     })
     cart.totalPrice = total;
+    cart.totalPriceAfterDiscount = total;
     if (coupon) {
-        const coup = await CouponModel.findOne({name: coupon, expaired: {$gt: Date.now()}})
+        const coup = await CouponModel.findOne({name: coupon, expired: {$gt: Date.now()}})
         if (!coup) {
-            cart.couponStatus = " the coupon is not available or expired "
-            return;
+            throw new ApiError("this coupon does not exist or expired", 400);
         }
         cart.totalPriceAfterDiscount = (total - total * (coup.discount / 100)).toFixed(2);
     }
 }
 
-const addProductToCart = asyncHandler(async (productInfo, user) => {
+async function createCart(productsInfo, user) {
+    const items = await createCartItems(productsInfo.items);
+
+    const cart = await CartModel.create({
+        cartItems: items,
+        user: user._id,
+    });
+    await cartCalculator(cart, productsInfo.code);
+    return cart;
+}
+
+const addProductToCart = async (productInfo, user) => {
   const product = await ProductModel.findOne({ _id: productInfo.productId });
   let cart = await CartModel.findOne({ user: user._id });
   if (!cart) {
@@ -42,13 +53,13 @@ const addProductToCart = asyncHandler(async (productInfo, user) => {
     if (productIndex >= 0) {
       cart.cartItems[productIndex].quantity += productInfo.quantity;
     } else {
-      cart.cartItems.push({ product: product._id, price: product.price });
+      cart.cartItems.push({ product: product._id, price: product.price, quantity: productInfo.quantity });
     }
   }
-  cartCalculator(cart);
+  await cartCalculator(cart);
   await cart.save();
   return cart;
-});
+};
 
 const getProductInCart = async (userId) => {
   const cart = await CartModel.findOne({ user: userId }).populate({path: "cartItems.product",select: "name price imageCover"});
@@ -61,10 +72,10 @@ const getProductInCart = async (userId) => {
 export const removeItemFromTheCart = async (productId, userId) => {
   let cart = await CartModel.findOneAndUpdate(
     { user: userId },
-    { $pull: { cartItems: { _id: productId } } },
+    { $pull: { cartItems: { product: productId } } },
     { new: true }
   );
-  cartCalculator(cart);
+  await cartCalculator(cart);
   cart = await cart.save();
   return cart;
 };
@@ -75,9 +86,9 @@ export const updateItemQuantity = async (productInfo, productId, userId) => {
     throw new ApiError("this item is not exists in cart");
   }
   const cartItemIndex = cart.cartItems.findIndex(
-    (item) => item._id.toString() === productId
+    (item) => item.product.toString() === productId
   );
-if(cartItemIndex > -1)  cart.cartItems[cartItemIndex].quantity = productInfo.quantity;
+  cart.cartItems[cartItemIndex].quantity = productInfo.quantity;
 
   await cartCalculator(cart);
   cart = await cart.save();
@@ -108,6 +119,19 @@ export const applyCoupon = async (couponData , userId , next)=>{
 return cart
 }
 
+async function createCartItems (productsInfo)  {
+    const items = await Promise.all(
+        productsInfo.map(async (productInfo) => {
+        const product = await productService.getProductById(productInfo.id)
+        return {
+            product: product._id,
+            price: product.price,
+            quantity: productInfo.quantity
+        };
+    }))
+    return items
+}
+
 export default {
   cartCalculator,
   addProductToCart,
@@ -115,4 +139,5 @@ export default {
   removeItemFromTheCart,
   updateItemQuantity,
   applyCoupon,
+    createCart
 };

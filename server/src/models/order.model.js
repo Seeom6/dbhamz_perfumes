@@ -54,7 +54,6 @@ const orderSchema = new mongoose.Schema({
   },
   paymentMethod : {
     type: String,
-    enum: ["card" , "cash"],
     default: "card"
   },
   isPaid : {
@@ -62,6 +61,9 @@ const orderSchema = new mongoose.Schema({
     default: false
   },
   paidAt : Date,
+  status: {
+    type: String,
+  },
   isDelivered:{
     type: Boolean,
     default: false

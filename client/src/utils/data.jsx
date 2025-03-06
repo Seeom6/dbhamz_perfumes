@@ -26,6 +26,7 @@ import { BsPersonFill } from "react-icons/bs";
 import { BsBoxFill } from "react-icons/bs";
 import { GiWallet } from "react-icons/gi";
 import { FaFileInvoiceDollar } from "react-icons/fa6";
+import { RiCoupon2Fill } from "react-icons/ri";
 
 export const dashboardLinks = [
   {
@@ -53,6 +54,11 @@ export const dashboardLinks = [
     name: " الطلبات",
     icon: <FaFileInvoiceDollar />,
   },
+  {
+    href: "/dashboard/coupon",
+    name: " الكوبونات",
+    icon: <RiCoupon2Fill />,
+  },
 ];
 export const NotAccessRoute = [
   "/login",
@@ -65,7 +71,9 @@ export const NotAccessRoute = [
   "/dashboard/costumer",
   "/dashboard/add-brand",
   "/signup/",
-  "/signup"
+  "/signup",
+  "/dashboard/customer",
+  "/dashboard/coupon"
 ];
 export const navLink = [
   {
@@ -114,12 +122,20 @@ export const offersInfo = [
 ];
 
 // List of countries with their names, values, and country codes
+// export const countries = [
+//   { code: "+966", flag: "SA", name: "Saudi Arabia" },
+//   { code: "+971", flag: "AE", name: "Emirates" },
+//   { code: "+974", flag: "QA", name: "Qatar" },
+//   { code: "+965", flag: "KW", name: "Kuwait" },
+//   { code: "+968", flag: "OM", name: "Oman" },
+// ];
+
 export const countries = [
-  { code: "+966", flag: "SA", name: "Saudi Arabia" },
-  { code: "+971", flag: "AE", name: "Emirates" },
-  { code: "+974", flag: "QA", name: "Qatar" },
-  { code: "+965", flag: "KW", name: "Kuwait" },
-  { code: "+968", flag: "OM", name: "Oman" },
+  {code: "+966", value: "SA", name: "Saudi Arabia", currency: "SAR" },
+  {code: "+971", value: "AE", name: "UAE", currency: "AED" },
+  {code: "+974", value: "KW", name: "Kuwait", currency: "KWD" },
+  { code: "+965", value: "QA", name: "Qatar", currency: "QAR" },
+  {code: "+968", value: "BH", name: "Bahrain", currency: "BHD" },
 ];
 
 export const Brands = [

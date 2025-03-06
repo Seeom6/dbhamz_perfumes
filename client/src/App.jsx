@@ -24,13 +24,13 @@ import { useGetMe } from "./utils/Api/AuthenticationEndPoint";
 import Loading from "./components/Loading";
 import Error from "./components/Error";
 import OrderData from "./pages/order/OrderData";
+import Coupons from './pages/dashboard/Coupons';
 
 function App() {
 
 
   const {data: getMe , isError , error , isLoading } = useGetMe()
-  // if (isLoading) return <Loading elements={"h-screen"} />;
-  // if (isError) return <Error error={error} />
+
 
 
   return (
@@ -56,6 +56,7 @@ function App() {
             <Route path="/dashboard/add-product" element={<AddProduct />} />
             <Route path="/dashboard/brands" element={<DashboardBrand />} />
             <Route path="/dashboard/customer" element={<Customers />} />
+            <Route path="/dashboard/coupon" element={<Coupons />} />
           </Route>
         </Routes>
         <Footer />

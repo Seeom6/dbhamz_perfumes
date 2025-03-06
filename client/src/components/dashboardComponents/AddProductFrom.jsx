@@ -31,7 +31,7 @@ const AddProductForm = ({ setProductData }) => {
   return (
     <div>
       <div className="w-full flex flex-col md:flex-row gap-10">
-        <div className="w-full flex flex-col justify-between items-center gap-8">
+        <div className="w-full flex flex-col justify-between items-center gap-3 md:gap-8">
           <div className="w-full">
             <label className="text-regular">اسم المنتج</label>
             <input
@@ -41,6 +41,8 @@ const AddProductForm = ({ setProductData }) => {
               name="name"
             />
           </div>
+
+          <div className="w-full flex gap-3">
           <div className="w-full">
             <label>السعر</label>
             <input
@@ -50,15 +52,18 @@ const AddProductForm = ({ setProductData }) => {
               type="number"
             />
           </div>
+
           <div className="w-full">
-            <label>الكمية المباعة</label>
+            <label>السعر بعد الحسم</label>
             <input
               onChange={handleInputChange}
               className="inputClass shadow-input"
-              name="sold"
+              name="priceAfterDiscount"
               type="number"
             />
           </div>
+          </div>
+
         </div>
         <div className="w-full flex flex-col justify-between items-center gap-8">
           <div className="w-full">
@@ -82,24 +87,28 @@ const AddProductForm = ({ setProductData }) => {
               </select>
             )}
           </div>
-          <div className="w-full">
-            <label>السعر بعد الحسم</label>
+            <div className="w-full flex gap-3">
+            <div className="w-full">
+            <label>الكمية المباعة</label>
             <input
               onChange={handleInputChange}
               className="inputClass shadow-input"
-              name="priceAfterDiscount"
+              name="sold"
               type="number"
+              defaultValue={20}
             />
           </div>
           <div className="w-full">
-            <label>الكمية</label>
+            <label> الكمية الموجودة</label>
             <input
               onChange={handleInputChange}
               name="quantity"
               className="inputClass shadow-input"
               type="number"
+              defaultValue={1}
             />
           </div>
+            </div>
         </div>
       </div>
       <div className="mt-5">

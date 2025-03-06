@@ -11,8 +11,8 @@ const AddProduct = () => {
   const [productData, setProductData] = useState({
     name: "",
     description: "",
-    quantity: 0,
-    sold: 0,
+    quantity: 1,
+    sold: 20,
     price: 0,
     priceAfterDiscount: 0,
     imageCover: null,

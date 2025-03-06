@@ -1,11 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import perfume6 from "/assets/perfume6.png";
 import { FiPlus, FiMinus } from "react-icons/fi";
 import { LuShoppingBag } from "react-icons/lu";
 import { useAddCart, useUpdateCartQuantity } from "../../utils/Api/CartEndPoint";
 import { toast } from "react-toastify";
+import { CurrencyContext } from './../../context/CurrencyContext';
+import {convertCurrency} from "../../utils/currency.js"
 
 const ProductInfo = ({ data }) => {
+
+
+  const { currency } = useContext(CurrencyContext);
+  const convertedPrice = convertCurrency(data?.price, "SAR", currency);
+
   const [currentImage, setCurrentImage] = useState(data?.imageCover);
   const [quantityData , setQuantity] = useState(1)
   const {
@@ -70,17 +77,17 @@ const ProductInfo = ({ data }) => {
           </div>
           <div className="w-full">
             <p className="text-2xl font-semibold"> {data?.name}</p>
-            <p className="text-2xl font-medium text-primary">{data?.price}</p>
+            <p className="text-2xl font-medium text-primary">{convertedPrice} {currency}</p>
             <p className="text-regular text-ford w-full p-2 md:leading-7">
               {data?.description}
             </p>
             <div className="w-full flex flex-col gap-2 justify-center">
-              <div className="w-full flex gap-4">
-                <label htmlFor="items">الحجم: </label>
+              <div className="w-full flex gap-2">
+                <label htmlFor="items"> الأحجام المتوفرة:  </label>
                 {
                   data?.packageSize.map((items , idx)=>(
 
-                    <p key={idx}> {items} </p>
+                    <p key={idx}>[{items} مل],</p>
                   ))
                 }
               </div>
@@ -88,18 +95,7 @@ const ProductInfo = ({ data }) => {
                 <p> السعر الكلي: </p>
                 <p>{data?.price}</p>
               </div>
-              <div className="w-full flex gap-4">
-                <p> الكمية : </p>
-                <div  className="w-fit flex gap-5 items-center">
-                  <button>
-                  <FiPlus onClick={onIncrement} className="w-8 h-8 text-white bg-primary rounded-full " />
-                  </button>
-                  <div className="text-large font-bold">{quantityData}</div>
-                  <button>
-                  <FiMinus onClick={onDecrement} className="w-8 h-8 text-primary bg-white rounded-full border "/>
-                  </button>
-                </div>
-              </div>
+
               <div className="w-full flex items-center justify-center">
                 <button onClick={()=>sendToCart(data?._id , quantityData)} className="px-8 shadow-btn my-2 text-white bg-primary font-bold py-0.5 rounded-md flex justify-center items-center gap-2 ">
                   <LuShoppingBag />

@@ -8,16 +8,17 @@ const CartElements = ({ data, onDelete, onIncrement, onDecrement, isMobile }) =>
   const handleIncrement = (productId) => {
     const newQuantity = applyQuantity + 1;
     setApplyQuantity(newQuantity);
-    onIncrement(productId, newQuantity);
+    onIncrement(productId, newQuantity); // Notify parent component
   };
 
   const handleDecrement = (productId) => {
     const newQuantity = applyQuantity - 1;
-    if (newQuantity >= 0) {
+    if (newQuantity >= 1) {
       setApplyQuantity(newQuantity);
-      onDecrement(productId, newQuantity);
+      onDecrement(productId, newQuantity); // Notify parent component
     }
   };
+
   if (isMobile) {
     return (
       <div className="w-full bg-fifed rounded-lg p-4 shadow-sm">
@@ -26,12 +27,12 @@ const CartElements = ({ data, onDelete, onIncrement, onDecrement, isMobile }) =>
           <div className="flex items-center gap-3">
             <img
               className="w-16 h-16 rounded-lg object-cover"
-              src={data?.product?.imageCover}
+              src={data?.imageCover}
               alt={data?.product?.name}
             />
             <div>
               <p className="text-lg font-bold">{data?.product?.name}</p>
-              <p className="text-gray-600">${data?.product?.price}</p>
+              <p className="text-gray-600">${data?.price}</p>
             </div>
           </div>
 
@@ -55,19 +56,18 @@ const CartElements = ({ data, onDelete, onIncrement, onDecrement, isMobile }) =>
                 <FiPlus className="w-4 h-4" />
               </button>
             </div>
-            <p className="text-lg font-bold">${applyQuantity ? data?.price * applyQuantity : data?.price}</p>
+            <p className="text-lg font-bold">${(data?.price * applyQuantity).toFixed(2)}</p>
           </div>
 
           {/* Action (Delete) */}
-          <div className="w-full flex justify-center ">
-
-          <button
-            onClick={() => onDelete(data?._id)}
-            className="button-class bg-red-500 w-3/5 gap-3 flex justify-center items-center"
-          >
+          <div className="w-full flex justify-center">
+            <button
+              onClick={() => onDelete(data?._id)}
+              className="button-class bg-red-500 w-3/5 gap-3 flex justify-center items-center"
+            >
               <FaTrash color="white" size={14} />
               <span>حذف</span>
-          </button>
+            </button>
           </div>
         </div>
       </div>
@@ -81,7 +81,7 @@ const CartElements = ({ data, onDelete, onIncrement, onDecrement, isMobile }) =>
         <div className="flex items-center flex-col md:flex-row gap-3">
           <img
             className="w-16 h-16 rounded-lg object-cover"
-            src={data?.product?.imageCover}
+            src={data?.imageCover}
             alt={data?.product?.name}
           />
           <p className="text-lg font-bold">{data?.product?.name}</p>
@@ -89,7 +89,7 @@ const CartElements = ({ data, onDelete, onIncrement, onDecrement, isMobile }) =>
       </td>
 
       {/* Price */}
-      <td className="py-4 text-lg font-bold">${data?.product?.price}</td>
+      <td className="py-4 text-lg font-bold">${data?.price}</td>
 
       {/* Quantity */}
       <td className="py-4">
@@ -114,7 +114,7 @@ const CartElements = ({ data, onDelete, onIncrement, onDecrement, isMobile }) =>
       </td>
 
       {/* Subtotal */}
-      <td className="py-4 text-lg font-bold">${applyQuantity ? data?.price * applyQuantity : data?.price}</td>
+      <td className="py-4 text-lg font-bold">${(data?.price * applyQuantity).toFixed(2)}</td>
 
       {/* Action (Delete) */}
       <td className="py-4">
@@ -122,7 +122,7 @@ const CartElements = ({ data, onDelete, onIncrement, onDecrement, isMobile }) =>
           onClick={() => onDelete(data?._id)}
           className="p-2 text-white bg-[rgba(223,4,4,0.12)] rounded-sm hover:bg-red-600 transition-all"
         >
-              <FaTrash size={18} color="red"/>
+          <FaTrash size={18} color="red" />
         </button>
       </td>
     </tr>

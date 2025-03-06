@@ -2,12 +2,18 @@ import { FaShoppingCart, FaSearch } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 import { useGetMe } from "../../utils/Api/AuthenticationEndPoint";
+import { toast } from "react-toastify";
 const SearchBar = () => {
   const navigation = useNavigate();
 
   const { data: getMe } = useGetMe();
   const navigate = () => {
-    if (getMe?.roles === "user") navigation("/cart");
+    if(localStorage.getItem("cart")){
+      navigation("/cart")
+    }else{
+      toast.error("يجب عليك شراء منتج أولاً")
+    }
+    
   };
 
   return (
@@ -27,12 +33,10 @@ const SearchBar = () => {
         </div>
       </div>
       <div>
-        {getMe?.roles === "user" && (
           <FaShoppingCart
             onClick={navigate}
             className="text-[#DADADA] font-bold text-large md:text-sl"
           />
-        )}
       </div>
     </div>
   );

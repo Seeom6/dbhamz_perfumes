@@ -41,7 +41,7 @@ const Menu = () => {
             onClick={toggleMenu}
           ></div>
           {/* Menu */}
-          <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-xl z-50 transform transition-all duration-300 ease-in-out">
+          <div className="absolute left-[-13px] mt-2 w-48 bg-white rounded-lg shadow-xl z-50 transform transition-all duration-300 ease-in-out">
             <ul className="py-2">
               {navLink.map((item) => (
                 <li key={item.name}>
@@ -49,7 +49,7 @@ const Menu = () => {
                     to={item.href}
                     onClick={toggleMenu} // Close menu when a link is clicked
                     className={({ isActive }) =>
-                      `block px-4 py-2 text-gray-800 hover:bg-gray-100 transition-colors duration-200 ${
+                      `block px-4 py-2 text-gray-800 hover:bg-gray-100 transition-colors duration-200 border-b ${
                         isActive ? "font-bold text-primary" : ""
                       }`
                     }
