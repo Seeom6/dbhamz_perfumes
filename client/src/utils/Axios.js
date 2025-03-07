@@ -3,8 +3,8 @@ import { HandleError } from "./GlobalError";
 
 axios.defaults.withCredentials = true;
 const globalAxios = axios.create({
-  // baseURL: "https://api.dbhamz.com/app/v1",
-  baseURL: "http://localhost:3066/app/v1",
+  baseURL: "https://api.dbhamz.com/app/v1",
+ // baseURL: "http://localhost:3066/app/v1",
 });
 export default globalAxios;
 
