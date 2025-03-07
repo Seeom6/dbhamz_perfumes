@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { GetUsers } from './../Axios';
+import { DeleteUser, GetUsers } from './../Axios';
 import { toast } from 'react-toastify';
 
 
@@ -24,11 +24,11 @@ export const useCreateBrand = () => {
   };
   
 
-  export const useDeleteBrand = () => {
+  export const useDeleteUser = () => {
     const queryClient = useQueryClient();
   
     return useMutation({
-      mutationFn: deleteBrand, // Use the deleteProduct function
+      mutationFn: DeleteUser, // Use the deleteProduct function
       onSuccess: () => {
         // Invalidate the products query to refetch the updated list
         queryClient.invalidateQueries(["brands"]);

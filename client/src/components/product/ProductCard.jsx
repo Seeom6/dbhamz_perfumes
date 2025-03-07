@@ -69,13 +69,21 @@ const ProductCard = ({ product }) => {
           </div>
         </div>
       </div>
+      <div className="w-full flex text-extraSmall gap-1">
+                <label htmlFor="items"> الأحجام المتوفرة:  </label>
+                {
+                  product?.packageSize.map((items , idx)=>(
 
+                    <p key={idx}>{items},</p>
+                  ))
+                }
+              </div>
       {isPending ? (
         <Loading width="15" height="15" />
       ) : (
-        <button
+        product?.sold === -1 ? <p>نفذت الكمية</p> : <button
           onClick={() => addProductToCart(product?._id, 1)}
-          className="w-full shadow-btn my-2 bg-white text-primary font-bold py-0.5 rounded-md flex justify-center items-center gap-2 border-2"
+          className="w-full text-small md:text-medium shadow-btn my-2 bg-white text-primary font-bold py-0.5 rounded-md flex justify-center items-center gap-2 border"
         >
           <LuShoppingBag /> اضافة الى السلة
         </button>

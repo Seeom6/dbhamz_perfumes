@@ -3,8 +3,8 @@ import {
   createCoupon,
   getCoupons,
   getOneCoupon,
-  deleteOneCoupon,
   updateCoupon,
+  deleteCoupon,
 } from "../controllers/coupon.controller.js";
 
 import { protect, allowedTo } from "../controllers/auth.controller.js";
@@ -21,7 +21,7 @@ Router.route("/")
   .get(getCoupons);
 Router.route("/:id")
   .get(getOneCoupon)
-  .delete(protect, allowedTo("admin"), deleteOneCoupon)
+  .delete(protect, allowedTo("admin"), deleteCoupon)
   .patch(
     protect,
     allowedTo("admin"),

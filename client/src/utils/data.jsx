@@ -96,6 +96,10 @@ export const navLink = [
     href: "/about",
     name: "من نحن",
   },
+  {
+    href: "/login",
+    name: " تسجيل الدخول",
+  },
 ];
 
 export const offersInfo = [

@@ -3,8 +3,8 @@ import { HandleError } from "./GlobalError";
 
 axios.defaults.withCredentials = true;
 const globalAxios = axios.create({
-  // baseURL: "https://api.dbhamz.com/app/v1",
-  baseURL: "http://localhost:3066/app/v1",
+  baseURL: "https://api.dbhamz.com/app/v1",
+  // baseURL: "http://localhost:3066/app/v1",
 });
 export default globalAxios;
 
@@ -477,9 +477,12 @@ export const GetOnCart = async (cartId) => {
   }
 };
 
-export const CreateOrder = async(cartId , shippingData)=>{
+export const CreateOrder = async (cartId, shippingData) => {
   try {
-    const res = await globalAxios.post(`/order//checkout-payment/${cartId}`, shippingData);
+    const res = await globalAxios.post(
+      `/order//checkout-payment/${cartId}`,
+      shippingData
+    );
     const data = res?.data?.data;
     return data;
   } catch (error) {
@@ -497,4 +500,91 @@ export const CreateOrder = async(cartId , shippingData)=>{
       throw new Error("An unexpected error occurred. Please try again.");
     }
   }
-}
+};
+
+export const DeleteUser = async (id) => {
+  try {
+    const res = await globalAxios.delete(`/users/${id}`);
+    const data = res?.data?.data;
+    return data;
+  } catch (error) {
+    if (error) {
+      // Server responded with a status code outside the 2xx range
+      const errorMessage = HandleError(error) || "An unknown error occurred";
+      throw new Error(errorMessage); // Throw the error
+    } else if (error.request) {
+      // The request was made but no response was received
+      throw new Error(
+        "No response from the server. Please check your connection."
+      );
+    } else {
+      // Something happened in setting up the request
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
+  }
+};
+export const DeleteCoupon = async (id) => {
+  try {
+    const res = await globalAxios.delete(`/coupon/${id}`);
+    const data = res?.data?.data;
+    return data;
+  } catch (error) {
+    if (error) {
+      // Server responded with a status code outside the 2xx range
+      const errorMessage = HandleError(error) || "An unknown error occurred";
+      throw new Error(errorMessage); // Throw the error
+    } else if (error.request) {
+      // The request was made but no response was received
+      throw new Error(
+        "No response from the server. Please check your connection."
+      );
+    } else {
+      // Something happened in setting up the request
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
+  }
+};
+
+export const CreateCoupon = async (formData) => {
+  try {
+    const res = await globalAxios.post(`/coupon`, formData);
+    const data = res?.data?.data;
+    return data;
+  } catch (error) {
+    if (error) {
+      // Server responded with a status code outside the 2xx range
+      const errorMessage = HandleError(error) || "An unknown error occurred";
+      throw new Error(errorMessage); // Throw the error
+    } else if (error.request) {
+      // The request was made but no response was received
+      throw new Error(
+        "No response from the server. Please check your connection."
+      );
+    } else {
+      // Something happened in setting up the request
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
+  }
+};
+
+export const GetCoupon = async () => {
+  try {
+    const res = await globalAxios.get("/coupon");
+    return res?.data?.data;
+  } catch (error) {
+    // Handle different error scenarios
+    if (err) {
+      // Server responded with a status code outside the 2xx range
+      const errorMessage = HandleError(err) || "An unknown error occurred";
+      throw new Error(errorMessage); // Throw the error
+    } else if (err.request) {
+      // The request was made but no response was received
+      throw new Error(
+        "No response from the server. Please check your connection."
+      );
+    } else {
+      // Something happened in setting up the request
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
+  }
+};

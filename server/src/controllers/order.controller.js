@@ -5,23 +5,24 @@ import ApiError from "./../lib/ApiError.js";
 import Order from "./../models/order.model.js";
 import { getAllItems, getOneItem } from "./general.controller.js";
 
-export const createZiinaPayment = async (amount, currencyCode, referenceId) => {
+export const createZiinaPayment = async (amount, currencyCode,userEmail, referenceId) => {
   try {
     const response = await axios.post(
       `${process.env.ZIINA_API_URL}/payment_intent`,
       {
         amount: amount, // Amount in the smallest currency unit (e.g., cents)
         currency_code: currencyCode, // Currency code (e.g., AED)
-        //   customer_email: userEmail, // Customer's email
+          customer_email: userEmail, // Customer's email
         reference_id: referenceId, // Unique reference ID for the transaction
       },
       {
         headers: {
-          Authorization: `Bearer ${process.env.ZIINA_API_KEY}`,
+          Authorization: `Bearer fe0rVukqETH9QQlXF0ycVJUcv5rPNuN6pKDaKl1bJ8bf+Wh2hOEUEIjkSP0SFgAU`,
           "Content-Type": "application/json",
         },
       }
     );
+    console.log(response.data)
     return response.data;
   } catch (error) {
     throw new Error("Failed to create Ziina payment");
@@ -48,7 +49,7 @@ export const checkOutSession = asyncHandler(async (req, res, next) => {
     const payment = await createZiinaPayment(
       totalOrderPrice * 100,
       "AED",
-      //   "alslamat407@gmail.com",
+        "alslamat407@gmail.com",
       req.user._id
     );
 
@@ -57,7 +58,7 @@ export const checkOutSession = asyncHandler(async (req, res, next) => {
       user: req.user._id,
       cartItems: cart.cartItems,
       taxPrice,
-      shippingData : req.body.shippingData,
+      shippingData : 0,
       totalOrderPrice,
       paymentMethod: "card",
       isPaid: false,
@@ -68,10 +69,11 @@ export const checkOutSession = asyncHandler(async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "تم إنشاء الطلب بنجاح",
-      paymentUrl: payment.payment_url,
+      paymentUrl: payment.redirect_url,
       order,
     });
   } catch (error) {
+    console.log(error)
     return next(new ApiError("فشل في إنشاء الدفع مع Ziina", 500));
   }
 });

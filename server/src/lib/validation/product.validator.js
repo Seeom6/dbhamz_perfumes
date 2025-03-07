@@ -5,6 +5,8 @@ import slugify from "slugify";
 import ApiError from "../ApiError.js";
 import Product from "../../models/product.model.js";
 
+const packageSizes = ['50', '75', '80', '90', '100', '120', '125', '150', '175', '200', '250']
+
 export const createProductValidator = [
   check("name")
     .isLength({ min: 3 })
@@ -22,19 +24,9 @@ export const createProductValidator = [
     .notEmpty()
     .withMessage("description of title is required")
     .isLength({ min: 10 })
-    .withMessage("description must be at least 10 chars")
-    .isLength({ max: 700 })
-    .withMessage("Too long description content"),
-
-  check("quantity")
-    .notEmpty()
-    .withMessage("quantity of product is required")
-    .isNumeric()
-    .withMessage("quantity of product must be number")
-    .custom((value) => {
-      if (value <= 0) throw new ApiError("quantity must be greater than 0");
-      return true;
-    }),
+    .withMessage("حجم الوصف يجب ان يكون اكبر من 10 احرف")
+    .isLength({ max: 3000 })
+    .withMessage("حجم الوصف يجب ان يكون اقل من 3000 حرف"),
 
   check("sold")
     .optional()
@@ -52,12 +44,7 @@ export const createProductValidator = [
     .isFloat()
     .withMessage("Price of product must be number")
     .toFloat()
-    .custom((value, { req }) => {
-      if (value <= 0) {
-        throw new ApiError("price of product must be positive number", 400);
-      }
-      return true;
-    }),
+,
 
   check("priceAfterDiscount")
     .optional()
@@ -99,20 +86,17 @@ export const createProductValidator = [
       return true;
     }),
 
-  check("packageSize")
+    check("packageSize")
     .notEmpty()
     .withMessage("Case size is required")
-    .isNumeric()
-    .withMessage("packageSize must me number")
-    .custom(async (val) => {
-      const number = parseFloat(val);
-      if (number === 25 || number === 50 || number === 100) {
-        return false;
-      } else {
-        throw new ApiError("Case size must be 25 or 50 or 100");
+    .isArray()
+    .withMessage("Package size must be an array")
+    .custom((value) => {
+      if (!value.every((size) => packageSizes.includes(size))) {
+        throw new Error("Package size contains invalid values");
       }
+      return true;
     }),
-
   validator,
 ];
 

@@ -19,12 +19,12 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
       minlength: 10,
-      maxlength: 2000,
+      maxlength : 3000
     },
 
     quantity: {
       type: Number,
-      required: true,
+      default : 0
     },
 
     sold: {
@@ -66,7 +66,7 @@ const productSchema = new mongoose.Schema(
     packageSize: {
       type: [String],
       required: true,
-      enum: [50, 75, 80, 90, 100, 120, 125, 150, 175, 200, 250],
+      enum: ['50', '75', '80', '90', '100', '120', '125', '150', '175', '200', '250'],
     },
   },
   { timestamps: true }

@@ -1,6 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { AddCart, ApplyCoupon, CreateOrder, deleteProductInCart, GetCart, GetOnCart, UpdateCartQuantity } from "../Axios";
+import {
+  AddCart,
+  ApplyCoupon,
+  CreateCoupon,
+  CreateOrder,
+  DeleteCoupon,
+  deleteProductInCart,
+  GetCart,
+  GetCoupon,
+  GetOnCart,
+  UpdateCartQuantity,
+} from "../Axios";
 
 export const useAddCart = () => {
   return useMutation({
@@ -19,20 +30,20 @@ export const useGetCart = () => {
 export const useGetOneCart = (cartId) => {
   return useQuery({
     queryKey: ["cart"],
-    queryFn:  () =>  GetOnCart(cartId),
+    queryFn: () => GetOnCart(cartId),
   });
 };
 
-
-export const useUpdateCartQuantity=()=>{
+export const useUpdateCartQuantity = () => {
   return useMutation({
-    mutationFn: async ({productId , quantity})=> await UpdateCartQuantity(productId ,quantity)
-  })
-}
+    mutationFn: async ({ productId, quantity }) =>
+      await UpdateCartQuantity(productId, quantity),
+  });
+};
 
-export const useDeleteProductInCart =()=>{
+export const useDeleteProductInCart = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (productId) => deleteProductInCart(productId), // Use the deleteProduct function
     onSuccess: () => {
@@ -43,13 +54,29 @@ export const useDeleteProductInCart =()=>{
       toast.error(error.message); // Display the error message in a toast
     },
   });
-}
+};
 
-export const useApplyCoupon = ()=>{
+export const useApplyCoupon = () => {
   return useMutation({
-    mutationFn:async (coupon)=> await ApplyCoupon(coupon)
-  })
-}
+    mutationFn: async (coupon) => await ApplyCoupon(coupon),
+  });
+};
+export const useCreateCoupon = () => {
+  return useMutation({
+    mutationFn: async (formData) => await CreateCoupon(formData),
+  });
+};
+export const useDeleteCoupon = () => {
+  return useMutation({
+    mutationFn: async (id) => await DeleteCoupon(id),
+  });
+};
+export const useGetCoupon = () => {
+  return useQuery({
+    queryKey: ["coupons"],
+    queryFn: () => GetCoupon(),
+  });
+};
 
 export const useCreateOrder = () => {
   return useMutation({

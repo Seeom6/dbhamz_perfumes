@@ -11,13 +11,13 @@ const AddProduct = () => {
   const [productData, setProductData] = useState({
     name: "",
     description: "",
-    quantity: 1,
+    quantity: 0,
     sold: 20,
     price: 0,
     priceAfterDiscount: 0,
     imageCover: null,
     images: [],
-    packageSize: 0,
+    packageSize: [],
     brand: "",
   });
 
@@ -30,10 +30,19 @@ const AddProduct = () => {
     Form.append("quantity", product?.quantity);
     Form.append("priceAfterDiscount", product?.priceAfterDiscount);
     Form.append("imageCover", product?.imageCover);
+  
+    // Append each image individually
     product?.images.forEach((img) => {
       Form.append("images", img);
     });
-    Form.append("packageSize", product?.packageSize);
+  
+    // Append each package size individually
+    if (product?.packageSize && Array.isArray(product.packageSize)) {
+      product.packageSize.forEach((size) => {
+        Form.append("packageSize", size);
+      });
+    }
+  
     Form.append("brand", product?.brand);
     return Form;
   };

@@ -1,46 +1,81 @@
-// client/src/components/Coupons.js
-import React, { useState, useEffect } from "react";
-import axios from "axios"; // For making API calls
+import React, { useState } from "react";
+import { useCreateCoupon, useGetCoupon, useDeleteCoupon } from "../../utils/Api/CartEndPoint";
+import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Coupons = () => {
-  const [coupons, setCoupons] = useState([]); // State to store coupons
-  const [couponCode, setCouponCode] = useState(""); // State for coupon code input
-  const [discountPercentage, setDiscountPercentage] = useState(""); // State for discount percentage input
-  const [error, setError] = useState(""); // State for error messages
+  const [couponCode, setCouponCode] = useState("");
+  const [discountPercentage, setDiscountPercentage] = useState("");
+  const [expirationDate, setExpirationDate] = useState("");
+  const [error, setError] = useState("");
+  const [userIdToGift, setUserIdToGift] = useState(""); // State for user ID to gift the coupon
 
-  // Fetch active coupons from the backend on component mount
-  useEffect(() => {
-    fetchCoupons();
-  }, []);
+  const queryClient = useQueryClient()
 
-  // Function to fetch active coupons from the backend
-  const fetchCoupons = async () => {
-    try {
-      const response = await axios.get("/api/coupons"); // Replace with your backend API endpoint
-      setCoupons(response.data); // Update the coupons state with fetched data
-    } catch (error) {
-      console.error("Error fetching coupons:", error);
-    }
-  };
+  const { data: coupons, isLoading, isError, error: getCouponError } = useGetCoupon();
+  const { mutate: createCoupon } = useCreateCoupon();
+  const { mutate: deleteCoupon } = useDeleteCoupon();
+  // const { mutate: giftCoupon } = useGiftCoupon();
 
-  // Function to handle adding a coupon
-  const handleAddCoupon = async () => {
-    if (!couponCode || !discountPercentage) {
-      setError("Please fill in both fields.");
+  // Handle adding a coupon
+  const handleAddCoupon = async (e) => {
+    e.preventDefault();
+    if (!couponCode || !discountPercentage || !expirationDate) {
+      setError("Please fill in all fields.");
       return;
     }
-
-    if (
-      isNaN(discountPercentage) ||
-      discountPercentage < 1 ||
-      discountPercentage > 100
-    ) {
+    if (isNaN(discountPercentage) || discountPercentage < 1 || discountPercentage > 100) {
       setError("Discount percentage must be a number between 1 and 100.");
       return;
     }
-
-  
+    const formData = {
+      name: couponCode,
+      discount: parseFloat(discountPercentage),
+      expired: expirationDate,
+    };
+    createCoupon(formData, {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["coupons"]);
+        setCouponCode("");
+        setDiscountPercentage("");
+        setExpirationDate("");
+        setError("");
+        toast.success("تم أنشاء الكوبون")
+      },
+      onError: (error) => {
+        setError(error.message || "Failed to create coupon");
+      },
+    });
   };
+
+  // Handle deleting a coupon
+  const handleDeleteCoupon = async (id) => {
+    deleteCoupon(id, {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["coupons"]);
+        toast.success("تم حذف الكوبون بنجاح")
+      },
+      onError: (error) => {
+        toast.error(error.message || "خطأ اثناء حذف الكوبون");
+      },
+    });
+  };
+
+  // Handle gifting a coupon
+  // const handleGiftCoupon = async (id) => {
+  //   if (!userIdToGift) {
+  //     setError("Please enter a user ID to gift the coupon.");
+  //     return;
+  //   }
+  //   giftCoupon({ id, userId: userIdToGift }, {
+  //     onSuccess: () => {
+  //       setUserIdToGift("");
+  //     },
+  //     onError: (error) => {
+  //       setError(error.message || "Failed to gift coupon");
+  //     },
+  //   });
+  // };
 
   return (
     <div className="p-2 md:p-4 bg-gray-100 min-h-screen">
@@ -52,10 +87,7 @@ const Coupons = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Coupon Code Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                {" "}
-                كوبون الخصم
-              </label>
+              <label className="block text-sm font-medium text-gray-700">كوبون الخصم</label>
               <input
                 type="text"
                 value={couponCode}
@@ -67,15 +99,24 @@ const Coupons = () => {
 
             {/* Discount Percentage Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                {" "}
-                نسبة خصم الكوبون
-              </label>
+              <label className="block text-sm font-medium text-gray-700">نسبة خصم الكوبون</label>
               <input
                 type="number"
                 value={discountPercentage}
                 onChange={(e) => setDiscountPercentage(e.target.value)}
                 placeholder="اُدخل نسبة الخصم"
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              />
+            </div>
+
+            {/* Expiration Date Input */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">تاريخ الانتهاء</label>
+              <input
+                dir="ltr"
+                type="date"
+                value={expirationDate}
+                onChange={(e) => setExpirationDate(e.target.value)}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
               />
             </div>
@@ -89,26 +130,52 @@ const Coupons = () => {
             onClick={handleAddCoupon}
             className="mt-4 w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
           >
-            حفظ{" "}
+            حفظ
           </button>
         </div>
 
         {/* Display Coupons */}
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">الكوبانات الموجودة</h2>
-          {coupons.length === 0 ? (
+          {coupons?.length === 0 ? (
             <p className="text-gray-500">No coupons added yet.</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {/* {coupons?.map((coupon, index) => (
+              {coupons?.map((coupon) => (
                 <div
-                  key={index}
+                  key={coupon._id}
                   className="p-4 border border-gray-200 rounded-lg shadow-sm"
                 >
-                  <p className="text-lg font-semibold">{coupon.code}</p>
-                  <p className="text-gray-600">{coupon.discount}% off</p>
+                  <p className="text-lg font-semibold">{coupon.name}</p>
+                  <p className="text-gray-600">نسبة الخصم : %{coupon.discount}</p>
+                  <p className="text-gray-600">
+                    تاريخ الأنتهاء: {new Date(coupon.expired).toLocaleDateString()}
+                  </p>
+                  <div className="w-full mt-2 flex gap-2">
+                    {/* Delete Button */}
+                    <button
+                      onClick={() => handleDeleteCoupon(coupon?._id)}
+                      className="bg-red-500 text-white py-1 px-3 rounded-md hover:bg-red-600 transition-colors"
+                    >
+                      حذف
+                    </button>
+                    {/* Gift Button */}
+                    <input
+                      type="text"
+                      value={userIdToGift}
+                      onChange={(e) => setUserIdToGift(e.target.value)}
+                      placeholder="إسم الزبون"
+                      className="inputClass shadow-input"
+                    />
+                    <button
+                      // onClick={() => handleGiftCoupon(coupon._id)}
+                      className="bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600 transition-colors"
+                    >
+                      إهداء
+                    </button>
+                  </div>
                 </div>
-              ))} */}
+              ))}
             </div>
           )}
         </div>

@@ -22,12 +22,12 @@ const Footer = () => {
         <div>
           <p className="font-bold text-[22px] mb-2">الأقسام</p>
           {navLink.map((item) => (
-            <p key={item.href} className="text-ford text-medium leading-8">
+            <p key={item.href} className="text-ford text-small md:text-medium leading-8">
               {item.name}
             </p>
           ))}
         </div>
-        <div>
+        <div className="text-small md:text-medium">
           <p className="font-bold text-[22px] mb-2">تواصل معنا</p>
           <Link
             to={whatsappUrl}
@@ -36,10 +36,10 @@ const Footer = () => {
             <p>
               <FaWhatsapp />
             </p>
-            <p>095490365</p>
+            <p>971547958045+</p>
           </Link>
           <Link
-            to={whatsappUrl}
+            to={"https://www.instagram.com/dbhamz_perfume?igsh=ZGhtaXRkNjh6NGM0"}
             className="w-full text-[#575757] flex items-center gap-3"
           >
             <p>
@@ -50,9 +50,9 @@ const Footer = () => {
         </div>
         <div>
           <p className="font-bold text-[22px] mb-2">تابعنا</p>
-          <div className="w-full flex text-2xl gap-4">
+          <div className="w-full flex text-small md:text-medium gap-4">
             <Link
-              to={whatsappUrl}
+              to={"https://www.instagram.com/dbhamz_perfume?igsh=ZGhtaXRkNjh6NGM0"}
               className="w-full text-[#575757] flex items-center gap-3"
             >
               <p>

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {  getMe, Login, Signup } from './../Axios';
+import {  getMe, GetUsers, Login, Signup } from './../Axios';
 import { toast } from 'react-toastify';
 
 
@@ -32,4 +32,3 @@ export const useSignup = () => {
         }
       });
   };
-
