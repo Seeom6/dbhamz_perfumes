@@ -5,7 +5,19 @@ import slugify from "slugify";
 import ApiError from "../ApiError.js";
 import Product from "../../models/product.model.js";
 
-const packageSizes = ['50', '75', '80', '90', '100', '120', '125', '150', '175', '200', '250']
+const packageSizes = [
+  "50",
+  "75",
+  "80",
+  "90",
+  "100",
+  "120",
+  "125",
+  "150",
+  "175",
+  "200",
+  "250",
+];
 
 export const createProductValidator = [
   check("name")
@@ -43,9 +55,7 @@ export const createProductValidator = [
     .withMessage("Price of product is required")
     .isFloat()
     .withMessage("Price of product must be number")
-    .toFloat()
-,
-
+    .toFloat(),
   check("priceAfterDiscount")
     .optional()
     .toFloat()
@@ -86,15 +96,16 @@ export const createProductValidator = [
       return true;
     }),
 
-    check("packageSize")
+  check("packageSize")
     .notEmpty()
     .withMessage("Case size is required")
-    .isArray()
-    .withMessage("Package size must be an array")
     .custom((value) => {
-      if (!value.every((size) => packageSizes.includes(size))) {
-        throw new Error("Package size contains invalid values");
+      if (value.length > 2) {
+        if (!value.every((size) => packageSizes.includes(size))) {
+          throw new Error("Package size contains invalid values");
+        }
       }
+
       return true;
     }),
   validator,
@@ -237,9 +248,7 @@ export const updateProductValidator = [
     .isNumeric()
     .withMessage("packageSize must me number")
     .isArray()
-    .withMessage("package size must be an Array")
-,
-
+    .withMessage("package size must be an Array"),
   validator,
 ];
 

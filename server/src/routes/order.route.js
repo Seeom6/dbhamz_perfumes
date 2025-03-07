@@ -11,7 +11,7 @@ const Router = express.Router()
 Router.route("/").get(protect , allowedTo("user","admin") , filterOrderForLoggedUser ,getAllOrders)
 Router.route("/:id").get(protect ,getOneOrder)
 
-Router.route("/checkout-payment/:cartId").get(protect,allowedTo("user"), checkOutSession)
+Router.route("/checkout-payment/:cartId").post(protect,allowedTo("user"), checkOutSession)
 
 
 export default Router

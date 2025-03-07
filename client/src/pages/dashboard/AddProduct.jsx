@@ -55,6 +55,7 @@ const AddProduct = () => {
       formRef.current.reset()
       setResetUpload(true)
     }});
+    console.log(productData)
   };
 
   return (
