@@ -33,35 +33,49 @@ const AddProductForm = ({ setProductData }) => {
     label: `${size}`,
   }));
 
-  const updateQuantity = async(e) => {
+  const updateQuantity = async (e) => {
     e.preventDefault();
-     setIsClicked(!isClicked);
+    setIsClicked(!isClicked);
     if (isClicked === false) {
       setProductData((prev) => ({
         ...prev,
         quantity: -1, // Ensure packageSize is a flat array
       }));
-    } else if(isClicked === true){
+    } else if (isClicked === true) {
       setProductData((prev) => ({
         ...prev,
         quantity: 0, // Ensure packageSize is a flat array
       }));
     }
-
   };
+
+
+
   return (
     <div>
       <div className="w-full flex flex-col md:flex-row gap-10">
         <div className="w-full flex flex-col justify-between items-center gap-3 md:gap-8">
-          <div className="w-full">
-            <label className="text-regular">اسم المنتج</label>
-            <input
-              onChange={handleInputChange}
-              className="inputClass shadow-input"
-              type="text"
-              name="name"
-              required // Ensure the field is required
-            />
+          <div className="w-full flex gap-3">
+            <div className="w-full">
+              <label className="text-regular">اسم المنتج</label>
+              <input
+                onChange={handleInputChange}
+                className="inputClass shadow-input"
+                type="text"
+                name="name"
+                 // Ensure the field is 
+              />
+            </div>
+            <div className="w-full">
+              <label className="text-regular">اسم بالأنجليزي</label>
+              <input
+                onChange={handleInputChange}
+                className="inputClass shadow-input"
+                type="text"
+                name="englishName"
+                 // Ensure the field is 
+              />
+            </div>
           </div>
 
           <div className="w-full flex gap-3">
@@ -72,7 +86,7 @@ const AddProductForm = ({ setProductData }) => {
                 className="inputClass shadow-input"
                 name="price"
                 type="number"
-                required // Ensure the field is required
+                 // Ensure the field is 
               />
             </div>
 
@@ -83,7 +97,7 @@ const AddProductForm = ({ setProductData }) => {
                 className="inputClass shadow-input"
                 name="priceAfterDiscount"
                 type="number"
-                required // Ensure the field is required
+                 // Ensure the field is 
               />
             </div>
           </div>
@@ -100,7 +114,7 @@ const AddProductForm = ({ setProductData }) => {
                 onChange={handleInputChange}
                 className="w-full h-10 px-3 rounded-lg border border-gray-300 focus:border-dashboard focus:outline-none"
                 name="brand"
-                required // Ensure the field is required
+                 // Ensure the field is 
               >
                 <option value="">اختر الماركة</option>
                 {brands?.map((brand) => (
@@ -120,7 +134,7 @@ const AddProductForm = ({ setProductData }) => {
                 name="sold"
                 type="number"
                 defaultValue={20}
-                required // Ensure the field is required
+                 // Ensure the field is 
               />
             </div>
             <div className="w-full flex gap-3 items-end justify-center">
@@ -132,7 +146,7 @@ const AddProductForm = ({ setProductData }) => {
                   className="inputClass shadow-input"
                   type="number"
                   defaultValue={1}
-                  required // Ensure the field is required
+                   // Ensure the field is 
                 />
               </div>
               <button
@@ -155,18 +169,22 @@ const AddProductForm = ({ setProductData }) => {
           onChange={handlePackageSizeChange}
           placeholder="اختر أحجام العبوات"
           className="w-full"
-          required // Ensure the field is required
+           // Ensure the field is 
         />
       </div>
-      <div className="mt-5">
+          
+
+
+      <div className="">
         <label>الوصف</label>
         <textarea
           onChange={handleInputChange}
           name="description"
           className="w-full focus:border rounded-lg focus:border-dashboard shadow-input h-24 outline-0 p-3"
-          required // Ensure the field is required
+           // Ensure the field is 
         />
       </div>
+
     </div>
   );
 };

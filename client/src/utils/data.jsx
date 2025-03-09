@@ -89,6 +89,10 @@ export const navLink = [
     name: "المنتجات المميزة",
   },
   {
+    href: "/brands",
+    name: " الماركات",
+  },
+  {
     href: "/privacy-policy",
     name: "سياسة الخصوصية",
   },

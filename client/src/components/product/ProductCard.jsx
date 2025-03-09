@@ -14,7 +14,7 @@ import { useContext } from 'react';
 const ProductCard = ({ product }) => {
 
   const { currency } = useContext(CurrencyContext);
-  const convertedPrice = convertCurrency(product?.price, "SAR", currency);
+  const convertedPrice = convertCurrency(product?.price, "KWD", currency);
   const navigate = useNavigate();
   const { mutate: addCart, isPending } = useAddCart();
   const { data: getMe } = useGetMe();
@@ -25,11 +25,9 @@ const ProductCard = ({ product }) => {
 
   const addProductToCart = (productId, quantity) => {
     if (!getMe) {
-      // If the user is not authenticated, add the product to localStorage
       addToLocalStorageCart(product, quantity);
       toast.success("تم إضافة المنتج إلى السلة");
     } else {
-      // If the user is authenticated, use the API to add the product to the cart
       addCart(
         { productId, quantity },
         {

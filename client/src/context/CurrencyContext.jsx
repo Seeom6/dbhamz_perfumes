@@ -4,7 +4,7 @@ import React, { createContext, useState } from "react";
 export const CurrencyContext = createContext();
 
 export const CurrencyProvider = ({ children }) => {
-  const [currency, setCurrency] = useState("SAR"); // Default currency
+  const [currency, setCurrency] = useState("KWD"); // Default currency
 
   const updateCurrency = (newCurrency) => {
     setCurrency(newCurrency);

@@ -11,7 +11,7 @@ const ProductInfo = ({ data }) => {
 
 
   const { currency } = useContext(CurrencyContext);
-  const convertedPrice = convertCurrency(data?.price, "SAR", currency);
+  const convertedPrice = convertCurrency(data?.price, "KWD", currency);
 
   const [currentImage, setCurrentImage] = useState(data?.imageCover);
   const [quantityData , setQuantity] = useState(1)
