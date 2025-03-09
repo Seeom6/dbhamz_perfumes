@@ -56,6 +56,7 @@ export const createProductValidator = [
     .isFloat()
     .withMessage("Price of product must be number")
     .toFloat(),
+
   check("priceAfterDiscount")
     .optional()
     .toFloat()
@@ -145,21 +146,15 @@ export const updateProductValidator = [
       if (val) req.body.slug = slugify(val);
       return true;
     }),
-  check("description")
-    .optional()
+    check("description")
+    .notEmpty()
+    .withMessage("description of title is required")
     .isLength({ min: 10 })
-    .withMessage("description must be at least 10 chars")
-    .isLength({ max: 700 })
-    .withMessage("Too long description content"),
+    .withMessage("حجم الوصف يجب ان يكون اكبر من 10 احرف")
+    .isLength({ max: 3000 })
+    .withMessage("حجم الوصف يجب ان يكون اقل من 3000 حرف"),
 
-  check("quantity")
-    .optional()
-    .isNumeric()
-    .withMessage("quantity of product must be number")
-    .custom((value) => {
-      if (value <= 0) throw new ApiError("quantity must be greater than 0");
-      return true;
-    }),
+ 
   check("sold")
     .optional()
     .isNumeric()
@@ -243,12 +238,17 @@ export const updateProductValidator = [
       return true;
     }),
 
-  check("packageSize")
+check("packageSize")
     .optional()
-    .isNumeric()
-    .withMessage("packageSize must me number")
-    .isArray()
-    .withMessage("package size must be an Array"),
+    .custom((value) => {
+      if (value.length > 2) {
+        if (!value.every((size) => packageSizes.includes(size))) {
+          throw new Error("Package size contains invalid values");
+        }
+      }
+
+      return true;
+    }),
   validator,
 ];
 
