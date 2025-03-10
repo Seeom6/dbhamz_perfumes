@@ -1,42 +1,23 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import fileUpload from "/assets/file-upload.svg";
-import heic2any from "heic2any"; // Library to convert HEIC to JPEG/PNG
 
 const UploadBrandImage = ({ setBrandData }) => {
   const [imageUri, setImageUri] = useState(""); // State to store the uploaded image URL
-  const [imageFile, setImageFile] = useState(null); // State to store the uploaded image file
+  const [imageFile, setImageFile] = useState(''); // State to store the uploaded image file
 
-  const onDrop = useCallback(async (acceptedFiles) => {
+  const onDrop = useCallback((acceptedFiles) => {
     // Accept only the first file if multiple files are uploaded
     const file = acceptedFiles[0];
     if (file) {
-      let convertedFile = file;
-
-      // Check if the file is in HEIC format
-      if (file.type === "image/heic" || file.type === "image/heif") {
-        // Convert HEIC to JPEG using heic2any
-        convertedFile = await heic2any({
-          blob: file,
-          toType: "image/jpeg", // Convert to JPEG
-          quality: 0.8, // Adjust quality if needed
-        });
-      }
-
-      const imageUrl = URL.createObjectURL(convertedFile);
+      const imageUrl = URL.createObjectURL(file);
       setImageUri(imageUrl); // Set the image URL
-      setImageFile(convertedFile); // Set the converted image file
+      setImageFile(file); // Set the image file
     }
   }, []);
 
   const { getRootProps, getInputProps } = useDropzone({
-    accept: {
-      "image/jpeg": [],
-      "image/png": [],
-      "image/svg+xml": [],
-      "image/heic": [], // Add HEIC support
-      "image/heif": [], // Add HEIF support
-    },
+    accept: { "image/jpeg": [], "image/png": [], "image/svg+xml": [] },
     onDrop,
     maxFiles: 1, // Allow only one file to be uploaded
   });
