@@ -78,15 +78,7 @@ const UploadImage = ({ setProductData, reset }) => {
               <p>أجلب و ارمي هنا</p>
             </div>
           )}
-<<<<<<< HEAD
-<<<<<<< HEAD
           <input {...getInputProps()} type="file" />
-=======
-          <input {...getInputProps()} type="file"/>
->>>>>>> 5fc15a1bb65714948f58993d2b65f18d5ce659cb
-=======
-          <input {...getInputProps()} type="file" />
->>>>>>> 11c5cb42aeb3030c50017aada6e5f258780b2e6f
         </div>
       </div>
       {imagesUri.length > 0 && (
