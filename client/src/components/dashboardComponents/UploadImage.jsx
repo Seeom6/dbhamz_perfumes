@@ -1,29 +1,48 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import fileUpload from "/assets/file-upload.svg";
+import heic2any from "heic2any"; // Library to convert HEIC to JPEG/PNG
 
 const UploadImage = ({ setProductData, reset }) => {
   const [imagesUri, setImagesUri] = useState([]);
   const [images, setImages] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const onDrop = useCallback((acceptedFiles) => {
-    const files = acceptedFiles.map((file) => {
-      return {
-        file,
-        preview: URL.createObjectURL(file),
-      };
-    });
-    setImages((prev) => [...prev, ...files.map((f) => f.file)]);
-    setImagesUri((prev) => [...prev, ...files.map((f) => f.preview)]);
+  const onDrop = useCallback(async (acceptedFiles) => {
+    const processedFiles = await Promise.all(
+      acceptedFiles.map(async (file) => {
+        // Convert HEIC/HEIF files to JPEG
+        if (file.type === "image/heic" || file.type === "image/heif") {
+          const convertedBlob = await heic2any({
+            blob: file,
+            toType: "image/jpeg", // Convert to JPEG
+            quality: 0.8, // Adjust quality if needed
+          });
+          file = new File([convertedBlob], file.name.replace(/\.heic$/i, ".jpeg"), {
+            type: "image/jpeg",
+          });
+        }
+        return {
+          file,
+          preview: URL.createObjectURL(file),
+        };
+      })
+    );
+
+    setImages((prev) => [...prev, ...processedFiles.map((f) => f.file)]);
+    setImagesUri((prev) => [...prev, ...processedFiles.map((f) => f.preview)]);
   }, []);
 
   const { getRootProps, getInputProps } = useDropzone({
-    accept: { "image/jpeg": [], "image/png": [], "image/svg+xml": [] },
+    accept: {
+      "image/jpeg": [],
+      "image/png": [],
+      "image/svg+xml": [],
+      "image/heic": [], // Add HEIC support
+      "image/heif": [], // Add HEIF support
+    },
     onDrop,
   });
-
-
 
   useEffect(() => {
     setProductData((prev) => ({
@@ -31,7 +50,7 @@ const UploadImage = ({ setProductData, reset }) => {
       imageCover: images[0],
       images: images,
     }));
-  }, [images]);
+  }, [images, setProductData]);
 
   useEffect(() => {
     if (reset) {
@@ -59,9 +78,8 @@ const UploadImage = ({ setProductData, reset }) => {
               <p>أجلب و ارمي هنا</p>
             </div>
           )}
-          <input {...getInputProps()} type="file"/>
+          <input {...getInputProps()} type="file" />
         </div>
- 
       </div>
       {imagesUri.length > 0 && (
         <div className="flex flex-wrap justify-center mt-4">
