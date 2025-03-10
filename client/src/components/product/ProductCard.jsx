@@ -43,8 +43,8 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className="shadow-regularShadow p-2 rounded-lg">
-      <div onClick={() => handleClick(product?._id)}>
+    <div className="shadow-regularShadow flex items-center flex-col justify-between p-2 rounded-lg">
+      <div  onClick={() => handleClick(product?._id)}>
         <div className="w-full py-1">
           <img
             className="rounded-lg w-full bg-white  shadow-xl h-full object-cover"
