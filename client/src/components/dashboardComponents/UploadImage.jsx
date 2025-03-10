@@ -59,7 +59,7 @@ const UploadImage = ({ setProductData, reset }) => {
               <p>أجلب و ارمي هنا</p>
             </div>
           )}
-          <input {...getInputProps()} type="file" accept="image/*" />
+          <input {...getInputProps()} type="file"/>
         </div>
  
       </div>

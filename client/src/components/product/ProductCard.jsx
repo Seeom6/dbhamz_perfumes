@@ -47,7 +47,7 @@ const ProductCard = ({ product }) => {
       <div onClick={() => handleClick(product?._id)}>
         <div className="w-full py-1">
           <img
-            className="rounded-lg w-full h-full object-cover"
+            className="rounded-lg w-full bg-white  shadow-xl h-full object-cover"
             src={product?.imageCover}
             alt=""
           />
