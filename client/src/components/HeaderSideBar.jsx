@@ -7,10 +7,10 @@ import { IoClose } from "react-icons/io5";
 
 const HeaderSideBar = ({ setSidebarOpen, sidebarOpen }) => {
   return (
-    <div className="h-screen">
+    <div className="h-screen lg:hidden">
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-[rgba(53,52,52,0.65)] bg-opacity-50 z-20 lg:hidden"
+          className="fixed inset-0 bg-[rgba(53,52,52,0.65)] bg-opacity-50 z-20 "
           onClick={() => setSidebarOpen(false)}
         />
       )}

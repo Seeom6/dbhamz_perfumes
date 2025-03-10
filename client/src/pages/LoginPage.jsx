@@ -97,9 +97,9 @@ const LoginPage = () => {
                       <button
                         onClick={() => handleCountryChange(country)}
                         key={country.code}
-                        className="flex md:py-1 w-full justify-around hover:bgblue-300 cursor-pointer text-extraSmall md:text-medium rounded-r-lg border-l-transparent"
+                        className="flex md:py-1 w-full justify-around hover:bgblue-300 cursor-pointer text-small md:text-medium  border-b border-l-transparent"
                       >
-                        {<CustomSingleValue data={country.flag} />}
+                        {<CustomSingleValue data={country.value} />}
                         <p className="font-bold">{country.code}</p>
                       </button>
                     ))}
