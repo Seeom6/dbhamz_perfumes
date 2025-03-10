@@ -40,6 +40,7 @@ const UploadImage = ({ setProductData, reset }) => {
       "image/svg+xml": [],
       "image/heic": [], // Add HEIC support
       "image/heif": [], // Add HEIF support
+      "image/webp": [], // Add WEBP support
     },
     onDrop,
   });

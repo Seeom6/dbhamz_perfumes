@@ -129,21 +129,14 @@ export const offersInfo = [
   },
 ];
 
-// List of countries with their names, values, and country codes
-// export const countries = [
-//   { code: "+966", flag: "SA", name: "Saudi Arabia" },
-//   { code: "+971", flag: "AE", name: "Emirates" },
-//   { code: "+974", flag: "QA", name: "Qatar" },
-//   { code: "+965", flag: "KW", name: "Kuwait" },
-//   { code: "+968", flag: "OM", name: "Oman" },
-// ];
 
 export const countries = [
   {code: "+966", value: "SA", name: "Saudi Arabia", currency: "SAR" },
   {code: "+971", value: "AE", name: "UAE", currency: "AED" },
-  {code: "+974", value: "KW", name: "Kuwait", currency: "KWD" },
-  { code: "+965", value: "QA", name: "Qatar", currency: "QAR" },
-  {code: "+968", value: "BH", name: "Bahrain", currency: "BHD" },
+  {code: "+965", value: "KW", name: "Kuwait", currency: "KWD" },
+  { code: "+974", value: "QA", name: "Qatar", currency: "QAR" },
+  {code: "+973", value: "BH", name: "Bahrain", currency: "BHD" },
+  {code: "+986", value: "OM", name: "Oman", currency: "OMR" },
 ];
 
 export const Brands = [

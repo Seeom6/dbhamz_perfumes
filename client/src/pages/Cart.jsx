@@ -1,55 +1,76 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import HeaderImage from "../components/HeaderImage";
 import dbhamz from "/assets/dbhamz2.png";
 import CartElements from "../components/featuredComponents/CartElements";
 import { getCartFromLocalStorage, saveCartToLocalStorage } from "../utils/localStorageCart.js";
+import { CurrencyContext } from "../context/CurrencyContext.jsx";
+import { useGetCart } from "../utils/Api/CartEndPoint.js";
 
 const Cart = () => {
-  const [orderCost, setOrderCost] = useState(0); // State to store the total price
-  const [cart, setCart] = useState([]); // State to store the cart data
+  const [cart, setCart] = useState([]);
+  const [orderCost, setOrderCost] = useState(0);
+  const { userData, isLogin } = useContext(CurrencyContext);
+  const { data: getMyCart, refetch: refetchCart } = useGetCart(userData?._id);
 
-  // Fetch cart data from localStorage on component mount
+  // Fetch cart data when user is logged in
   useEffect(() => {
-    const cartData = getCartFromLocalStorage();
-    if (cartData && cartData.length > 0) {
-      setCart(cartData); // Update the cart state
+    if (isLogin && userData?._id) {
+      refetchCart();
     }
-  }, []);
+  }, [isLogin, userData?._id, refetchCart]);
+
+  // Update cart state when data is fetched from the backend
+  useEffect(() => {
+    if (getMyCart) {
+      if (Array.isArray(getMyCart)) {
+        setCart(getMyCart);
+      } else if (getMyCart.cartItems && Array.isArray(getMyCart.cartItems)) {
+        setCart(getMyCart.cartItems);
+      } else {
+        console.error("Expected an array for cart data, but got:", getMyCart);
+        setCart([]);
+      }
+    }
+  }, [getMyCart]);
+
+  // If user is not logged in, get cart from localStorage
+  useEffect(() => {
+    if (!isLogin) {
+      const localStorageCart = getCartFromLocalStorage();
+      if (localStorageCart && Array.isArray(localStorageCart)) {
+        setCart(localStorageCart);
+      } else {
+        console.error("Expected an array for localStorage cart, but got:", localStorageCart);
+        setCart([]);
+      }
+    }
+  }, [isLogin]);
 
   // Calculate the total price whenever the cart changes
   useEffect(() => {
-    if (cart.length > 0) {
-      let total = 0;
-      cart.forEach((item) => {
-        total += item.price * item.quantity; // Multiply price by quantity
-      });
-      setOrderCost(total); // Update the total price state
-    } else {
-      setOrderCost(0); // Reset the total price if the cart is empty
-    }
-    saveCartToLocalStorage(cart); // Sync cart with localStorage
-  }, [cart]);
+    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    setOrderCost(total);
+    if (!isLogin) saveCartToLocalStorage(cart);
+  }, [cart, isLogin]);
 
-  // Function to handle incrementing quantity
+  // Handle cart operations
   const handleIncrement = (productId, newQuantity) => {
     const updatedCart = cart.map((item) =>
       item._id === productId ? { ...item, quantity: newQuantity } : item
     );
-    setCart(updatedCart); // Update the cart state
+    setCart(updatedCart);
   };
 
-  // Function to handle decrementing quantity
   const handleDecrement = (productId, newQuantity) => {
     const updatedCart = cart.map((item) =>
       item._id === productId ? { ...item, quantity: newQuantity } : item
     );
-    setCart(updatedCart); // Update the cart state
+    setCart(updatedCart);
   };
 
-  // Function to handle deleting a product
   const handleDelete = (productId) => {
     const updatedCart = cart.filter((item) => item._id !== productId);
-    setCart(updatedCart); // Update the cart state
+    setCart(updatedCart);
   };
 
   return (
@@ -59,7 +80,6 @@ const Cart = () => {
 
         {/* Cart Table */}
         <div className="w-full overflow-x-auto">
-          {/* Table for Medium and Large Screens */}
           <table className="w-full bg-fifed rounded-lg hidden md:table">
             <thead>
               <tr className="border-b border-gray-300">
@@ -71,7 +91,7 @@ const Cart = () => {
               </tr>
             </thead>
             <tbody>
-              {cart?.map((item, idx) => (
+              {cart.map((item, idx) => (
                 <CartElements
                   key={idx}
                   data={item}
