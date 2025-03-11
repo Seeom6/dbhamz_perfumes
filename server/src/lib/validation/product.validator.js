@@ -22,9 +22,9 @@ const packageSizes = [
 export const createProductValidator = [
   check("name")
     .isLength({ min: 3 })
-    .withMessage("product title must be at least 3 chars")
+    .withMessage("أسم المنتج يجب ان يكون على الأقل 3 احرف")
     .isLength({ max: 100 })
-    .withMessage("Too long product title")
+    .withMessage("أسم المنتج كبير جداً")
     .notEmpty()
     .withMessage("product title is required")
     .custom((val, { req }) => {
@@ -99,17 +99,7 @@ export const createProductValidator = [
 
   check("packageSize")
     .notEmpty()
-    .withMessage("Case size is required")
-    .custom((value) => {
-      console.log(value)
-      if (value.length > 2) {
-        if (!value.every((size) => packageSizes.includes(size))) {
-          throw new Error("Package size contains invalid values");
-        }
-      }
-
-      return true;
-    }),
+    .withMessage("Case size is required"),
   validator,
 ];
 
