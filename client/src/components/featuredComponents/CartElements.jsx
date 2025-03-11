@@ -1,131 +1,43 @@
-import React, { useState } from "react";
+import React from "react";
 import { FaTrash } from "react-icons/fa";
 import { FiMinus, FiPlus } from "react-icons/fi";
 
-const CartElements = ({ data, onDelete, onIncrement, onDecrement, isMobile }) => {
-  const [applyQuantity, setApplyQuantity] = useState(data?.quantity);
-
-  const handleIncrement = () => {
-    const newQuantity = applyQuantity + 1;
-    setApplyQuantity(newQuantity);
-    onIncrement(data._id, newQuantity);
-  };
-
-  const handleDecrement = () => {
-    const newQuantity = applyQuantity - 1;
-    if (newQuantity >= 1) {
-      setApplyQuantity(newQuantity);
-      onDecrement(data._id, newQuantity);
-    }
-  };
-
-  if (isMobile) {
-    return (
-      <div className="w-full bg-fifed rounded-lg p-4 shadow-sm">
-        <div className="flex flex-col gap-4">
-          {/* Product */}
-          <div className="flex items-center gap-3">
-            <img
-              className="w-16 h-16 rounded-lg object-cover"
-              src={data.product.imageCover}
-              alt={data.product.name}
-            />
-            <div>
-              <p className="text-lg font-bold">{data.product.name}</p>
-              <p className="text-gray-600">${data.price}</p>
-            </div>
-          </div>
-
-          {/* Quantity */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={handleDecrement}
-                className={`p-2 bg-white border border-primary rounded-full hover:bg-primary hover:text-white transition-all ${
-                  applyQuantity === 1 ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                disabled={applyQuantity === 1}
-              >
-                <FiMinus className="w-4 h-4" />
-              </button>
-              <p className="text-lg font-bold">{applyQuantity}</p>
-              <button
-                onClick={handleIncrement}
-                className="p-2 bg-primary text-white rounded-full hover:bg-white hover:border hover:border-primary hover:text-primary transition-all"
-              >
-                <FiPlus className="w-4 h-4" />
-              </button>
-            </div>
-            <p className="text-lg font-bold">${(data.price * applyQuantity).toFixed(2)}</p>
-          </div>
-
-          {/* Action (Delete) */}
-          <div className="w-full flex justify-center">
-            <button
-              onClick={() => onDelete(data._id)}
-              className="button-class bg-red-500 w-3/5 gap-3 flex justify-center items-center"
-            >
-              <FaTrash color="white" size={14} />
-              <span>حذف</span>
-            </button>
-          </div>
+const CartElements = ({ data, onDelete, onIncrement, onDecrement }) => {
+  return (
+    <div className="flex flex-col sm:flex-row items-center justify-between p-4 border-b border-gray-200">
+      <div className="flex items-center space-x-4">
+        <img
+          src={data.imageCover}
+          alt={data.name}
+          className="w-20 h-20 object-cover rounded-lg"
+        />
+        <div>
+          <h3 className="text-lg font-semibold">{data.name}</h3>
+          <p className="text-sm text-gray-600">${data.price.toFixed(2)}</p>
         </div>
       </div>
-    );
-  }
-
-  return (
-    <tr className="border-b border-gray-300">
-      {/* Product */}
-      <td className="py-4">
-        <div className="flex items-center gap-3">
-          <img
-            className="w-16 h-16 rounded-lg object-cover"
-            src={data.product.imageCover}
-            alt={data.product.name}
-          />
-          <p className="text-lg font-bold">{data.product.name}</p>
-        </div>
-      </td>
-
-      {/* Price */}
-      <td className="py-4 text-lg font-bold">${data.price}</td>
-
-      {/* Quantity */}
-      <td className="py-4">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={handleDecrement}
-            className={`p-2 bg-white border border-primary rounded-full hover:bg-primary hover:text-white transition-all ${
-              applyQuantity === 1 ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-            disabled={applyQuantity === 1}
-          >
-            <FiMinus className="w-4 h-4" />
-          </button>
-          <p className="text-lg font-bold">{applyQuantity}</p>
-          <button
-            onClick={handleIncrement}
-            className="p-2 bg-primary text-white rounded-full hover:bg-white hover:border hover:border-primary hover:text-primary transition-all"
-          >
-            <FiPlus className="w-4 h-4" />
-          </button>
-        </div>
-      </td>
-
-      {/* Subtotal */}
-      <td className="py-4 text-lg font-bold">${(data.price * applyQuantity).toFixed(2)}</td>
-
-      {/* Action (Delete) */}
-      <td className="py-4">
+      <div className="flex items-center space-x-4 mt-4 sm:mt-0">
         <button
-          onClick={() => onDelete(data._id)}
-          className="p-2 text-white bg-[rgba(223,4,4,0.12)] rounded-sm hover:bg-red-600 transition-all"
+          onClick={onDecrement}
+          className="p-2 border border-gray-300 rounded-lg hover:bg-gray-100"
         >
-          <FaTrash size={18} color="red" />
+          <FiMinus />
         </button>
-      </td>
-    </tr>
+        <span className="text-lg">{data.quantity}</span>
+        <button
+          onClick={onIncrement}
+          className="p-2 border border-gray-300 rounded-lg hover:bg-gray-100"
+        >
+          <FiPlus />
+        </button>
+        <button
+          onClick={onDelete}
+          className="text-red-500 hover:text-red-700"
+        >
+          <FaTrash />
+        </button>
+      </div>
+    </div>
   );
 };
 
