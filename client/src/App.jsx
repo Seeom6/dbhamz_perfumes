@@ -25,6 +25,7 @@ import Loading from "./components/Loading";
 import Error from "./components/Error";
 import OrderData from "./pages/order/OrderData";
 import Coupons from './pages/dashboard/Coupons';
+import CartWithId from "./pages/CartWithId";
 
 function App() {
 
@@ -45,6 +46,7 @@ function App() {
           <Route path="/products/:id" element={<SingleProduce />} />
           <Route path="/special-products" element={<SpecialProducts />} />
           <Route path="/cart" element={<Cart/>} />
+          <Route path="/user-cart/:id" element={<CartWithId/>} />
           <Route path="/user-info" element={<UserInfo />} />
           <Route path="/login" element={<LoginPage getMe={getMe}/>} />
           <Route path="/signup" element={<Signup />} />

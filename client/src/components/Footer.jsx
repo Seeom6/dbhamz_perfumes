@@ -3,9 +3,10 @@ import logo from "/assets/logo.png";
 import { navLink, NotAccessRoute } from "../utils/data.jsx";
 import { Link, useLocation } from "react-router-dom";
 import { FaPhone, FaInstagram, FaFacebookF, FaWhatsapp } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";
 
 const Footer = () => {
-  const whatsappUrl = `https://wa.me/${+971547958045}?`;
+  const whatsappUrl = `https://wa.me/${+96566621132}?`;
 
   const pathname = useLocation().pathname;
   return (
@@ -19,57 +20,78 @@ const Footer = () => {
           <img className="w-[100px] md:w-[200px]" src={logo} alt="" />
         </div>
         <div className="w-full flex justify-between md:justify-around">
-        <div>
-          <p className="font-bold text-[22px] mb-2">الأقسام</p>
-          {navLink.map((item) => (
-            <p key={item.href} className="text-ford text-small md:text-medium leading-8">
-              {item.name}
-            </p>
-          ))}
-        </div>
-        <div className="text-small md:text-medium">
-          <p className="font-bold text-[22px] mb-2">تواصل معنا</p>
-          <Link
-            to={whatsappUrl}
-            className="w-full text-[#575757] flex items-center gap-3"
-          >
-            <p>
-              <FaWhatsapp />
-            </p>
-            <p>971547958045+</p>
-          </Link>
-          <Link
-            to={"https://www.instagram.com/dbhamz_perfume?igsh=ZGhtaXRkNjh6NGM0"}
-            className="w-full text-[#575757] flex items-center gap-3"
-          >
-            <p>
-              <FaInstagram />
-            </p>
-            <p>095490365</p>
-          </Link>
-        </div>
-        <div>
-          <p className="font-bold text-[22px] mb-2">تابعنا</p>
-          <div className="w-full flex text-small md:text-medium gap-4">
+          <div>
+            <p className="font-bold text-[22px] mb-2">الأقسام</p>
+            {navLink.map((item) => (
+              <p
+                key={item.href}
+                className="text-[#111] font-semibold text-small md:text-medium leading-8"
+              >
+                {item.name}
+              </p>
+            ))}
+          </div>
+          <div className="text-small md:text-medium">
+            <p className="font-bold text-[22px] mb-2">أتصل بنا</p>
             <Link
-              to={"https://www.instagram.com/dbhamz_perfume?igsh=ZGhtaXRkNjh6NGM0"}
-              className="w-full text-[#575757] flex items-center gap-3"
+              to={whatsappUrl}
+              className="w-full text-[#111] font-semibold flex items-center gap-3"
+            >
+              <p>
+                <FaWhatsapp />
+              </p>
+              <p>965-66621132+</p>
+            </Link>
+            <Link
+              to={"dbhamz.com@gmail.com"}
+              className="w-full text-[#111] font-semibold flex items-center gap-3"
+            >
+              <p>
+                <MdEmail />
+              </p>
+              <p>dbhamz.com@gmail.com</p>
+            </Link>
+            <Link
+              to={
+                "https://www.instagram.com/dbhamz_perfume?igsh=ZGhtaXRkNjh6NGM0"
+              }
+              className="w-full text-[#111] font-semibold flex items-center gap-3"
             >
               <p>
                 <FaInstagram />
               </p>
-            </Link>
-            <Link
-              to={whatsappUrl}
-              className="w-full text-[#575757] flex items-center gap-3"
-            >
-              <p>
-                <FaFacebookF />
-              </p>
+              <p>dbhamz_perfume</p>
             </Link>
           </div>
+          <div>
+            <p className="font-bold text-[22px] mb-2">تابعنا</p>
+            <div className="w-full flex text-small md:text-medium gap-4">
+              <Link
+                to={
+                  "https://www.instagram.com/dbhamz_perfume?igsh=ZGhtaXRkNjh6NGM0"
+                }
+                className="w-full text-[#111] font-semibold text-2xl flex items-center gap-3"
+              >
+                <p>
+                  <FaInstagram />
+                </p>
+              </Link>
+              <Link
+                to={whatsappUrl}
+                className="w-full text-[#111] text-2xl font-semibold flex items-center gap-3"
+              >
+                <p>
+                  <FaWhatsapp />
+                </p>
+              </Link>
+            </div>
+          </div>
         </div>
-        </div>
+      </div>
+
+      <div className="w-full bg-primary text-center border-b">الأسم القانوني : دبهامز لتجارة العطور ومستحظرات التجميل</div>
+      <div  className="w-full bg-primary text-center">
+      الامارات العربية المتحدة دبي ند الحمر رخصة رقم 1304163
       </div>
       <div className="bg-primary max-w-[1240px] w-full border-t-2 border-ford text-center font-bold text-medium">
         جميع الحقوق محفوظة لمتجر دبهامز 2025

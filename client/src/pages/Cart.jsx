@@ -2,13 +2,18 @@ import React, { useContext, useEffect, useState } from "react";
 import HeaderImage from "../components/HeaderImage";
 import dbhamz from "/assets/dbhamz2.png";
 import CartElements from "../components/featuredComponents/CartElements";
-import { getCartFromLocalStorage, saveCartToLocalStorage } from "../utils/localStorageCart.js";
+import {
+  getCartFromLocalStorage,
+  saveCartToLocalStorage,
+} from "../utils/localStorageCart.js";
 import { CurrencyContext } from "../context/CurrencyContext.jsx";
+import { convertCurrency } from "../utils/currency.js";
 
 const Cart = () => {
   const [cart, setCart] = useState([]);
   const [orderCost, setOrderCost] = useState(0);
-  const { userData, isLogin } = useContext(CurrencyContext);
+  const { currency } = useContext(CurrencyContext);
+  const convertedPrice = convertCurrency(orderCost, "KWD", currency);
 
   // Fetch cart data from localStorage on component mount
   useEffect(() => {
@@ -18,7 +23,10 @@ const Cart = () => {
 
   // Calculate the total cost of the cart whenever the cart changes
   useEffect(() => {
-    const totalCost = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const totalCost = cart.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
     setOrderCost(totalCost);
   }, [cart]);
 
@@ -41,7 +49,9 @@ const Cart = () => {
   // Handle decrementing the quantity of a product
   const handleDecrement = (productId) => {
     const updatedCart = cart.map((item) =>
-      item._id === productId ? { ...item, quantity: Math.max(1, item.quantity - 1) } : item
+      item._id === productId
+        ? { ...item, quantity: Math.max(1, item.quantity - 1) }
+        : item
     );
     setCart(updatedCart);
     saveCartToLocalStorage(updatedCart); // Save the updated cart to localStorage
@@ -69,9 +79,15 @@ const Cart = () => {
         {cart.length > 0 && (
           <div className="flex justify-center ">
             <div className="bg-white p-6 rounded-lg shadow-lg">
-              <h2 className="text-xl font-semibold">Total Cost: ${orderCost.toFixed(2)}</h2>
-              <button className="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">
-                Checkout
+              <h2 className="text-xl font-semibold">
+                المجموع النهائي:
+                <span>{convertedPrice} </span>  
+                <span>{currency} </span>  
+                   
+             
+              </h2>
+              <button className="mt-4 w-full bg-primary text-white py-2 rounded-lg hover:bg-blue-600">
+                اتمام الدفع
               </button>
             </div>
           </div>

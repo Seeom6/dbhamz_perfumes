@@ -10,19 +10,19 @@ import { CurrencyContext } from "../../context/CurrencyContext";
 import { useContext } from "react";
 
 const ProductCard = ({ product }) => {
-  const { currency } = useContext(CurrencyContext);
+  const { currency , isLogin } = useContext(CurrencyContext);
   const convertedPrice = convertCurrency(product?.price, "KWD", currency);
   const convertedPriceAfterDiscount = convertCurrency(product?.priceAfterDiscount, "KWD", currency);
   const navigate = useNavigate();
   const { mutate: addCart, isPending } = useAddCart();
-  const { data: getMe } = useGetMe();
+
 
   const handleClick = (id) => {
     navigate(`/products/${id}`);
   };
 
   const addProductToCart = (productId, quantity) => {
-    if (!getMe) {
+    if (!isLogin) {
       addToLocalStorageCart(product, quantity);
       toast.success("تم إضافة المنتج إلى السلة");
     } else {

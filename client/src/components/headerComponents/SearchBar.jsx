@@ -3,15 +3,17 @@ import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 import { useGetMe } from "../../utils/Api/AuthenticationEndPoint";
 import { toast } from "react-toastify";
+import { useContext } from "react";
+import { CurrencyContext } from "../../context/CurrencyContext";
 const SearchBar = () => {
   const navigation = useNavigate();
+    const { userData , isLogin } = useContext(CurrencyContext);
 
-  const { data: getMe } = useGetMe();
   const navigate = () => {
-    if(localStorage.getItem("cart")){
-      navigation("/cart")
+    if(isLogin && userData._id){
+      navigation(`/user-cart/${userData._id}`)
     }else{
-      toast.error("يجب عليك شراء منتج أولاً")
+      navigation(`/cart`)
     }
     
   };

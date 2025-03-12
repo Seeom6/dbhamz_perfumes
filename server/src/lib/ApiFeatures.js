@@ -70,7 +70,7 @@ class ApiFeatures {
   // @ pagination
   pagination(numberOfDocs) {
     const page = this.queryString.page * 1 || 1;
-    const limitOfItems = this.queryString.limit * 1 || 50;
+    const limitOfItems = this.queryString.limit * 1 || 200;
     const skipPreviousPage = (page - 1) * limitOfItems;
     const endIndex = page * limitOfItems;
 
