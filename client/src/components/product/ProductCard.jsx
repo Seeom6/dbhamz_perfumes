@@ -3,41 +3,23 @@ import { useNavigate } from "react-router-dom";
 import { useAddCart } from "../../utils/Api/CartEndPoint";
 import { toast } from "react-toastify";
 import Loading from "./../Loading";
-import { useGetMe } from "../../utils/Api/AuthenticationEndPoint";
 import { addToLocalStorageCart } from "../../utils/localStorageCart";
 import { convertCurrency } from "../../utils/currency.js";
-import { CurrencyContext } from "../../context/CurrencyContext";
 import { useContext } from "react";
+import { Context } from "../../context/StatContext.jsx";
 
 const ProductCard = ({ product }) => {
-  const { currency , isLogin } = useContext(CurrencyContext);
+  const { currency, isAddCartLoading, onAdd } = useContext(Context);
   const convertedPrice = convertCurrency(product?.price, "KWD", currency);
-  const convertedPriceAfterDiscount = convertCurrency(product?.priceAfterDiscount, "KWD", currency);
+  const convertedPriceAfterDiscount = convertCurrency(
+    product?.priceAfterDiscount,
+    "KWD",
+    currency
+  );
   const navigate = useNavigate();
-  const { mutate: addCart, isPending } = useAddCart();
-
 
   const handleClick = (id) => {
     navigate(`/products/${id}`);
-  };
-
-  const addProductToCart = (productId, quantity) => {
-    if (!isLogin) {
-      addToLocalStorageCart(product, quantity);
-      toast.success("تم إضافة المنتج إلى السلة");
-    } else {
-      addCart(
-        { productId, quantity },
-        {
-          onSuccess: () => {
-            toast.success("تم إضافة المنتج إلى السلة");
-          },
-          onError: (error) => {
-            toast.error(error.message);
-          },
-        }
-      );
-    }
   };
 
   return (
@@ -82,13 +64,11 @@ const ProductCard = ({ product }) => {
           <p key={idx}>{items},</p>
         ))}
       </div>
-      {isPending ? (
+      {isAddCartLoading ? (
         <Loading width="15" height="15" />
-      ) : product?.sold === -1 ? (
-        <p>نفذت الكمية</p>
       ) : (
         <button
-          onClick={() => addProductToCart(product?._id, 1)}
+          onClick={() => onAdd(product, 1)}
           className="w-full text-small md:text-medium shadow-btn my-2 bg-white text-primary font-bold py-0.5 rounded-md flex justify-center items-center gap-2 border"
         >
           <LuShoppingBag /> اضافة الى السلة

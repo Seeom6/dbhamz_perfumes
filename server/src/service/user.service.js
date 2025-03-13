@@ -14,6 +14,18 @@ const getUserByEmail = async (email, throwError = true) => {
     return user;
 }
 
+const getUserById = async (id, throwError = true) => {
+    const user = await User.findOne({
+        _id: id
+    })
+    if (!user && throwError){
+        throw new ApiError("user by this email not found", 404)
+    }
+    return user;
+}
+
+
 export const UserService = {
-    getUserByEmail
+    getUserByEmail,
+    getUserById
 }

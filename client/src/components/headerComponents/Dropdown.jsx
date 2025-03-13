@@ -3,12 +3,12 @@ import React, { useState, useContext } from "react";
 import { FaAngleUp, FaAngleDown } from "react-icons/fa";
 import { countries } from "../../utils/data.jsx";
 import CustomSingleValue from "../CustomFlag.jsx";
-import { CurrencyContext } from './../../context/CurrencyContext';
+import {  Context, StateContext } from '../../context/StatContext.jsx';
 
 const CountryDropdown = () => {
   const [selectedCountry, setSelectedCountry] = useState(null); // Initialize as null
   const [isOpen, setIsOpen] = useState(false);
-  const { updateCurrency } = useContext(CurrencyContext); // Access the updateCurrency function
+  const { updateCurrency } = useContext(Context); // Access the updateCurrency function
 
   const handleChange = (value, currency) => {
     setSelectedCountry(value); // Set the selected country value

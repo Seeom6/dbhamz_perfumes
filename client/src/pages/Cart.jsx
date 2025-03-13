@@ -1,60 +1,43 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import HeaderImage from "../components/HeaderImage";
 import dbhamz from "/assets/dbhamz2.png";
 import CartElements from "../components/featuredComponents/CartElements";
-import {
-  getCartFromLocalStorage,
-  saveCartToLocalStorage,
-} from "../utils/localStorageCart.js";
-import { CurrencyContext } from "../context/CurrencyContext.jsx";
-import { convertCurrency } from "../utils/currency.js";
+import { Context } from "../context/StatContext.jsx";
+import { AiOutlineShopping } from "react-icons/ai";
+import { Link, useNavigate } from "react-router-dom";
+import LoginPopup from "../components/popup/LoginPopup.jsx";
+import SignupPopup from "../components/popup/SignupPopup"; // Import the SignupPopup component
 
 const Cart = () => {
-  const [cart, setCart] = useState([]);
-  const [orderCost, setOrderCost] = useState(0);
-  const { currency } = useContext(CurrencyContext);
-  const convertedPrice = convertCurrency(orderCost, "KWD", currency);
+  const navigate = useNavigate();
+  const {
+    currency,
+    isLogin,
+    cartItems,
+    totalPrice,
+    toggleCartItemQuantity,
+    totalQuantities,
+    onRemove,
+  } = useContext(Context);
 
-  // Fetch cart data from localStorage on component mount
-  useEffect(() => {
-    const localCart = getCartFromLocalStorage();
-    setCart(localCart);
-  }, []);
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false); // State to control login popup visibility
+  const [isSignupPopupOpen, setIsSignupPopupOpen] = useState(false); // State to control signup popup visibility
 
-  // Calculate the total cost of the cart whenever the cart changes
-  useEffect(() => {
-    const totalCost = cart.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-    setOrderCost(totalCost);
-  }, [cart]);
-
-  // Handle deleting a product from the cart
-  const handleDelete = (productId) => {
-    const updatedCart = cart.filter((item) => item._id !== productId);
-    setCart(updatedCart);
-    saveCartToLocalStorage(updatedCart); // Save the updated cart to localStorage
+  const handleCheckout = () => {
+    if (!isLogin) {
+      setIsLoginPopupOpen(true); // Show login popup if user is not logged in
+    } else {
+      navigate("/order");
+    }
   };
 
-  // Handle incrementing the quantity of a product
-  const handleIncrement = (productId) => {
-    const updatedCart = cart.map((item) =>
-      item._id === productId ? { ...item, quantity: item.quantity + 1 } : item
-    );
-    setCart(updatedCart);
-    saveCartToLocalStorage(updatedCart); // Save the updated cart to localStorage
+  const handleLoginSuccess = () => {
+    setIsLoginPopupOpen(false);
   };
 
-  // Handle decrementing the quantity of a product
-  const handleDecrement = (productId) => {
-    const updatedCart = cart.map((item) =>
-      item._id === productId
-        ? { ...item, quantity: Math.max(1, item.quantity - 1) }
-        : item
-    );
-    setCart(updatedCart);
-    saveCartToLocalStorage(updatedCart); // Save the updated cart to localStorage
+  const handleSignupSuccess = () => {
+    // Handle actions after successful signup (e.g., refresh cart data)
+    console.log("User signed up successfully");
   };
 
   return (
@@ -62,37 +45,67 @@ const Cart = () => {
       <div className="max-w-[1260px] w-full px-2.5 flex flex-col justify-center gap-8 sm:gap-14 md:gap-20 mb-20">
         <HeaderImage image={dbhamz} title={"سلتك العطرية"} />
         <div className="w-full">
-          {cart.length > 0 ? (
-            cart.map((item) => (
+          {cartItems.length < 1 && (
+            <div className="w-full flex flex-col justify-center items-center">
+              <AiOutlineShopping size={150} className="text-primary" />
+              <h3 className="font-bold">سلتك العطرية فارغة , املأها</h3>
+              <button className="w-44 bg-primary h-12 mt-4 text-white font-bold rounded-lg">
+                <Link to="/products">املأها</Link>
+              </button>
+            </div>
+          )}
+          {cartItems.length >= 1 &&
+            cartItems.map((item) => (
               <CartElements
                 key={item._id}
                 data={item}
-                onDelete={() => handleDelete(item._id)}
-                onIncrement={() => handleIncrement(item._id)}
-                onDecrement={() => handleDecrement(item._id)}
+                onRemove={onRemove}
+                toggleCartItemQuantity={toggleCartItemQuantity}
               />
-            ))
-          ) : (
-            <p className="text-center text-gray-600">Your cart is empty.</p>
-          )}
+            ))}
         </div>
-        {cart.length > 0 && (
+        {cartItems.length >= 1 && (
           <div className="flex justify-center ">
             <div className="bg-white p-6 rounded-lg shadow-lg">
               <h2 className="text-xl font-semibold">
                 المجموع النهائي:
-                <span>{convertedPrice} </span>  
-                <span>{currency} </span>  
-                   
-             
+                <span>{totalPrice} </span>
+                <span>{currency} </span>
               </h2>
-              <button className="mt-4 w-full bg-primary text-white py-2 rounded-lg hover:bg-blue-600">
+              <button
+                onClick={handleCheckout}
+                className="mt-4 w-full bg-primary text-white py-2 rounded-lg hover:bg-blue-600"
+              >
                 اتمام الدفع
               </button>
             </div>
           </div>
         )}
       </div>
+
+      {/* Login Popup */}
+      {isLoginPopupOpen && (
+        <LoginPopup
+          onClose={() => setIsLoginPopupOpen(false)}
+          onLoginSuccess={handleLoginSuccess}
+          onSignupClick={() => {
+            setIsLoginPopupOpen(false);
+            setIsSignupPopupOpen(true);
+          }}
+        />
+      )}
+
+      {/* Signup Popup */}
+      {isSignupPopupOpen && (
+        <SignupPopup
+          onClose={() => setIsSignupPopupOpen(false)}
+          onSignupSuccess={handleSignupSuccess}
+          onLoginClick={() => {
+            setIsSignupPopupOpen(false);
+            setIsLoginPopupOpen(true);
+          }}
+        />
+      )}
     </div>
   );
 };

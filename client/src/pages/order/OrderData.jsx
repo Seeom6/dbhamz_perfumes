@@ -1,25 +1,36 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import HeaderImage from "../../components/HeaderImage";
 import { useLocation, useParams } from "react-router-dom";
 import Error from "../../components/Error";
 import { useGetOneCart } from "../../utils/Api/CartEndPoint";
 import Loading from "../../components/Loading";
+import { Context } from "../../context/StatContext";
 
 const OrderData = () => {
   
-  const param = useParams()
-
-   const { data: myCart, isError, error, isLoading } = useGetOneCart(param.cartId);
-
+const {        userData,
+  isLogin,
+  cartItems,
+  totalPrice,
+  incQty,
+  currency,
+  onRemove,
+  onAdd,
+  decQty,
+  toggleCartItemQuantity,
+  totalQuantities,
+  isAddCartLoading,
+  qty} = useContext(Context)
+ 
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    phoneNumber: "",
-    country: "",
-    city: "",
-    neighborhood: "",
-    street: "",
-    reviews: "",
+    firstName: userData?.firstName,
+    lastName: userData?.lastName,
+    phoneNumber: userData?.phone,
+    country: userData?.country,
+    city: userData?.city,
+    neighborhood: userData?.neighborhood,
+    street: userData?.street,
+    reviews: userData?.reviews,
   });
 
   const handleChange = (e) => {
@@ -31,11 +42,12 @@ const OrderData = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
+    console.log(formData)
   };
-  if (isLoading) return <Loading elements={"h-screen"} />;
-  if (isError) return <Error error={error} />;
-  if(!param.cartId) return <div className="w-full flex justify-center text-xl">something went Error check if you are registered</div>
+  // if (isLoading) return <Loading elements={"h-screen"} />;
+  // if (isError) return <Error error={error} />;
+  // if(!param.cartId) return <div className="w-full flex justify-center text-xl">something went Error check if you are registered</div>
 
   return (
     <div className="w-full flex justify-center items-center">
@@ -46,7 +58,7 @@ const OrderData = () => {
         />
 
         {
-          param.cartId && <div className="w-full flex justify-between items-start gap-4">
+          <div className="w-full flex justify-between items-start gap-4">
           <form
             className="w-full p-3 bg-fifed flex gap-4 flex-col items-center"
             onSubmit={handleSubmit}
@@ -148,6 +160,7 @@ const OrderData = () => {
             </div>
             <button
               type="submit"
+
               className="px-6 py-2 bg-primary w-full text-white rounded-lg hover:bg-blue-600"
             >
               {false ? <Loading width="24" height="24" /> : "حفظ"}
@@ -159,17 +172,17 @@ const OrderData = () => {
               <p className="text-2xl font-bold">ملخص الطلب</p>
               <div className="w-full flex justify-between px-5 md:px-10 h-14 items-center">
                 <p className="text-lg md:text-xl">تكلفة الطلب:</p>
-                <p className="text-lg md:text-xl"> $ {myCart?.totalPrice}</p>
+                <p className="text-lg md:text-xl"> {currency} {totalPrice}</p>
               </div>
-              {myCart?.totalPriceAfterDiscount && (
+              {/* {myCart?.totalPriceAfterDiscount && (
             <div className="w-full flex justify-between px-5 md:px-10 h-14 items-center">
               <p className="text-lg md:text-xl">تكلفة الطلب بعد الخصم:</p>
 
               <p className="text-lg md:text-xl">
-                ${myCart?.totalPriceAfterDiscount}
+               ${myCart?.totalPriceAfterDiscount} 
               </p>
             </div>
-          )}
+          )} */}
             </div>
           </div>
         </div>

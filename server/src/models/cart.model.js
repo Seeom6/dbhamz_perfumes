@@ -14,6 +14,7 @@ const cartSchema = new Schema({
       },
     }
   ],
+  coupon: String,
   totalPrice: Number,
   totalPriceAfterDiscount: Number,
   user: {

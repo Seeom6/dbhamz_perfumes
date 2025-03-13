@@ -114,6 +114,7 @@ export const applyCoupon = async (couponData , userId , next)=>{
       totalPrice -
       (totalPrice * coupon.discount) / 100
   ).toFixed(2);
+  cart.coupon = coupon.name
   await cart.save();
 
 return cart
@@ -130,6 +131,10 @@ async function createCartItems (productsInfo)  {
         };
     }))
     return items
+}
+
+export async function deleteCart(id){
+    return CartModel.deleteOne({_id: id});
 }
 
 export default {

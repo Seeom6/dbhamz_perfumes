@@ -5,7 +5,7 @@ import Select from "react-select";
 
 const AddProductForm = ({ setProductData }) => {
   const { data: brands, isLoading } = useAllBrands();
-  const packageSizes = [50, 75, 80, 90, 100, 120, 125, 150, 175, 200, 250];
+  const packageSizes = [50, 75, 70 ,60,80, 90, 100, 120, 125, 150, 175, 200, 250 , 500];
 
   const [isClicked, setIsClicked] = useState(false);
   // Handle input changes for text, number, and select fields

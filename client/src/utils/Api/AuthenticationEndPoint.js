@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {  getMe, GetUsers, Login, Signup } from './../Axios';
-import { toast } from 'react-toastify';
+
 
 
   export const useGetMe = () => {
@@ -17,7 +17,7 @@ export const useLogin = () => {
     return useMutation({
         mutationFn: (form)=> Login(form),
         onSuccess: () => {
-          queryClient.invalidateQueries({queryKey: ["protect"]})
+          queryClient.invalidateQueries({queryKey: ["getme"]})
         },
       });
   };
@@ -28,7 +28,7 @@ export const useSignup = () => {
     return useMutation({
         mutationFn: (form)=> Signup(form),
         onSuccess: () => {
-          queryClient.invalidateQueries({queryKey: ["protect"]})
+          queryClient.invalidateQueries({queryKey: ["getme"]})
         }
       });
   };

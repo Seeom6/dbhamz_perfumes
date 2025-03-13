@@ -1,22 +1,12 @@
 import { FaShoppingCart, FaSearch } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
-import { useGetMe } from "../../utils/Api/AuthenticationEndPoint";
-import { toast } from "react-toastify";
 import { useContext } from "react";
-import { CurrencyContext } from "../../context/CurrencyContext";
+import { Context } from "../../context/StatContext";
 const SearchBar = () => {
   const navigation = useNavigate();
-    const { userData , isLogin } = useContext(CurrencyContext);
+     const {userData , isLogin } = useContext(Context)
 
-  const navigate = () => {
-    if(isLogin && userData._id){
-      navigation(`/user-cart/${userData._id}`)
-    }else{
-      navigation(`/cart`)
-    }
-    
-  };
 
   return (
     <div className="w-full flex justify-center gap-2 items-center">
@@ -36,7 +26,7 @@ const SearchBar = () => {
       </div>
       <div>
           <FaShoppingCart
-            onClick={navigate}
+            onClick={()=>navigation('/cart')}
             className="text-[#DADADA] font-bold text-large md:text-sl"
           />
       </div>

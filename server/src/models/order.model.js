@@ -18,6 +18,9 @@ const orderSchema = new mongoose.Schema({
       },
     }
   ],
+  paymentId: {
+    type: String,
+  },
   taxPrice : {
     type: Number,
     default: 0
@@ -38,7 +41,7 @@ const orderSchema = new mongoose.Schema({
     default: false
   },
   paidAt : Date,
-  status: {
+  paymentStatus: {
     type: String,
   },
   isDelivered:{

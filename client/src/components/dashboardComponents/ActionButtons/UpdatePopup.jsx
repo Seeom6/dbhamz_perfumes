@@ -20,7 +20,7 @@ const UpdatePopup = ({ product, closePopup, isPopupOpen }) => {
   });
 
   const { data: brands, isLoading: isBrandsLoading } = useAllBrands();
-  const packageSizes = [50, 75, 80, 90, 100, 120, 125, 150, 175, 200, 250];
+  const packageSizes = [50, 75, 70 ,60,80, 90, 100, 120, 125, 150, 175, 200, 250 , 500];
 
   // Convert packageSizes to options for react-select
   const packageSizeOptions = packageSizes.map((size) => ({

@@ -75,7 +75,7 @@ const productSchema = new mongoose.Schema(
     packageSize: {
       type: [String],
       required: true,
-      enum: ['50', '75', '80', '90', '100', '120', '125', '150', '175', '200', '250'],
+      enum: ['50', '75', '70' ,'60','80', '90', '100', '120', '125', '150', '175', '200', '250' , '500'],
     },
   },
   { timestamps: true }
