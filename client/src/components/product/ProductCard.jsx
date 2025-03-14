@@ -1,9 +1,6 @@
 import { LuShoppingBag } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
-import { useAddCart } from "../../utils/Api/CartEndPoint";
-import { toast } from "react-toastify";
 import Loading from "./../Loading";
-import { addToLocalStorageCart } from "../../utils/localStorageCart";
 import { convertCurrency } from "../../utils/currency.js";
 import { useContext } from "react";
 import { Context } from "../../context/StatContext.jsx";
@@ -67,12 +64,13 @@ const ProductCard = ({ product }) => {
       {isAddCartLoading ? (
         <Loading width="15" height="15" />
       ) : (
+        product?.quantity >= 0 ? 
         <button
           onClick={() => onAdd(product, 1)}
           className="w-full text-small md:text-medium shadow-btn my-2 bg-white text-primary font-bold py-0.5 rounded-md flex justify-center items-center gap-2 border"
         >
           <LuShoppingBag /> اضافة الى السلة
-        </button>
+        </button> : <p className="text-small text-red-400 w-full bg-fifed text-center">غير متوفر</p>
       )}
     </div>
   );

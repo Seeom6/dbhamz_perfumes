@@ -1,10 +1,6 @@
 import React, { useState } from "react";
-import { FaTrash, FaEdit } from "react-icons/fa";
-import { MdErrorOutline } from "react-icons/md";
-
+import { FaTrash, FaEdit, FaTag, FaBox, FaInfoCircle } from "react-icons/fa";
 import Popup from "../Popup";
-import { useDeleteProduct } from "../../utils/Api/ApiEndPoint";
-import Loading from "../Loading";
 import DeletePopup from "./ActionButtons/DeletePopup";
 import UpdatePopup from "./ActionButtons/UpdatePopup";
 
@@ -30,60 +26,109 @@ const ProductTable = ({ products }) => {
   };
 
   return (
-    <div className="overflow-x-auto w-full">
-      <table className="min-w-full bg-white border border-[#EEEEEE]">
-        <thead className="text-start">
-          <tr className="bg-white text-[#B5B7C0]">
-            <th className="py-2 px-4 border-b">صورة المنتح</th>
-            <th className="py-2 px-4 border-b">اسم المنتج</th>
-            <th className="py-2 px-4 border-b">الماركة</th>
-            <th className="py-2 px-4 border-b">السعر</th>
-            <th className="py-2 px-4 border-b">الكمية</th>
-            <th className="py-2 px-4 border-b">الحالة</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products?.map((product, idx) => (
-            <tr key={idx} className="hover:bg-gray-50 text-center">
-              <td className="py-2 flex justify-center px-4 border-b border-[#EEEEEE]">
+    <div className="w-full">
+      {/* Product List */}
+      <div className="flex flex-col gap-6 p-4">
+        {products?.map((product, idx) => (
+          <div
+            key={idx}
+            className="bg-gradient-to-r from-white to-[#f9f9f9] rounded-xl shadow-lg hover:shadow-xl transition-shadow border border-[#EEEEEE] p-6"
+          >
+            {/* Product Image and Details */}
+            <div className="flex flex-col md:flex-row gap-6">
+              {/* Product Image */}
+              <div className="w-full md:w-56 h-56 overflow-hidden rounded-lg">
                 <img
                   src={product?.imageCover}
                   alt={product?.name}
-                  className="w-10 h-10 rounded"
+                  className="w-full h-full object-cover"
                 />
-              </td>
-              <td className="py-2 px-4 border-b border-[#EEEEEE]">
-                {product?.name}
-              </td>
-              <td className="py-2 px-4 border-b border-[#EEEEEE]">
-                {product?.brand?.name}
-              </td>
-              <td className="py-2 px-4 border-b border-[#EEEEEE]">
-                ${product?.price}
-              </td>
-              <td className="py-2 px-4 border-b border-[#EEEEEE]">
-                {product?.quantity}
-              </td>
-              <td className="py-2 px-4 border-b border-[#EEEEEE]">
-                <div className="flex justify-center space-x-2">
-                  <button
-                    onClick={() => updatePopup(product)}
-                    className="rounded-sm  bg-[rgba(0,172,79,0.12)] p-2 text-[#00AC4F] hover:text-blue-700"
-                  >
-                    <FaEdit size={18} />
-                  </button>
-                  <button
-                    onClick={() => deletePopup(product)}
-                    className="text-red-500 p-2 rounded-sm bg-[rgba(223,4,4,0.12)] hover:text-red-700"
-                  >
-                    <FaTrash size={18} />
-                  </button>
+              </div>
+
+              {/* Product Details */}
+              <div className="flex-1 flex flex-col gap-4">
+                <h3 className="text-2xl font-bold text-[#333333]">
+                  {product?.name}
+                </h3>
+
+                {/* Brand */}
+                <div className="flex items-center gap-2">
+                  <FaInfoCircle className="text-[#666666]" />
+                  <p className="text-sm text-[#666666]">
+                    الماركة: {product?.brand?.name}
+                  </p>
                 </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+
+                {/* Price and Discount */}
+                <div className="flex items-center gap-2">
+                  <FaTag className="text-[#00AC4F]" />
+                  <span className="text-lg font-bold text-[#00AC4F]">
+                    السعر بعد الخصم: {product?.priceAfterDiscount} KWD
+                  </span>
+                  {product?.priceAfterDiscount && (
+                    <span className="text-sm text-[#999999] line-through">
+                      السعر : {product?.price} KWD
+                    </span>
+                  )}
+                </div>
+
+                {/* Quantity */}
+                <div className="flex items-center gap-2">
+                  <FaBox
+                    className={`${
+                      product?.quantity === -1 ? "text-red-500" : "text-[#00AC4F]"
+                    }`}
+                  />
+                  <p className="text-sm text-[#666666]">
+                    الكمية:{" "}
+                    <span
+                      className={`font-semibold ${
+                        product?.quantity === -1 ? "text-red-500" : "text-[#00AC4F]"
+                      }`}
+                    >
+                      {product?.quantity === -1 ? "غير متوفر" : "متوفر"}
+                    </span>
+                  </p>
+                </div>
+
+                {/* Package Sizes */}
+                <div className="flex items-center gap-2">
+                  <FaBox className="text-[#666666]" />
+                  <p className="text-sm text-[#666666]">
+                    الأحجام المتوفرة:{" "}
+                    <span className="font-semibold">
+                      {product?.packageSize?.join(" مل, ")} مل
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex justify-end gap-4 mt-6 border-t border-[#EEEEEE] pt-6">
+              {/* Update Button */}
+              <button
+                onClick={() => updatePopup(product)}
+                className="flex items-center gap-2 bg-[#00AC4F] text-white px-4 py-2 rounded-lg hover:bg-[#008a3e] transition-all transform hover:scale-105"
+              >
+                <FaEdit size={18} />
+                <span className="font-semibold">تعديل</span>
+              </button>
+
+              {/* Delete Button */}
+              <button
+                onClick={() => deletePopup(product)}
+                className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-all transform hover:scale-105"
+              >
+                <FaTrash size={18} />
+                <span className="font-semibold">حذف</span>
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Popups */}
       <DeletePopup
         product={productInfo}
         isPopupOpen={isDeletePopupOpen}

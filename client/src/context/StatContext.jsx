@@ -159,4 +159,4 @@ export const StateContext = ({ children }) => {
       {children}
     </Context.Provider>
   );
-};
+}

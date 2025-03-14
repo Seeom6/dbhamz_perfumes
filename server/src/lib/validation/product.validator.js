@@ -204,8 +204,7 @@ export const updateProductValidator = [
 
   check("images")
     .optional()
-    .isArray()
-    .withMessage("images should be array of string"),
+,
 
   check("brand")
     .isMongoId()

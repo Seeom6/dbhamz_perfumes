@@ -35,17 +35,17 @@ const ProductInfo = ({ data }) => {
                 src={currentImage}
                 alt=""
               />
-              <div className="max-w-full w-full flex  gap-2">
-                {data?.images?.map((img, idx) => (
-                  <img
-                    onClick={() => handleImgClick(img)}
-                    key={idx}
-                    className="w-full h-16 md:h-24 object-cover rounded-lg"
-                    src={img}
-                    alt=""
-                  />
-                ))}
-              </div>
+              <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+      {data?.images?.map((img, idx) => (
+        <img
+          onClick={() => handleImgClick(img)}
+          key={idx}
+          className="w-full h-24 md:h-32 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
+          src={img}
+          alt={`Product Thumbnail ${idx + 1}`}
+        />
+      ))}
+    </div>
             </div>
           </div>
           <div className="w-full">
@@ -79,13 +79,15 @@ const ProductInfo = ({ data }) => {
                 </button>
               </div>
               <div className="w-full flex items-center justify-center">
-                <button
+               {
+                data?.quantity >= 0 ? <button
                   onClick={() => onAdd(data, qty)}
                   className="px-8 shadow-btn my-2 text-white bg-primary font-bold py-0.5 rounded-md flex justify-center items-center gap-2 "
                 >
                   <LuShoppingBag />
                   اضافة الى السلة
-                </button>
+                  </button> : <p className="text-small text-red-400 w-full bg-fifed text-center">غير متوفر</p>
+               } 
               </div>
             </div>
           </div>
