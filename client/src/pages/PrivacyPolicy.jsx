@@ -8,6 +8,10 @@ const PrivacyPolicy = () => {
     <div className="w-full flex justify-center items-center">
       <div className="max-w-[1260px] w-full px-2.5 flex flex-col justify-center gap-8 sm:gap-14 md:gap-20 mb-20 text-small md:text-large text-ford">
       <HeaderImage image={perfumeSpecial} title={"   سياسة الخصوصية "}/>
+      <p className="font-semibold text-center text-sm md:text-xl text-black">يتم تشغيل هذا المتجر من قبل : </p>
+      <p className="font-semibold text-center md:mt-[-50px] text-sm md:text-xl text-black">شركة دبهامز لتجارة العطور ومستحظرات التجميل</p>
+      <p className="font-semibold text-center text-sm md:text-xl text-black">   This website is operated by : </p>
+      <p className="font-semibold text-center md:mt-[-50px] text-sm md:text-xl text-black"> DBHAMZ FOR PERFUMES & COSMETICS TRADING</p>
         <div>
           <p className="font-semibold text-sm md:text-xl text-black">الوصول العام إلى الموقع:</p>
           <p>
@@ -23,7 +27,7 @@ const PrivacyPolicy = () => {
         <div>
           <p className="font-semibold text-sm md:text-xl text-black">وصف المنتج:</p>
           <p>
-            تسعى فاير فاشون إلى تحري الدقة قدر الإمكان عند نشر المحتوى والأسعار
+            تسعى  دبهامز إلى تحري الدقة قدر الإمكان عند نشر المحتوى والأسعار
             على الموقع. مع ذلك، لا نضمن دقة أو اكتمال أو موثوقية أو تحديث أو خلو
             أوصاف المنتجات أو أي محتوى آخر من الأخطاء.
           </p>

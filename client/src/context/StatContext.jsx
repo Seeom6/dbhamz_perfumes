@@ -3,6 +3,7 @@ import { useGetMe } from "../utils/Api/AuthenticationEndPoint";
 import { toast } from "react-toastify";
 import { getCartFromLocalStorage, saveCartToLocalStorage } from "../utils/localStorageCart";
 import { convertCurrency } from "../utils/currency";
+import { useAllProducts } from "../utils/Api/ApiEndPoint";
 
 // Create a context for currency
 export const Context = createContext();
@@ -13,6 +14,7 @@ export const StateContext = ({ children }) => {
   const [currency, setCurrency] = useState("KWD"); // Default currency
 
   const [cartItems, setCartItems] = useState([]);
+  const [AllProducts, setAllProducts] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalQuantities, setTotalQuantities] = useState(0);
   const [qty, setQty] = useState(1);
@@ -26,7 +28,9 @@ export const StateContext = ({ children }) => {
   };
 
   const { data: myAuth, isSuccess, isError } = useGetMe();
+  const { data: products, error : allProError, isError: isAllProductError, isLoading: isAllProLoad } = useAllProducts();
 
+  // Handle authentication state
   useEffect(() => {
     if (isError) {
       setIsLogin(false);
@@ -37,6 +41,13 @@ export const StateContext = ({ children }) => {
       setUserData(myAuth);
     }
   }, [myAuth, isSuccess, isError]);
+
+  // Update AllProducts when products data is fetched
+  useEffect(() => {
+    if (products && !isAllProductError) {
+      setAllProducts(products);
+    }
+  }, [products, isAllProductError]);
 
   // Load cart items from local storage on component mount
   useEffect(() => {
@@ -146,12 +157,16 @@ export const StateContext = ({ children }) => {
         isLogin,
         cartItems,
         totalPrice,
+        AllProducts,
         incQty,
         onRemove,
         onAdd,
         decQty,
+        isAllProLoad,
+        isAllProductError,
         toggleCartItemQuantity,
         totalQuantities,
+        allProError,
         isAddCartLoading,
         qty,
       }}
@@ -159,4 +174,4 @@ export const StateContext = ({ children }) => {
       {children}
     </Context.Provider>
   );
-}
+};
