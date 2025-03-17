@@ -20,9 +20,9 @@ import AddBrand from "./pages/dashboard/AddBrand";
 import DashboardBrand from "./pages/dashboard/DashboardBrand";
 import Signup from "./pages/Signup";
 import Customers from "./pages/dashboard/Customers";
-import { useGetMe } from "./utils/Api/AuthenticationEndPoint";
 import OrderData from "./pages/order/OrderData";
 import Coupons from './pages/dashboard/Coupons';
+import Success from "./pages/Success";
 
 function App() {
 
@@ -42,6 +42,7 @@ function App() {
           <Route path="/user-info" element={<UserInfo />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/success" element={<Success />} />
           <Route path="/order" element={<OrderData/>} />
           <Route path="/dashboard" element={<Dashboard />}>
             <Route index element={<AddProduct />} />

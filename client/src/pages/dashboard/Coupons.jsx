@@ -1,7 +1,12 @@
 import React, { useState } from "react";
-import { useCreateCoupon, useGetCoupon, useDeleteCoupon } from "../../utils/Api/CartEndPoint";
+import {
+  useCreateCoupon,
+  useGetCoupon,
+  useDeleteCoupon,
+} from "../../utils/Api/CartEndPoint";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
+import Select from "react-select";
 
 const Coupons = () => {
   const [couponCode, setCouponCode] = useState("");
@@ -9,13 +14,19 @@ const Coupons = () => {
   const [expirationDate, setExpirationDate] = useState("");
   const [error, setError] = useState("");
   const [userIdToGift, setUserIdToGift] = useState(""); // State for user ID to gift the coupon
+  const [selectedGiftMethod, setSelectedGiftMethod] = useState(null); // State for selected gift method (single option)
 
-  const queryClient = useQueryClient()
+  const couponOpt = ["شحن مجاناً", "نسبة خصم"]; // Available gift methods
+  const queryClient = useQueryClient();
 
-  const { data: coupons, isLoading, isError, error: getCouponError } = useGetCoupon();
+  const {
+    data: coupons,
+    isLoading,
+    isError,
+    error: getCouponError,
+  } = useGetCoupon();
   const { mutate: createCoupon } = useCreateCoupon();
   const { mutate: deleteCoupon } = useDeleteCoupon();
-  // const { mutate: giftCoupon } = useGiftCoupon();
 
   // Handle adding a coupon
   const handleAddCoupon = async (e) => {
@@ -24,23 +35,33 @@ const Coupons = () => {
       setError("Please fill in all fields.");
       return;
     }
-    if (isNaN(discountPercentage) || discountPercentage < 1 || discountPercentage > 100) {
+    if (
+      isNaN(discountPercentage) ||
+      discountPercentage < 1 ||
+      discountPercentage > 100
+    ) {
       setError("Discount percentage must be a number between 1 and 100.");
       return;
     }
+
+    // Prepare form data
     const formData = {
       name: couponCode,
       discount: parseFloat(discountPercentage),
       expired: expirationDate,
+      giftMethod: selectedGiftMethod ? selectedGiftMethod.value : null, // Include selected gift method
     };
+
+    // Create coupon
     createCoupon(formData, {
       onSuccess: () => {
         queryClient.invalidateQueries(["coupons"]);
         setCouponCode("");
         setDiscountPercentage("");
         setExpirationDate("");
+        setSelectedGiftMethod(null); // Reset selected gift method
         setError("");
-        toast.success("تم أنشاء الكوبون")
+        toast.success("تم أنشاء الكوبون");
       },
       onError: (error) => {
         setError(error.message || "Failed to create coupon");
@@ -48,34 +69,29 @@ const Coupons = () => {
     });
   };
 
+  // Handle gift method selection
+  const handlePackageSizeChange = (selectedOption) => {
+    setSelectedGiftMethod(selectedOption); // Update selected gift method
+  };
+
+  // Map coupon options for the Select component
+  const couponOptions = couponOpt.map((size) => ({
+    value: size,
+    label: `${size}`,
+  }));
+
   // Handle deleting a coupon
   const handleDeleteCoupon = async (id) => {
     deleteCoupon(id, {
       onSuccess: () => {
         queryClient.invalidateQueries(["coupons"]);
-        toast.success("تم حذف الكوبون بنجاح")
+        toast.success("تم حذف الكوبون بنجاح");
       },
       onError: (error) => {
         toast.error(error.message || "خطأ اثناء حذف الكوبون");
       },
     });
   };
-
-  // Handle gifting a coupon
-  // const handleGiftCoupon = async (id) => {
-  //   if (!userIdToGift) {
-  //     setError("Please enter a user ID to gift the coupon.");
-  //     return;
-  //   }
-  //   giftCoupon({ id, userId: userIdToGift }, {
-  //     onSuccess: () => {
-  //       setUserIdToGift("");
-  //     },
-  //     onError: (error) => {
-  //       setError(error.message || "Failed to gift coupon");
-  //     },
-  //   });
-  // };
 
   return (
     <div className="p-2 md:p-4 bg-gray-100 min-h-screen">
@@ -87,7 +103,9 @@ const Coupons = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Coupon Code Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">كوبون الخصم</label>
+              <label className="block text-sm font-medium text-gray-700">
+                كوبون الخصم
+              </label>
               <input
                 type="text"
                 value={couponCode}
@@ -99,7 +117,9 @@ const Coupons = () => {
 
             {/* Discount Percentage Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">نسبة خصم الكوبون</label>
+              <label className="block text-sm font-medium text-gray-700">
+                نسبة خصم الكوبون
+              </label>
               <input
                 type="number"
                 value={discountPercentage}
@@ -111,13 +131,29 @@ const Coupons = () => {
 
             {/* Expiration Date Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">تاريخ الانتهاء</label>
+              <label className="block text-sm font-medium text-gray-700">
+                تاريخ الانتهاء
+              </label>
               <input
                 dir="ltr"
                 type="date"
                 value={expirationDate}
                 onChange={(e) => setExpirationDate(e.target.value)}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              />
+            </div>
+
+            {/* Gift Methods Dropdown */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                طرق الأهداء
+              </label>
+              <Select
+                options={couponOptions}
+                value={selectedGiftMethod}
+                onChange={handlePackageSizeChange}
+                placeholder="اختر طريقة الأهداء"
+                className="w-full"
               />
             </div>
           </div>
@@ -147,9 +183,12 @@ const Coupons = () => {
                   className="p-4 border border-gray-200 rounded-lg shadow-sm"
                 >
                   <p className="text-lg font-semibold">{coupon.name}</p>
-                  <p className="text-gray-600">نسبة الخصم : %{coupon.discount}</p>
                   <p className="text-gray-600">
-                    تاريخ الأنتهاء: {new Date(coupon.expired).toLocaleDateString()}
+                    نسبة الخصم : %{coupon.discount}
+                  </p>
+                  <p className="text-gray-600">
+                    تاريخ الأنتهاء:{" "}
+                    {new Date(coupon.expired).toLocaleDateString()}
                   </p>
                   <div className="w-full mt-2 flex gap-2">
                     {/* Delete Button */}

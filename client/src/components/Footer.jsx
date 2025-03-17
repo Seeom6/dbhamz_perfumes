@@ -2,11 +2,11 @@ import React from "react";
 import logo from "/assets/logo.png";
 import { navLink, NotAccessRoute } from "../utils/data.jsx";
 import { Link, useLocation } from "react-router-dom";
-import { FaPhone, FaInstagram, FaFacebookF, FaWhatsapp } from "react-icons/fa";
+import { FaPhone, FaInstagram , FaFacebookF, FaWhatsapp } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 
 const Footer = () => {
-  const whatsappUrl = `https://wa.me/${+96566621132}?`;
+  const whatsappUrl = `https://wa.me/${+971547958045}?`;
 
   const pathname = useLocation().pathname;
   return (
@@ -40,7 +40,7 @@ const Footer = () => {
               <p>
                 <FaWhatsapp />
               </p>
-              <p>965-66621132+</p>
+              <p>971547958045+</p>
             </Link>
             <Link
               to={"dbhamz.com@gmail.com"}
@@ -61,6 +61,17 @@ const Footer = () => {
                 <FaInstagram />
               </p>
               <p>dbhamz_perfume</p>
+            </Link>
+            <Link
+              to={
+                "tel:00971547958045"
+              }
+              className="w-full text-[#111] font-semibold flex items-center gap-3"
+            >
+              <p>
+                <FaPhone  />
+              </p>
+              <p> 971547958045+ </p>
             </Link>
           </div>
           <div>
@@ -89,10 +100,6 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="w-full bg-primary text-center border-b">الأسم القانوني : دبهامز لتجارة العطور ومستحظرات التجميل</div>
-      <div  className="w-full bg-primary text-center">
-      الامارات العربية المتحدة دبي ند الحمر رخصة رقم 1304163
-      </div>
       <div className="bg-primary max-w-[1240px] w-full border-t-2 border-ford text-center font-bold text-medium">
         جميع الحقوق محفوظة لمتجر دبهامز 2025
       </div>

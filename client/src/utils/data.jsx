@@ -94,7 +94,7 @@ export const navLink = [
   },
   {
     href: "/privacy-policy",
-    name: "سياسة الخصوصية",
+    name: " الشروط والأحكام",
   },
   {
     href: "/about",

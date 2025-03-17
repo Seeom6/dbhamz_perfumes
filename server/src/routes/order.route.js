@@ -18,7 +18,7 @@ Router.route("/").get(protect , allowedTo("user","admin") , filterOrderForLogged
 Router.get("/my-order",protect ,allowedTo("user"), getMyOrders)
 
 
-Router.get("/checkout-payments/:cartId", protect,allowedTo("user"), checkOutSession)
+Router.get("/checkout-payments", protect,allowedTo("user"), checkOutSession)
 Router.get("/check-payment-status/:id", getPaymentStatus)
 Router.get("/:id", protect, getOrder)
 

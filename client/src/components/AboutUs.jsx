@@ -32,14 +32,18 @@ const AboutUs = () => {
               كلمات.
             </h3>
             <div>
-              <h3 className="font-semibold text-sm md:text-xl text-black">رؤيتنا ورسالتنا</h3>
+              <h3 className="font-semibold text-sm md:text-xl text-black">
+                رؤيتنا ورسالتنا
+              </h3>
               <p>
                 نسعى لتقديم تجارب عطرية استثنائية تجمع بين الفخامة والأصالة،
                 مستوحاة من جمال الطبيعة وثقافة الشرق الأوسط الغنية.
               </p>
             </div>
             <div>
-              <h3 className="font-semibold text-sm md:text-xl text-black">قصة علامتنا</h3>
+              <h3 className="font-semibold text-sm md:text-xl text-black">
+                قصة علامتنا
+              </h3>
               <p>
                 بدأت رحلتنا بشغفٍ للعطور وتميزها، ورغبة عميقة في صياغة بصمة خاصة
                 تضفي على الحياة اليومية لمسة من الأناقة والتميز. قيمنا الجودة:
@@ -49,7 +53,9 @@ const AboutUs = () => {
               </p>
             </div>
             <div>
-              <h3 className="font-semibold text-sm md:text-xl text-black">ما الذي يجعلنا مميزين؟</h3>
+              <h3 className="font-semibold text-sm md:text-xl text-black">
+                ما الذي يجعلنا مميزين؟
+              </h3>
               <p>
                 عطورنا تمثل مزيجًا متناغمًا من الروائح المميزة التي تناسب كافة
                 الأذواق. نحن نقدم تجربة شخصية تجعل من كل زجاجة عطر جزءًا من
@@ -58,7 +64,23 @@ const AboutUs = () => {
                 الأبد.
               </p>
             </div>
-            <p className="font-bold text-large text-center">"عطر يعكس أناقتك... لأنه أنت."</p>
+            <p className="font-bold text-large text-center">
+              "عطر يعكس أناقتك... لأنه أنت."
+            </p>
+
+            <div>
+              <h3 className="font-semibold text-sm md:text-xl text-black">
+                العنوان :{" "}
+              </h3>
+              <p>الأمارات, دبي , ند الحمر </p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-sm md:text-xl text-black">
+                رقم الرخصة :{" "}
+              </h3>
+              <p> 1304163 </p>
+            </div>
           </div>
         )}
       </div>
