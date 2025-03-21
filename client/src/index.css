@@ -296,3 +296,12 @@ h2 {
   padding: 0.5rem;
   border-radius: 0.375rem;
 }
+
+.bg-dashed-line {
+  background-image: linear-gradient(
+    to right,
+    transparent 50%,
+    #000 50%
+  );
+  background-size: 10px 2px;
+}

@@ -10,20 +10,23 @@ import { specialProducts } from "../utils/data.jsx";
 
 import Loading from "../components/Loading.jsx";
 import ProductGrid from "../components/product/ProductGrid.jsx";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useAllProducts } from "../utils/Api/ApiEndPoint.js";
+import { Context } from "../context/StatContext.jsx";
 
 const Home = () => {
   const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 9;
+  const itemsPerPage = 10;
+  const { AllProducts, isAllProLoad, isAllProductError } = useContext(Context);
 
-  const { data: myData, isError, error, isLoading } = useAllProducts();
-  
-  // if (isLoading) return <Loading elements={"h-screen"} />;
-  // if (isError) return <Error error={error} />;
+  const {
+    data: specialProducts,
+    isError,
+    isLoading,
+  } = useAllProducts({ isLike: true });
 
-      const offset = currentPage * itemsPerPage;
-  const currentData = myData?.slice(offset, offset + itemsPerPage);
+  const offset = currentPage * itemsPerPage;
+  const currentData = AllProducts?.slice(offset, offset + itemsPerPage);
 
   // Handle page change
   const handlePageClick = ({ selected }) => {
@@ -42,9 +45,15 @@ const Home = () => {
               المنتجات المميزة
             </p>
           </div>
-          <div className="w-full">
-            <GetSpecialProducts data={specialProducts} />
-          </div>
+          {isLoading ? (
+            <Loading />
+          ) : (
+            !isError && (
+              <div className="w-full ">
+                <GetSpecialProducts data={specialProducts} />
+              </div>
+            )
+          )}
         </div>
         <div className="w-full flex flex-col relative justify-center items-center gap-8">
           <div className="w-full flex justify-center relative">
@@ -64,21 +73,22 @@ const Home = () => {
               جميع المنتجات
             </p>
           </div>
-          {isLoading ? (
+          {isAllProLoad ? (
             <Loading />
           ) : (
-            !isError &&
-            <div className="w-full ">
-              <div className="w-full">
-                <ProductGrid products={currentData} />
-                <Pagination
-                  data={myData}
-                  itemsPerPage={itemsPerPage}
-                  currentPage={currentPage}
-                  onPageChange={handlePageClick}
-                />
+            !isAllProductError && (
+              <div className="w-full ">
+                <div className="w-full">
+                  <ProductGrid products={currentData} />
+                  <Pagination
+                    data={AllProducts}
+                    itemsPerPage={itemsPerPage}
+                    currentPage={currentPage}
+                    onPageChange={handlePageClick}
+                  />
+                </div>
               </div>
-            </div>
+            )
           )}
         </div>
         <div className="w-full">

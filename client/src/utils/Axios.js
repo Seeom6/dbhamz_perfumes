@@ -3,8 +3,8 @@ import { HandleError } from "./GlobalError";
 
 axios.defaults.withCredentials = true;
 const globalAxios = axios.create({
-  // baseURL: "https://api.dbhamz.com/app/v1",
- baseURL: "http://localhost:3067/app/v1",
+  baseURL: "https://api.dbhamz.com/app/v1",
+//  baseURL: "http://localhost:3067/app/v1",
 });
 export default globalAxios;
 
@@ -23,6 +23,7 @@ export const getProducts = async (filters = {}) => {
 
   // Brand filter
   if (filters.brand) formattedFilters.brand = filters.brand;
+  if (filters.isLike) formattedFilters.isLike = filters.isLike;
 
   // Package sizes filter
   if (filters.packageSizes && filters.packageSizes.length > 0) {

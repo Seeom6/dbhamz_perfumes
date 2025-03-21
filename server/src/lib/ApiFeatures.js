@@ -1,4 +1,4 @@
-import * as queryString from "node:querystring";
+
 
 class ApiFeatures {
   constructor(mongooseQuery, queryString) {
@@ -8,21 +8,31 @@ class ApiFeatures {
 
   // @ Filtration Method
   filter() {
+    // const queryStringObj = { ...this.queryString };
+    // const excludesFields = ["page", "sort", "limit", "fields"];
+    // excludesFields.forEach((field) => delete queryStringObj[field]);
+    // // @ Apply filtration
+    // let queryStr = {}
+    // Object.keys(queryStringObj).forEach((field) => {
+    //   if(typeof queryStringObj[field] == "string"){
+    //     queryStr[field] = {
+    //       $regex: new RegExp(queryStringObj[field], "i"),
+    //     }
+    //   }else {
+    //     // queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => "$" + match);
+    //   }
+    // })
+    // this.mongooseQuery = this.mongooseQuery.find(queryStr);
+
+    // return this;
     const queryStringObj = { ...this.queryString };
-    const excludesFields = ["page", "sort", "limit", "fields"];
+    const excludesFields = ['page', 'sort', 'limit', 'fields'];
     excludesFields.forEach((field) => delete queryStringObj[field]);
-    // @ Apply filtration
-    let queryStr = {}
-    Object.keys(queryStringObj).forEach((field) => {
-      if(typeof queryStringObj[field] == "string"){
-        queryStr[field] = {
-          $regex: new RegExp(queryStringObj[field], "i"),
-        }
-      }else {
-        // queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => "$" + match);
-      }
-    })
-    this.mongooseQuery = this.mongooseQuery.find(queryStr);
+    // Apply filtration using [gte, gt, lte, lt]
+    let queryStr = JSON.stringify(queryStringObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+    this.mongooseQuery = this.mongooseQuery.find(JSON.parse(queryStr));
 
     return this;
   }
