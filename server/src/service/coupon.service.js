@@ -22,7 +22,19 @@ const getCouponById = async (id, throwError = true)=>{
     return coupon
 }
 
+const getValidCoupon = async (code)=>{
+    const coupon = await CouponModel.findOne({
+        name : code,
+        expired : {$gt : Date.now()}
+      });
+      if(!coupon){
+        throw new ApiError("هذا الكوبون منتهي الصلاحية, او ليس موجود")
+      }
+      return coupon;
+}
+
 export const CouponService = {
     getCouponByName,
     getCouponById,
+    getValidCoupon
 }

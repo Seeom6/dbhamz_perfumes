@@ -3,10 +3,9 @@ import {
   useCreateCoupon,
   useGetCoupon,
   useDeleteCoupon,
-} from "../../utils/Api/CartEndPoint";
+} from "../../utils/Api/OrderEndPoint";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
-import Select from "react-select";
 import CouponForm from "../../components/coupon/CouponForm";
 import CouponList from "../../components/coupon/CouponList";
 const Coupons = () => {
@@ -17,7 +16,7 @@ const Coupons = () => {
   const [userIdToGift, setUserIdToGift] = useState("");
   const [selectedGiftMethod, setSelectedGiftMethod] = useState(null);
 
-  const couponOpt = ["شحن مجاناً", " خصم"];
+  const couponOpt = ["percentage","delivery"];
   const queryClient = useQueryClient();
 
   const {
@@ -48,7 +47,7 @@ const Coupons = () => {
       name: couponCode,
       discount: parseFloat(discountPercentage),
       expired: expirationDate,
-      giftMethod: selectedGiftMethod ? selectedGiftMethod.value : null,
+      type: selectedGiftMethod ? selectedGiftMethod.value : null,
     };
 
     createCoupon(formData, {

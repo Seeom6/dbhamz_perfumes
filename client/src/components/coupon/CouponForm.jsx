@@ -61,6 +61,7 @@ const CouponForm = ({
             الخصم{" "}
           </label>
           <Select
+          dir="rtl"
             options={couponOptions}
             value={selectedGiftMethod}
             onChange={handlePackageSizeChange}

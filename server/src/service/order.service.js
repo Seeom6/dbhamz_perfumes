@@ -19,8 +19,20 @@ async function getOrderById(id){
     return order
 }
 
+async function getOrderByPaymentId(paymentId){
+    const order = await OrderModel.findOne({
+        paymentId: paymentId
+    })
+    if (!order) {
+        console.log("Order not found", 404);
+        throw new ApiError("order not found", 404);
+    }
+    return order
+}
+
 
 export const OrderService = {
     getMyOrders,
-    getOrderById
+    getOrderById,
+    getOrderByPaymentId,
 }

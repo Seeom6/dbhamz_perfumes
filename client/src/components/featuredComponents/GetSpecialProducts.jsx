@@ -70,7 +70,7 @@ const GetSpecialProducts = ({ data }) => {
                   <p className="text-regular text-ford font-semibold">
                     {product?.brand?.name}
                   </p>
-                  <p className="text-large text-[#616161] font-semibold">
+                  <p className="text-small md:text-medium text-[#616161] font-semibold">
                     {product?.name}
                   </p>
                   <div className="flex gap-1">
@@ -103,7 +103,7 @@ const GetSpecialProducts = ({ data }) => {
               ) : product?.quantity >= 0 ? (
                 <button
                   onClick={() => onAdd(product, 1)}
-                  className="w-full text-small md:text-medium shadow-btn my-2 text-white bg-primary font-bold py-0.5 rounded-md flex justify-center items-center gap-2 border"
+                  className="w-full text-small md:text-medium shadow-btn my-2 text-white bg-primary font-bold py-2 rounded-md flex justify-center items-center gap-2 border"
                 >
                   <LuShoppingBag /> اضافة الى السلة
                 </button>

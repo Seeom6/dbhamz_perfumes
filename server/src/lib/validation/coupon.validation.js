@@ -2,6 +2,7 @@ import { check } from "express-validator";
 import validator from "./../../middleware/validator.middleware.js";
 import ApiError from "../ApiError.js";
 import moment from "moment";
+import { CouponType } from "../../models/coupon.model.js";
 
 export const createCouponValidation = [
   check("name")
@@ -11,6 +12,20 @@ export const createCouponValidation = [
     .withMessage("Too short coupon name")
     .isLength({ max: 50 })
     .withMessage("Too long coupon name"),
+    check("type")
+    .notEmpty()
+    .withMessage("type of coupon is required")
+    .isString()
+    .withMessage("coupon type must be a string")
+    .custom((val) => {
+      if (![CouponType.delivery, CouponType.percentage].includes(val)) {
+        throw new ApiError(
+          `type coupon must be a ${CouponType.delivery} or ${CouponType.percentage}`,
+          400
+        );
+      }
+      return true;
+    }),
   check("discount")
     .notEmpty()
     .withMessage("name of discount is required")

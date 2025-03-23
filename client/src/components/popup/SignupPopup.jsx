@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSignup } from "../../utils/Api/AuthenticationEndPoint";
 import CustomSingleValue from "../CustomFlag";
 import Loading from "../Loading";
@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import { countries } from "../../utils/data";
 
 const SignupPopup = ({ onClose, onSignupSuccess , onLoginClick }) => {
+
+  const parma = useParams()
     const navigate = useNavigate()
   const [form, setForm] = useState({
     firstName: "",
@@ -67,7 +69,9 @@ const SignupPopup = ({ onClose, onSignupSuccess , onLoginClick }) => {
         toast.success("مرحبا بك بعالم الاناقة");
         onSignupSuccess(); // Trigger the onSignupSuccess callback
         onClose(); // Close the popup after successful signup
-        navigate("/order")
+        if(parma === "/cart")
+        navigate("/order");
+        navigate("/")
       },
       onError: () => {
         toast.error(error.message);

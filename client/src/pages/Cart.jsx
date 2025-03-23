@@ -7,6 +7,7 @@ import { AiOutlineShopping } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import LoginPopup from "../components/popup/LoginPopup.jsx";
 import SignupPopup from "../components/popup/SignupPopup"; // Import the SignupPopup component
+import { useCreateOrder } from "../utils/Api/OrderEndPoint.js";
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -20,15 +21,21 @@ const Cart = () => {
     onRemove,
   } = useContext(Context);
 
-  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false); // State to control login popup visibility
-  const [isSignupPopupOpen, setIsSignupPopupOpen] = useState(false); // State to control signup popup visibility
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
+  const [isSignupPopupOpen, setIsSignupPopupOpen] = useState(false);
+  const { mutate: createOrder, isPending } = useCreateOrder();
 
   const handleCheckout = () => {
     if (!isLogin) {
-      setIsLoginPopupOpen(true); // Show login popup if user is not logged in
-    } else {
-      navigate("/order");
+      return setIsLoginPopupOpen(true);
     }
+    createOrder(cartItems, {
+      onSuccess: (res) => {
+        if (res.success === true) {
+          navigate(`/order/${res.orderId}`)
+        }
+      },
+    });
   };
 
   const handleLoginSuccess = () => {

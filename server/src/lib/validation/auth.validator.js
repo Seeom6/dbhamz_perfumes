@@ -22,6 +22,7 @@ export const signupValidator = [
     .notEmpty()
     .withMessage("last name is required")
     .custom((val, { req }) => {
+      console.log("ddddddddddddddd")
       if (val && req.body.firstName) {
         req.body.slug = slugify(req.body.firstName + "-" + val);
       }

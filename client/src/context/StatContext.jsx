@@ -16,6 +16,7 @@ export const StateContext = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [AllProducts, setAllProducts] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [priceAfterDiscount , setPriceAfterDiscount] = useState(totalPrice)
   const [totalQuantities, setTotalQuantities] = useState(0);
   const [qty, setQty] = useState(1);
   const [isAddCartLoading, setIsAddCartLoading] = useState(false);
@@ -170,6 +171,8 @@ export const StateContext = ({ children }) => {
         setCartItems,
         setTotalPrice,
         setTotalQuantities,
+        priceAfterDiscount,
+        setPriceAfterDiscount,
         isAddCartLoading,
         qty,
       }}

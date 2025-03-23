@@ -361,9 +361,9 @@ export const UpdateCartQuantity = async (productId, quantity) => {
 };
 
 // @ DELETE Delete One Brand EndPoint
-export const ApplyCoupon = async (coupon) => {
+export const ApplyCoupon = async ({id,coupon}) => {
   try {
-    const res = await globalAxios.patch(`/cart/applyCoupon`, { coupon });
+    const res = await globalAxios.post(`/order/apply-coupon/${id}`, { coupon });
     return res?.data; // Return the response data
   } catch (error) {
     let errorMessage = "An unknown error occurred";
@@ -478,30 +478,6 @@ export const GetOnCart = async (cartId) => {
   }
 };
 
-export const CreateOrder = async (cartId, shippingData) => {
-  try {
-    const res = await globalAxios.post(
-      `/order//checkout-payment/${cartId}`,
-      shippingData
-    );
-    const data = res?.data?.data;
-    return data;
-  } catch (error) {
-    if (error) {
-      // Server responded with a status code outside the 2xx range
-      const errorMessage = HandleError(error) || "An unknown error occurred";
-      throw new Error(errorMessage); // Throw the error
-    } else if (error.request) {
-      // The request was made but no response was received
-      throw new Error(
-        "No response from the server. Please check your connection."
-      );
-    } else {
-      // Something happened in setting up the request
-      throw new Error("An unexpected error occurred. Please try again.");
-    }
-  }
-};
 
 export const DeleteUser = async (id) => {
   try {
@@ -579,6 +555,75 @@ export const GetCoupon = async () => {
       const errorMessage = HandleError(err) || "An unknown error occurred";
       throw new Error(errorMessage); // Throw the error
     } else if (err.request) {
+      // The request was made but no response was received
+      throw new Error(
+        "No response from the server. Please check your connection."
+      );
+    } else {
+      // Something happened in setting up the request
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
+  }
+};
+
+
+export const CreateOrder = async (cart) => {
+  try {
+    const res = await globalAxios.post(`/order`, {items: cart});
+    const data = res?.data;
+    return data;
+  } catch (error) {
+    if (error) {
+      // Server responded with a status code outside the 2xx range
+      const errorMessage = HandleError(error) || "An unknown error occurred";
+      throw new Error(errorMessage); // Throw the error
+    } else if (error.request) {
+      // The request was made but no response was received
+      throw new Error(
+        "No response from the server. Please check your connection."
+      );
+    } else {
+      // Something happened in setting up the request
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
+  }
+};
+
+export const GetOrder = async (id) => {
+  try {
+    const res = await globalAxios.get(`/order/${id}`);
+    return res?.data?.data;
+  } catch (error) {
+    // Handle different error scenarios
+    if (err) {
+      // Server responded with a status code outside the 2xx range
+      const errorMessage = HandleError(err) || "An unknown error occurred";
+      throw new Error(errorMessage); // Throw the error
+    } else if (err.request) {
+      // The request was made but no response was received
+      throw new Error(
+        "No response from the server. Please check your connection."
+      );
+    } else {
+      // Something happened in setting up the request
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
+  }
+};
+
+
+
+export const checkOut = async ({id , shippingData}) => {
+  try {
+    const res = await globalAxios.post(`/order/checkout-payments/${id}`, {shippingData});
+    const data = res?.data;
+    return data;
+  } catch (error) {
+    if (error) {
+      // Server responded with a status code outside the 2xx range
+      const errorMessage = HandleError(error) || "An unknown error occurred";
+      throw new Error(errorMessage); // Throw the error
+    } else if (error.request) {
       // The request was made but no response was received
       throw new Error(
         "No response from the server. Please check your connection."

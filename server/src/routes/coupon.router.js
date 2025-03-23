@@ -10,7 +10,9 @@ import {createCouponValidation, updateCouponValidation} from "../lib/validation/
 
 const router = Router();
 
-router.use(protect, allowedTo('user',"admin"));
+
+
+router.use(protect, allowedTo("admin"));
 
 router.route('/')
     .get(getCoupons)

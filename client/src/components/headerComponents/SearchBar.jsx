@@ -1,17 +1,54 @@
 import { FaShoppingCart, FaSearch } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Context } from "../../context/StatContext";
+import LoginPopup from "../popup/LoginPopup";
+import SignupPopup from "../popup/SignupPopup";
 const SearchBar = () => {
   const navigation = useNavigate();
-     const {userData , isLogin } = useContext(Context)
+  const { userData, isLogin } = useContext(Context);
+
+
+    const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false); // State to control login popup visibility
+    const [isSignupPopupOpen, setIsSignupPopupOpen] = useState(false);
+    
+  const handleLoginSuccess = () => {
+    setIsLoginPopupOpen(false);
+  };
+
+  const handleSignupSuccess = () => {
+    // Handle actions after successful signup (e.g., refresh cart data)
+    console.log("User signed up successfully");
+  };
+
+
+const HandleLogin = ()=>{
+  
+  if (!isLogin) {
+
+    setIsLoginPopupOpen(true)
+    return (
+      <div className="w-full">
+
+      </div>
+    );
+  }
+
+  if(isLogin){
+    navigation('/profile')
+  }
+}
+
 
 
   return (
     <div className="w-full flex justify-center gap-2 items-center">
       <div>
-        <CgProfile className="text-[#DADADA] font-bold text-medium md:text-extraLarge hidden md:flex" />
+        <CgProfile
+          onClick={HandleLogin}
+          className="text-[#DADADA] font-bold text-2xl  md:flex"
+        />
       </div>
       <div>
         <div className="relative w-full group">
@@ -25,10 +62,33 @@ const SearchBar = () => {
         </div>
       </div>
       <div>
-          <FaShoppingCart
-            onClick={()=>navigation('/cart')}
-            className="text-[#DADADA] font-bold text-large md:text-sl"
+        <FaShoppingCart
+          onClick={() => navigation("/cart")}
+          className="text-[#DADADA] font-bold text-large md:text-sl"
+        />
+                {/* Login Popup */}
+                {isLoginPopupOpen && (
+          <LoginPopup
+            onClose={() => setIsLoginPopupOpen(false)}
+            onLoginSuccess={handleLoginSuccess}
+            onSignupClick={() => {
+              setIsLoginPopupOpen(false);
+              setIsSignupPopupOpen(true);
+            }}
           />
+        )}
+
+        {/* Signup Popup */}
+        {isSignupPopupOpen && (
+          <SignupPopup
+            onClose={() => setIsSignupPopupOpen(false)}
+            onSignupSuccess={handleSignupSuccess}
+            onLoginClick={() => {
+              setIsSignupPopupOpen(false);
+              setIsLoginPopupOpen(true);
+            }}
+          />
+        )}
       </div>
     </div>
   );

@@ -23,6 +23,7 @@ import Customers from "./pages/dashboard/Customers";
 import OrderData from "./pages/order/OrderData";
 import Coupons from './pages/dashboard/Coupons';
 import Success from "./pages/Success";
+import Profile from "./pages/Profile";
 
 function App() {
 
@@ -43,7 +44,8 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/success" element={<Success />} />
-          <Route path="/order" element={<OrderData/>} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/order/:id" element={<OrderData/>} />
           <Route path="/dashboard" element={<Dashboard />}>
             <Route index element={<AddProduct />} />
             <Route path="/dashboard/products" element={<DashboardProducts />} />

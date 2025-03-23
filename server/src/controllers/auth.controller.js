@@ -26,7 +26,12 @@ export const signup = asyncHandler(async (req, res, next) => {
   delete user.password
   generateToken(res, user._id);
 
-  res.status(200).json({ data: user });
+  res.status(200).json({ data: {
+    firstName: user.firstName,
+    lastName: user.lastName,
+    phone: user.phone,
+    _id: user._id
+  } });
 });
 
 // # Login User
@@ -37,7 +42,6 @@ export const login = asyncHandler(async (req, res, next) => {
   if (req.body.phone) findUserBy.phone = req.body.phone;
 
   const user = await User.findOne(findUserBy);
-
   if (!user) {
     return next(new ApiError("Invalid credentials", 401));
   }
@@ -64,6 +68,7 @@ export const login = asyncHandler(async (req, res, next) => {
 export const protect = asyncHandler(async (req, res, next) => {
   // @ check if token exist
   const { token } = req.cookies;
+  console.log(token)
   if (!token)
     return next(
       new ApiError(

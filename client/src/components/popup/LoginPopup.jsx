@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import CustomSingleValue from "../CustomFlag";
 import { countries } from "../../utils/data";
 import Loading from "../Loading";
@@ -9,7 +9,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const LoginPopup = ({ onClose, onLoginSuccess, onSignupClick }) => {
 
-
+  const param = useParams()
   const navigate = useNavigate();
   const [selectedCountry, setSelectedCountry] = useState({
     code: "+966", // Default country code (Saudi Arabia)
@@ -63,7 +63,10 @@ const LoginPopup = ({ onClose, onLoginSuccess, onSignupClick }) => {
         toast.success("مرحباً بك مجدداً");
         onLoginSuccess(); // Trigger the onLoginSuccess callback
         onClose(); // Close the popup after successful login
-        navigate("/order");
+        if(param === "/cart"){
+          navigate("/order");
+        }
+        navigate("/profile")
       },
       onError: (err) => {
         console.log(err)

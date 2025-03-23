@@ -1,9 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import perfume6 from "/assets/perfume6.png";
 import { FiPlus, FiMinus } from "react-icons/fi";
 import { LuShoppingBag } from "react-icons/lu";
-import { useAddCart } from "../../utils/Api/CartEndPoint";
-import { toast } from "react-toastify";
 import { convertCurrency } from "../../utils/currency.js";
 import { Context } from "../../context/StatContext.jsx";
 

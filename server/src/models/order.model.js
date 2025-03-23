@@ -32,6 +32,10 @@ const orderSchema = new mongoose.Schema({
   totalOrderPrice:{
     type: Number
   },
+  totalOrderPriceAfterDiscount: {
+    type: Number,
+    default: null
+  },
   paymentMethod : {
     type: String,
     default: "card"
@@ -49,6 +53,40 @@ const orderSchema = new mongoose.Schema({
     default: false
   },
   deliveredAt: Date,
+  shippingData: {
+    firstName: {
+      type: String,
+      default: null,
+    },
+    lastName: {
+      type: String,
+      default: null,
+    },
+    phone: {
+      type: String,
+      default: null,
+    },
+    city: {
+      type: String,
+      default: null,
+    },
+    country: {
+      type: String,
+      default: null,
+    },
+    street:  {
+      type: String,
+      default: null,
+    },
+    area: {
+      type: String,
+      default: null,
+    },
+    note: {
+      type: String,
+      default: null,
+    },
+  }
 }, {timestamps : true});
 
 

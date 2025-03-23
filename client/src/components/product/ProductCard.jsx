@@ -22,11 +22,7 @@ const ProductCard = ({ product }) => {
   return (
     <div className="shadow-regularShadow flex items-center flex-col justify-between p-2 rounded-lg relative">
       {/* Special Mark for Liked Products */}
-      {product?.isLike && (
-        <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-lg text-xs font-bold">
-          مميز
-        </div>
-      )}
+     
 
       <div onClick={() => handleClick(product?._id)}>
         <div className="w-full py-1">
@@ -74,7 +70,7 @@ const ProductCard = ({ product }) => {
         product?.quantity >= 0 ? 
         <button
           onClick={() => onAdd(product, 1)}
-          className={` ${product.isLike === true ? "text-white bg-primary" : "text-primary bg-white"}  w-full text-small md:text-medium shadow-btn my-2   font-bold py-0.5 rounded-md flex justify-center items-center gap-2 border`}
+          className={`text-primary bg-white  w-full text-small md:text-medium shadow-btn my-2   font-bold py-2 rounded-md flex justify-center items-center gap-2 border`}
         >
           <LuShoppingBag /> اضافة الى السلة
         </button> :<p className="w-full text-center text-sm text-red-500 bg-red-50 py-2 rounded-md">

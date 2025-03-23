@@ -230,15 +230,7 @@ export const updateProductValidator = [
 
 check("packageSize")
     .optional()
-    .custom((value) => {
-      if (value.length > 2) {
-        if (!value.every((size) => packageSizes.includes(size))) {
-          throw new Error("Package size contains invalid values");
-        }
-      }
-
-      return true;
-    }),
+,
   validator,
 ];
 

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import logo from "/assets/logo.png";
 import { dashboardLinks } from "../../utils/data.jsx";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { IoClose } from "react-icons/io5";
 
 const LeftSidBar = ({ setSidebarOpen, sidebarOpen }) => {
+  const navigation = useNavigate()
   return (
     <div className="h-screen">
       {sidebarOpen && (
@@ -27,6 +28,7 @@ const LeftSidBar = ({ setSidebarOpen, sidebarOpen }) => {
       >
         <div className="flex justify-between items-center lg:justify-center">
           <img
+          onClick={()=>navigation("/")}
             src={logo}
             alt="Logo"
             className="w-16 h-16 lg:w-24 lg:h-24 rounded-full"
