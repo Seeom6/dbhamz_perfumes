@@ -1,30 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import CountryDropdown from "./headerComponents/Dropdown";
 import SearchBar from "./headerComponents/SearchBar";
 import Links from "./headerComponents/Links";
-import logo from '/assets/logo.png'
+import logo from '/assets/logo.png';
 import { useLocation, useNavigate } from "react-router-dom";
-import { NotAccessRoute } from "../utils/data";
+import { NotAccessRoute, countries } from "../utils/data"; // Import the countries array
 import { useGetMe } from "../utils/Api/AuthenticationEndPoint";
 import HeaderSideBar from "./HeaderSideBar";
 import { IoIosMenu, IoIosClose } from "react-icons/io";
+import { Context } from "../context/StatContext"; // Import the Context
+import CustomSingleValue from "./CustomFlag";
 
 const Header = () => {
-  const navigation = useNavigate()
+  const navigation = useNavigate();
   const pathname = useLocation().pathname;
-    const [sidebarOpen, setSidebarOpen] = useState(false);
-    const {data: getMe , isError , error , isLoading } = useGetMe()
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { data: getMe, isError, error, isLoading } = useGetMe();
+  const { currency } = useContext(Context); // Access the active currency from Context
 
-  const checkUser = ()=> {
-    if(getMe?.roles === "admin"){
-      navigation("/dashboard")
-    }else{
-      navigation("/login")
+  // Find the active country based on the currency
+  const activeCountry = countries.find((country) => country.currency === currency);
+
+  const checkUser = () => {
+    if (getMe?.roles === "admin") {
+      navigation("/dashboard");
+    } else {
+      navigation("/login");
     }
-  }
+  };
+
   return (
     <div className={` ${NotAccessRoute.includes(pathname) ? "hidden" : ''} h-[68px] md:h-[100px] w-full flex items-center justify-around md:justify-center shadow-regularShadow px-2.5 mb-5`}>
-      <div className="max-w-[1240px] w-full relative  h-full flex justify-between items-center">
+      <div className="max-w-[1240px] w-full relative h-full flex justify-between items-center">
         <div className="w-11 h-11 md:w-20 md:h-16" onClick={checkUser}>
           <img className="w-8 h-8 md:w-16 md:h-16 object-fit" src={logo} alt="" />
         </div>
@@ -32,13 +39,20 @@ const Header = () => {
           <SearchBar />
           <Links />
         </div>
-        <div className=" md:h-full flex justify-center items-center ">
-          <CountryDropdown />
-        </div>
+        <div className="currency-display">
+        {activeCountry && (
+          <div className="flex items-center gap-3">
+            <CustomSingleValue
+              data={activeCountry.value}
+            />
+            <span className="text-[10px] md:text-medium">{activeCountry.currency}</span>
+          </div>
+        )}
+      </div>
         <div onClick={() => setSidebarOpen(true)} className="flex md:hidden text-large px-1">
-          <IoIosMenu/>
+          <IoIosMenu />
         </div>
-        <HeaderSideBar setSidebarOpen={setSidebarOpen}  sidebarOpen={sidebarOpen}/>
+        <HeaderSideBar setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
       </div>
     </div>
   );

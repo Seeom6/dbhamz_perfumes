@@ -6,7 +6,7 @@ import { FaPhone, FaInstagram , FaFacebookF, FaWhatsapp } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 
 const Footer = () => {
-  const whatsappUrl = `https://wa.me/${+971547958045}?`;
+  const whatsappUrl = `https://wa.me/${+96566621132}?`;
 
   const pathname = useLocation().pathname;
   return (
@@ -23,12 +23,12 @@ const Footer = () => {
           <div>
             <p className="font-bold text-[22px] mb-2">الأقسام</p>
             {navLink.map((item) => (
-              <p
+              <Link to={item.href}
                 key={item.href}
-                className="text-[#111] font-semibold text-small md:text-medium leading-8"
+                className="text-[#111] block font-semibold text-small md:text-medium leading-8"
               >
                 {item.name}
-              </p>
+              </Link>
             ))}
           </div>
           <div className="text-small md:text-medium">
@@ -40,17 +40,9 @@ const Footer = () => {
               <p>
                 <FaWhatsapp />
               </p>
-              <p>971547958045+</p>
+              <p>0096566621132</p>
             </Link>
-            <Link
-              to={"dbhamz.com@gmail.com"}
-              className="w-full text-[#111] font-semibold flex items-center gap-3"
-            >
-              <p>
-                <MdEmail />
-              </p>
-              <p>dbhamz.com@gmail.com</p>
-            </Link>
+       
             <Link
               to={
                 "https://www.instagram.com/dbhamz_perfume?igsh=ZGhtaXRkNjh6NGM0"
@@ -71,7 +63,7 @@ const Footer = () => {
               <p>
                 <FaPhone  />
               </p>
-              <p> 971547958045+ </p>
+              <p> 0096566621132 </p>
             </Link>
           </div>
           <div>

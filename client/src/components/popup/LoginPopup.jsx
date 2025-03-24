@@ -10,6 +10,7 @@ import { useQueryClient } from "@tanstack/react-query";
 const LoginPopup = ({ onClose, onLoginSuccess, onSignupClick }) => {
 
   const param = useParams()
+  const queryClient = useQueryClient()
   const navigate = useNavigate();
   const [selectedCountry, setSelectedCountry] = useState({
     code: "+966", // Default country code (Saudi Arabia)
@@ -60,11 +61,12 @@ const LoginPopup = ({ onClose, onLoginSuccess, onSignupClick }) => {
 
     LoginMutation(data, {
       onSuccess: () => {
+        queryClient.invalidateQueries(["getme"])
         toast.success("مرحباً بك مجدداً");
         onLoginSuccess(); // Trigger the onLoginSuccess callback
         onClose(); // Close the popup after successful login
         if(param === "/cart"){
-          navigate("/order");
+          navigate("/cart");
         }
         navigate("/profile")
       },

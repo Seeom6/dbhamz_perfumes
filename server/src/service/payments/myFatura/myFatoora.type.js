@@ -6,7 +6,7 @@ export const MyFatootaEndPoints = {
 
 export const MyFatoorahType = {
     success: "SUCCESS",
-    faild: "FAILED",
+    failed: "FAILED",
     canceled: "CANCELED",
     authorize: "AUTHORIZE"
 }

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import HeaderImage from "../../components/HeaderImage";
 import Loading from "../../components/Loading";
 import { Context } from "../../context/StatContext";
-import { useParams } from "react-router-dom";
+import { redirect, useNavigate, useParams } from "react-router-dom";
 import { useApplyCoupon, useCheckOut, useGetOrder } from "../../utils/Api/OrderEndPoint";
 import { convertCurrency } from "../../utils/currency";
 import Error from "../../components/Error";
@@ -14,6 +14,7 @@ import { useQueryClient } from "@tanstack/react-query";
 const OrderData = () => {
 
   const param = useParams()
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
   const {
     userData,
@@ -30,7 +31,7 @@ const OrderData = () => {
     isAddCartLoading,
     qty,
   } = useContext(Context);
-
+  const [route, setRoute] = useState('');
   const [coupon , setCoupon] = useState('')
   const [formData, setFormData] = useState({
     firstName: '',
@@ -92,9 +93,11 @@ const OrderData = () => {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData)
     checkOut({id: param.id , shippingData: formData} , {onSuccess: (res)=>{
-      console.log(res)
+      if (res.paymentUrl) {
+        window.location.href = res.paymentUrl || route;
+        setRoute(res.paymentUrl) // Redirect to the payment URL
+      }
     }})
   };
 
@@ -286,7 +289,7 @@ const OrderData = () => {
           type="submit"
           className="px-6 py-2 block md:hidden bg-primary w-full text-white rounded-lg hover:bg-blue-600"
         >
-          {false ? <Loading width="24" height="24" /> : "حفظ"}
+          {isCheckPend ? <Loading width="24" height="24" /> : "دفع"}
         </button>
       </div>
     </div>

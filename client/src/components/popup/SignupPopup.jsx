@@ -5,10 +5,12 @@ import CustomSingleValue from "../CustomFlag";
 import Loading from "../Loading";
 import { toast } from "react-toastify";
 import { countries } from "../../utils/data";
+import { useQueryClient } from "@tanstack/react-query";
 
 const SignupPopup = ({ onClose, onSignupSuccess , onLoginClick }) => {
 
-  const parma = useParams()
+  const param = useParams()
+  const queryClient = useQueryClient()
     const navigate = useNavigate()
   const [form, setForm] = useState({
     firstName: "",
@@ -66,11 +68,13 @@ const SignupPopup = ({ onClose, onSignupSuccess , onLoginClick }) => {
 
     SignUp(dataToSend, {
       onSuccess: () => {
+        queryClient.invalidateQueries(["getme"])
         toast.success("مرحبا بك بعالم الاناقة");
         onSignupSuccess(); // Trigger the onSignupSuccess callback
         onClose(); // Close the popup after successful signup
-        if(parma === "/cart")
-        navigate("/order");
+        if(param === "/cart"){
+          navigate("/cart");
+        }
         navigate("/")
       },
       onError: () => {

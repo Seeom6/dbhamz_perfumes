@@ -51,7 +51,6 @@ export const checkOutSession = asyncHandler(async (req, res, next) => {
       paymentUrl: paymentReponse.Data.InvoiceURL,
     });
   } catch (error) {
-    console.log(error.message);
     return next(new ApiError("فشل في إنشاء الدفع مع myFatoora", 500));
   }
 });
@@ -76,7 +75,6 @@ export const checkOutSessionId = asyncHandler(async (req, res, next) => {
       paymentUrl: paymentReponse.Data.InvoiceURL,
     });
   } catch (error) {
-    console.log(error);
     return next(new ApiError("فشل في إنشاء الدفع مع myFatoora", 500));
   }
 });
@@ -128,7 +126,6 @@ export const getPaymentStatus = asyncHandler(async (req, res, next) => {
     const payment = await MyFatooraService.getPaymetStatus(order.paymentId, "InvoiceId")
     res.json({ payment: payment });
   } catch (error) {
-    console.log(error.message);
     next(error);
   }
 });
@@ -160,10 +157,7 @@ export const getOrder = asyncHandler(async (req, res, next) => {
 
 export const weebHook = asyncHandler(async (req, res, next) => {
   const { Data } = req.body;
-  console.log("MyFatoorah-Signature", req.headers["MyFatoorah-Signature"])
-  console.log(req.body);
   const payment = await OrderService.getOrderByPaymentId(Data.InvoiceId)
-  console.log("payment", payment )
   payment.paymentStatus = Data.TransactionStatus
   await payment.save()
   res.json({

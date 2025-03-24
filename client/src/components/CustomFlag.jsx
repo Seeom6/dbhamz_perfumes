@@ -7,7 +7,7 @@ const CustomSingleValue = ({ data }) => {
         countryCode={data}
         svg
         className="mr-0.5 md:mr-2.5"
-        style={{ width: "15px", height: "15px" }}
+        style={{ width: "25px", height: "25px" }}
       />
     </div>
   );

@@ -43,8 +43,7 @@ const Cart = () => {
   };
 
   const handleSignupSuccess = () => {
-    // Handle actions after successful signup (e.g., refresh cart data)
-    console.log("User signed up successfully");
+    setIsSignupPopupOpen(false)
   };
 
   return (

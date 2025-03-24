@@ -73,7 +73,7 @@ const ProductCard = ({ product }) => {
           className={`text-primary bg-white  w-full text-small md:text-medium shadow-btn my-2   font-bold py-2 rounded-md flex justify-center items-center gap-2 border`}
         >
           <LuShoppingBag /> اضافة الى السلة
-        </button> :<p className="w-full text-center text-sm text-red-500 bg-red-50 py-2 rounded-md">
+        </button> :<p className="w-full my-2  text-center text-sm text-red-500 bg-red-50 py-2 rounded-md">
             غير متوفر
           </p>
       )}

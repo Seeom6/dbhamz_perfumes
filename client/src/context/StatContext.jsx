@@ -11,7 +11,7 @@ export const Context = createContext();
 export const StateContext = ({ children }) => {
   const [isLogin, setIsLogin] = useState(false);
   const [userData, setUserData] = useState({});
-  const [currency, setCurrency] = useState("KWD"); // Default currency
+  const [currency, setCurrency] = useState(localStorage.getItem("selectedCurrency" || "KWD")); // Default currency
 
   const [cartItems, setCartItems] = useState([]);
   const [AllProducts, setAllProducts] = useState([]);
@@ -49,6 +49,10 @@ export const StateContext = ({ children }) => {
       setAllProducts(products);
     }
   }, [products, isAllProductError]);
+
+  useEffect(() => {
+    localStorage.setItem("selectedCurrency", currency);
+  }, [currency])
 
   // Load cart items from local storage on component mount
   useEffect(() => {

@@ -10,14 +10,18 @@ import { specialProducts } from "../utils/data.jsx";
 
 import Loading from "../components/Loading.jsx";
 import ProductGrid from "../components/product/ProductGrid.jsx";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useAllProducts } from "../utils/Api/ApiEndPoint.js";
 import { Context } from "../context/StatContext.jsx";
+import CurrencyPopup from "../components/popup/CurrencyPopup.jsx";
 
 const Home = () => {
   const [currentPage, setCurrentPage] = useState(0);
+  const [showCurrencyPopup, setShowCurrencyPopup] = useState(false);
   const itemsPerPage = 10;
-  const { AllProducts, isAllProLoad, isAllProductError } = useContext(Context);
+  const { AllProducts, isAllProLoad, currency, updateCurrency , isAllProductError } = useContext(Context);
+
+
 
   const {
     data: specialProducts,
@@ -27,6 +31,21 @@ const Home = () => {
 
   const offset = currentPage * itemsPerPage;
   const currentData = AllProducts?.slice(offset, offset + itemsPerPage);
+
+
+
+  useEffect(() => {
+    const selectedCurrency = localStorage.getItem("selectedCurrency");
+    if (!selectedCurrency) {
+      setShowCurrencyPopup(true);
+    }
+  }, []);
+
+  const handleCurrencySelect = (selectedCurrency) => {
+    updateCurrency(selectedCurrency);
+    localStorage.setItem("selectedCurrency", selectedCurrency);
+    setShowCurrencyPopup(false);
+  };
 
   // Handle page change
   const handlePageClick = ({ selected }) => {
@@ -95,6 +114,11 @@ const Home = () => {
           <AboutUs text="home" />
         </div>
       </div>
+      <CurrencyPopup
+        isOpen={showCurrencyPopup}
+        onClose={() => setShowCurrencyPopup(false)}
+        onCurrencySelect={handleCurrencySelect}
+      />
     </div>
   );
 };

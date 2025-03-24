@@ -108,7 +108,7 @@ const GetSpecialProducts = ({ data }) => {
                   <LuShoppingBag /> اضافة الى السلة
                 </button>
               ) : (
-                <p className="w-full text-center text-sm text-red-500 bg-red-50 py-2 rounded-md">
+                <p className="w-full text-center my-2 text-sm text-red-500 bg-red-50 py-2 rounded-md">
                   غير متوفر
                 </p>
               )}
