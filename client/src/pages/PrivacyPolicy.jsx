@@ -6,7 +6,7 @@ import perfumeSpecial from "/assets/perfumeSpecial.png"
 const PrivacyPolicy = () => {
   return (
     <div className="w-full flex justify-center items-center">
-      <div className="max-w-[1260px] w-full px-2.5 flex flex-col justify-center gap-8 sm:gap-14 md:gap-20 mb-20 text-small md:text-large text-ford">
+      <div className="max-w-[1260px] mt-[80px] md:mt-[115px] w-full px-2.5 flex flex-col justify-center gap-8 sm:gap-14 md:gap-20 mb-20 text-small md:text-large text-ford">
       <HeaderImage image={perfumeSpecial} title={"   سياسة الخصوصية "}/>
       <p className="font-semibold text-center text-sm md:text-xl text-black">يتم تشغيل هذا المتجر من قبل : </p>
       <p className="font-semibold text-center md:mt-[-50px] text-sm md:text-xl text-black">شركة دبهامز لتجارة العطور ومستحظرات التجميل</p>

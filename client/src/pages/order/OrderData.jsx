@@ -3,19 +3,22 @@ import HeaderImage from "../../components/HeaderImage";
 import Loading from "../../components/Loading";
 import { Context } from "../../context/StatContext";
 import { redirect, useNavigate, useParams } from "react-router-dom";
-import { useApplyCoupon, useCheckOut, useGetOrder } from "../../utils/Api/OrderEndPoint";
+import {
+  useApplyCoupon,
+  useCheckOut,
+  useGetOrder,
+} from "../../utils/Api/OrderEndPoint";
 import { convertCurrency } from "../../utils/currency";
 import Error from "../../components/Error";
 import { toast } from "react-toastify";
 import HandleError from "../../utils/GlobalError";
 import { useQueryClient } from "@tanstack/react-query";
-
+import { countries } from "../../utils/data";
 
 const OrderData = () => {
-
-  const param = useParams()
-  const navigate = useNavigate()
-  const queryClient = useQueryClient()
+  const param = useParams();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const {
     userData,
     isLogin,
@@ -31,39 +34,54 @@ const OrderData = () => {
     isAddCartLoading,
     qty,
   } = useContext(Context);
-  const [route, setRoute] = useState('');
-  const [coupon , setCoupon] = useState('')
+  const [route, setRoute] = useState("");
+  const [coupon, setCoupon] = useState("");
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    phone: '',
-    country: '',
-    city: '',
-    area: '',
-    street: '',
-    note: '',
+    firstName: "",
+    lastName: "",
+    phone: "",
+    country: "",
+    city: "",
+    area: "",
+    street: "",
+    note: "",
+    paymentCurrency: "KWD", // Add paymentCurrency to formData
   });
+  const getCurrencyByCountry = (countryName) => {
+    const englishCountry = countries.find((c) => c.name === countryName);
 
-  const {data : orderData , isError , error , isLoading} = useGetOrder(param.id)
-  const {mutate: applyCoupon , isPending } = useApplyCoupon()
-  const {mutate : checkOut , isPending : isCheckPend , isError : isCheckErr} = useCheckOut()
-  const [costPrice , setCostPrice] = useState(0)
+    if (englishCountry) {
+      return englishCountry.currency;
+    }
+    return "KWD"; // Default currency
+  };
 
+  const { data: orderData, isError, error, isLoading } = useGetOrder(param.id);
+  const { mutate: applyCoupon, isPending } = useApplyCoupon();
+  const {
+    mutate: checkOut,
+    isPending: isCheckPend,
+    isError: isCheckErr,
+  } = useCheckOut();
+  const [costPrice, setCostPrice] = useState(0);
 
-
-
-
-  
-  const handleCoupon = (id )=>{
-    applyCoupon({id,coupon},{onSuccess:(res)=>{
-      queryClient.invalidateQueries(['orderData'])
-      setCostPrice(res?.totalPriceAfterDiscount)
-    },onError:(error)=>{
-      toast.error(HandleError(error))
-    }})
-  }
+  const handleCoupon = (id) => {
+    applyCoupon(
+      { id, coupon },
+      {
+        onSuccess: (res) => {
+          queryClient.invalidateQueries(["orderData"]);
+          setCostPrice(res?.totalPriceAfterDiscount);
+        },
+        onError: (error) => {
+          toast.error(HandleError(error));
+        },
+      }
+    );
+  };
 
   useEffect(() => {
+    const currency = getCurrencyByCountry(userData?.country || "Kuwait");
     setFormData({
       firstName: userData?.firstName,
       lastName: userData?.lastName,
@@ -73,41 +91,59 @@ const OrderData = () => {
       area: userData?.area,
       street: userData?.street,
       note: userData?.note,
-    })
-    setCostPrice(orderData?.totalOrderPriceAfterDiscount ? orderData?.totalOrderPriceAfterDiscount : orderData?.totalOrderPrice)
-  }, [orderData])
-  
+      paymentCurrency: currency,
+    });
+    setCostPrice(
+      orderData?.totalOrderPriceAfterDiscount
+        ? orderData?.totalOrderPriceAfterDiscount
+        : orderData?.totalOrderPrice
+    );
+  }, [orderData]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
 
+    // If country is changing, update the currency too
+    if (name === "country") {
+      const currency = getCurrencyByCountry(value);
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+        paymentCurrency: currency,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
 
   if (isLoading) return <Loading elements={"h-screen"} />;
   if (isError) return <Error error={error} />;
 
-  
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
     checkOut({id: param.id , shippingData: formData} , {onSuccess: (res)=>{
       if (res.paymentUrl) {
         window.location.href = res.paymentUrl || route;
-        setRoute(res.paymentUrl) // Redirect to the payment URL
+        setRoute(res.paymentUrl) 
       }
     }})
   };
 
+  const totalPri = convertCurrency(costPrice, "KWD", currency);
+  const shippingPrice = convertCurrency(
+    orderData?.shippingPrice,
+    "KWD",
+    currency
+  );
 
-
-  const totalPri = convertCurrency(costPrice , "KWD" , currency)
-  const shippingPrice = convertCurrency(orderData?.shippingPrice , "KWD" , currency)
-
-  const totalPriceAfterDis = convertCurrency(orderData?.totalOrderPriceAfterDiscount , "KWD" , currency)
-
+  const totalPriceAfterDis = convertCurrency(
+    orderData?.totalOrderPriceAfterDiscount,
+    "KWD",
+    currency
+  );
 
   return (
     <div className="w-full flex justify-center items-center">
@@ -135,6 +171,7 @@ const OrderData = () => {
                     placeholder=" اسم الأول"
                     type="text"
                     name="firstName"
+                    required
                     value={formData.firstName}
                     onChange={handleChange}
                   />
@@ -146,6 +183,7 @@ const OrderData = () => {
                     type="text"
                     name="lastName"
                     value={formData.lastName}
+                    required
                     onChange={handleChange}
                   />
                 </div>
@@ -156,6 +194,7 @@ const OrderData = () => {
                   placeholder=" رقم الموبايل للتواصل"
                   type="text"
                   name="phone"
+                  required
                   value={formData.phoneNumber}
                   onChange={handleChange}
                 />
@@ -167,13 +206,14 @@ const OrderData = () => {
                     name="country"
                     value={formData.country}
                     onChange={handleChange}
+                    required
                   >
                     <option value="">اختر الدولة</option>
-                    <option value="الكويت">الكويت</option>
-                    <option value="الأمارات">الأمارات</option>
-                    <option value="السعودية">السعودية</option>
-                    <option value="قطر">قطر</option>
-                    <option value="عمان">عمان</option>
+                    {countries.map((country) => (
+                      <option key={country.currency} value={country.name}>
+                        {country.arabicName}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div className="w-full">
@@ -182,6 +222,7 @@ const OrderData = () => {
                     placeholder=" المدينة"
                     type="text"
                     name="city"
+                    required
                     value={formData.city}
                     onChange={handleChange}
                   />
@@ -194,6 +235,7 @@ const OrderData = () => {
                     placeholder=" الحي"
                     type="text"
                     name="area"
+                    required
                     value={formData.neighborhood}
                     onChange={handleChange}
                   />
@@ -203,6 +245,7 @@ const OrderData = () => {
                     className="inputClass shadow-input"
                     placeholder=" الشارع"
                     type="text"
+                    required
                     name="street"
                     value={formData.street}
                     onChange={handleChange}
@@ -237,14 +280,14 @@ const OrderData = () => {
                     {currency} {totalPrice}
                   </p>
                 </div>
-          
+
                 <div className="w-full flex justify-between px-5 md:px-10 h-14 items-center">
-                <p className="text-lg md:text-xl">تكلفة التوصيل: </p>
-                <p className="text-lg md:text-xl">
-                  {" "}
-                  {currency} {shippingPrice}
-                </p>
-              </div>
+                  <p className="text-lg md:text-xl">تكلفة التوصيل: </p>
+                  <p className="text-lg md:text-xl">
+                    {" "}
+                    {currency} {shippingPrice}
+                  </p>
+                </div>
 
                 <div className="w-full flex justify-between px-5 md:px-10 h-14 items-center">
                   <p className="text-lg md:text-xl">تكلفة الطلب بعد الخصم: </p>
@@ -261,7 +304,6 @@ const OrderData = () => {
                     {currency} {totalPri}
                   </p>
                 </div>
-
               </div>
               <div className="w-full mt-9">
                 <p>هل لديك كوبون خصم ؟</p>
@@ -271,10 +313,10 @@ const OrderData = () => {
                     placeholder=" أدخل الكوبون"
                     type="text"
                     name="phoneNumber"
-                    onChange={(e)=>setCoupon(e.target.value)}
+                    onChange={(e) => setCoupon(e.target.value)}
                   />{" "}
                   <button
-                    onClick={()=>handleCoupon(param.id)}
+                    onClick={() => handleCoupon(param.id)}
                     className="px-6 py-2 bg-primary w-2/5 text-white rounded-lg hover:bg-blue-600"
                   >
                     {false ? <Loading width="24" height="24" /> : "تأكيد"}
@@ -285,7 +327,7 @@ const OrderData = () => {
           </div>
         }
         <button
-        onClick={handleSubmit}
+          onClick={handleSubmit}
           type="submit"
           className="px-6 py-2 block md:hidden bg-primary w-full text-white rounded-lg hover:bg-blue-600"
         >

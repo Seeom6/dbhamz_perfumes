@@ -3,8 +3,8 @@ import { HandleError } from "./GlobalError";
 
 axios.defaults.withCredentials = true;
 const globalAxios = axios.create({
-  baseURL: "https://api.dbhamz.com/app/v1",
-//  baseURL: "http://localhost:3067/app/v1",
+  // baseURL: "https://api.dbhamz.com/app/v1",
+ baseURL: "http://localhost:3067/app/v1",
 });
 export default globalAxios;
 
@@ -624,6 +624,28 @@ export const checkOut = async ({id , shippingData}) => {
       const errorMessage = HandleError(error) || "An unknown error occurred";
       throw new Error(errorMessage); // Throw the error
     } else if (error.request) {
+      // The request was made but no response was received
+      throw new Error(
+        "No response from the server. Please check your connection."
+      );
+    } else {
+      // Something happened in setting up the request
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
+  }
+};
+
+export const GetOrders = async () => {
+  try {
+    const res = await globalAxios.get(`/order`);
+    return res?.data?.data;
+  } catch (error) {
+    // Handle different error scenarios
+    if (err) {
+      // Server responded with a status code outside the 2xx range
+      const errorMessage = HandleError(err) || "An unknown error occurred";
+      throw new Error(errorMessage); // Throw the error
+    } else if (err.request) {
       // The request was made but no response was received
       throw new Error(
         "No response from the server. Please check your connection."

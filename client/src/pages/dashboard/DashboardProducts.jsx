@@ -42,7 +42,7 @@ const DashboardProducts = () => {
   return (
     <div className="w-full flex flex-col mb-6 justify-start items-start gap-5">
       <button
-        onClick={() => navigate("/dashboard/add-product")}
+        onClick={() => navigate("/dashboard/products/add")}
         className="w-44 h-11 text-medium bg-[#0F5FC2] rounded-lg text-white font-bold"
       >
         اضافة منتج

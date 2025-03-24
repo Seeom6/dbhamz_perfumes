@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import LoginPopup from "../components/popup/LoginPopup.jsx";
 import SignupPopup from "../components/popup/SignupPopup"; // Import the SignupPopup component
 import { useCreateOrder } from "../utils/Api/OrderEndPoint.js";
+import Loading from "../components/Loading.jsx";
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -48,7 +49,7 @@ const Cart = () => {
 
   return (
     <div className="w-full flex justify-center items-center">
-      <div className="max-w-[1260px] w-full px-2.5 flex flex-col justify-center gap-8 sm:gap-14 md:gap-20 mb-20">
+      <div className="max-w-[1260px] mt-[80px] md:mt-[115px] w-full px-2.5 flex flex-col justify-center gap-8 sm:gap-14 md:gap-20 mb-20">
         <HeaderImage image={dbhamz} title={"سلتك العطرية"} />
         <div className="w-full">
           {cartItems.length < 1 && (
@@ -82,7 +83,7 @@ const Cart = () => {
                 onClick={handleCheckout}
                 className="mt-4 w-full bg-primary text-white py-2 rounded-lg hover:bg-blue-600"
               >
-                اتمام الدفع
+                {isPending ? <Loading width="15" height="15"/> : "إتمام الدفع"}
               </button>
             </div>
           </div>

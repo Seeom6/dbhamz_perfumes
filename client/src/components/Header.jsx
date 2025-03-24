@@ -30,7 +30,7 @@ const Header = () => {
   };
 
   return (
-    <div className={` ${NotAccessRoute.includes(pathname) ? "hidden" : ''} h-[68px] md:h-[100px] w-full flex items-center justify-around md:justify-center shadow-regularShadow px-2.5 mb-5`}>
+    <div className={` ${NotAccessRoute.includes(pathname) ? "hidden" : ''} h-[68px] md:h-[100px] w-full fixed flex z-50 bg-white items-center justify-around md:justify-center shadow-regularShadow px-2.5 mb-5`}>
       <div className="max-w-[1240px] w-full relative h-full flex justify-between items-center">
         <div className="w-11 h-11 md:w-20 md:h-16" onClick={checkUser}>
           <img className="w-8 h-8 md:w-16 md:h-16 object-fit" src={logo} alt="" />

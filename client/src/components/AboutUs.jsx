@@ -5,7 +5,7 @@ import dbhamz2 from "/assets/dbhamz2.png";
 const AboutUs = () => {
   const pathname = useLocation().pathname;
   return (
-    <div className="w-full flex flex-col lg:flex-row gap-2.5 px-1.5">
+    <div className="w-full  flex flex-col lg:flex-row gap-2.5 px-1.5">
       <div className="w-full flex flex-col">
         <div className="w-full flex justify-center mb-7 relative">
           <span className="absolute w-full h-0.5 md:h-1 left-0 top-[12px] lg:top-7 bg-primary"></span>
@@ -68,19 +68,7 @@ const AboutUs = () => {
               "عطر يعكس أناقتك... لأنه أنت."
             </p>
 
-            <div>
-              <h3 className="font-semibold text-sm md:text-xl text-black">
-                العنوان :{" "}
-              </h3>
-              <p>الأمارات, دبي , ند الحمر </p>
-            </div>
 
-            <div>
-              <h3 className="font-semibold text-sm md:text-xl text-black">
-                رقم الرخصة :{" "}
-              </h3>
-              <p> 1304163 </p>
-            </div>
           </div>
         )}
       </div>

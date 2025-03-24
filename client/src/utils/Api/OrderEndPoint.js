@@ -7,7 +7,8 @@ import {
     CreateOrder,
     DeleteCoupon,
     GetCoupon,
-    GetOrder
+    GetOrder,
+    GetOrders
 } from "../Axios"
 
 
@@ -61,3 +62,11 @@ export const useCreateOrder = () => {
       },
     });
   };
+
+  export const useGetOrders = () => {
+    return useQuery({
+      queryKey: ["orders"],
+      queryFn: () => GetOrders(),
+    });
+  };
+  

@@ -1,66 +1,47 @@
-import React, { useState } from "react";
-import logo from "/assets/logo.png";
-import { dashboardLinks } from "../../utils/data.jsx";
-import { NavLink, useNavigate } from "react-router-dom";
-import { IoClose } from "react-icons/io5";
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import { dashboardLinks } from './../../utils/data';
 
-const LeftSidBar = ({ setSidebarOpen, sidebarOpen }) => {
-  const navigation = useNavigate()
+const LeftSidebar = ({ setSidebarOpen }) => {
   return (
-    <div className="h-screen">
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-[rgba(53,52,52,0.65)] bg-opacity-50 z-20 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Sidebar */}
-      <div
-        className={`
-        fixed h-screen lg:static z-80 inset-y-0 right-0 w-64 bg-white shadow-lg p-6 space-y-8 transform transition-transform duration-200 ease-in-out 
-        ${
-          sidebarOpen
-            ? "translate-x-[0px]"
-            : "translate-x-full lg:translate-x-0"
-        }
-      `}
-      >
-        <div className="flex justify-between items-center lg:justify-center">
-          <img
-          onClick={()=>navigation("/")}
-            src={logo}
-            alt="Logo"
-            className="w-16 h-16 lg:w-24 lg:h-24 rounded-full"
-          />
-          <button
-            className="lg:hidden text-gray-500 hover:text-gray-700"
-            onClick={() => setSidebarOpen(false)}
-          >
-            <IoClose size={24} />
-          </button>
-        </div>
-
-        {dashboardLinks.map((item, idx) => (
+    <div className="h-full bg-white shadow-md flex flex-col border-r border-gray-200 w-64">
+      <div className="p-4 border-b border-gray-200">
+        <h1 className="text-xl font-bold text-indigo-600">لوحة التحكم</h1>
+      </div>
+      
+      <nav className="flex-1 overflow-y-auto py-4">
+        {dashboardLinks.map((link) => (
           <NavLink
-            onClick={() => setSidebarOpen(false)}
-            to={item.href}
-            key={idx}
-            className={({ isActive }) => {
-              return (
-                "w-full flex items-center gap-5 " +
-                (isActive &&
-                  "font-bold bg-dashboard border-b-2 p-1 rounded-lg text-white")
-              );
-            }}
+            key={link.href}
+            to={link.href}
+            onClick={(e)=>{setSidebarOpen(false)}}
+            className={({ isActive }) => 
+              `flex items-center px-4 py-3 mx-2 rounded-lg transition-colors ${
+                isActive 
+                  ? 'bg-indigo-50 text-indigo-600' 
+                  : 'text-gray-600 hover:bg-gray-100'
+              }`
+            }
           >
-            <span className="p-1.5 border-2 rounded-xl">{item.icon}</span>
-            {item.name}
+            <span className="ml-2">{link.icon}</span>
+            <span className="mr-2">{link.name}</span>
           </NavLink>
         ))}
+      </nav>
+      
+      <div className="p-4 border-t border-gray-200">
+        <div className="flex items-center">
+          <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center text-white">
+            م
+          </div>
+          <div className="mr-2">
+            <p className="text-sm font-medium">مدير النظام</p>
+            <p className="text-xs text-gray-500">Admin</p>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-export default LeftSidBar;
+export default LeftSidebar;

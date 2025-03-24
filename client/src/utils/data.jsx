@@ -70,6 +70,7 @@ export const NotAccessRoute = [
   "/dashboard/orders",
   "/dashboard/costumer",
   "/dashboard/add-brand",
+  "/dashboard/products/add",
   "/signup/",
   "/signup",
   "/dashboard/customer",
@@ -131,14 +132,13 @@ export const offersInfo = [
 
 
 export const countries = [
-  {code: "+966", value: "SA", name: "Saudi Arabia", currency: "SAR" },
-  {code: "+971", value: "AE", name: "UAE", currency: "AED" },
-  {code: "+965", value: "KW", name: "Kuwait", currency: "KWD" },
-  { code: "+974", value: "QA", name: "Qatar", currency: "QAR" },
-  {code: "+973", value: "BH", name: "Bahrain", currency: "BHD" },
-  {code: "+986", value: "OM", name: "Oman", currency: "OMR" },
+  { code: "+966", value: "SA", name: "Saudi Arabia", arabicName: "السعودية", currency: "SAR" },
+  { code: "+971", value: "AE", name: "UAE", arabicName: "الأمارات", currency: "AED" },
+  { code: "+965", value: "KW", name: "Kuwait", arabicName: "الكويت", currency: "KWD" },
+  { code: "+974", value: "QA", name: "Qatar", arabicName: "قطر", currency: "QAR" },
+  { code: "+973", value: "BH", name: "Bahrain", arabicName: "البحرين", currency: "BHD" },
+  { code: "+968", value: "OM", name: "Oman", arabicName: "عمان", currency: "OMR" },
 ];
-
 export const Brands = [
   {
     img: brand,

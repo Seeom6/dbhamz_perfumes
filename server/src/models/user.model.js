@@ -42,7 +42,22 @@ const userSchema = new mongoose.Schema({
   passwordChangedAt: Date,
   profileImage: String,
   address: {
-    type: String,
+    city: {
+      type: String,
+      default: null,
+    },
+    country: {
+      type: String,
+      default: null,
+    },
+    street:  {
+      type: String,
+      default: null,
+    },
+    area: {
+      type: String,
+      default: null,
+    },
   },
 });
 

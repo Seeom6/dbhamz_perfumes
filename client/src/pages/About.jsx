@@ -7,7 +7,7 @@ import Comments from "../components/Comments";
 const About = () => {
   return (
     <div className="w-full flex justify-center items-center">
-      <div className="max-w-[1260px] w-full px-2.5 flex flex-col justify-center gap-8 sm:gap-14 md:gap-20 mb-20">
+      <div className="max-w-[1260px] mt-[80px] md:mt-[115px] w-full px-2.5 flex flex-col justify-center gap-8 sm:gap-14 md:gap-20 mb-20">
         <HeaderImage
           image={aboutImage}
           title={"من نحن؟ لمسة عطر... قصة شغف وأناقة تُروى بعبير خاص"}

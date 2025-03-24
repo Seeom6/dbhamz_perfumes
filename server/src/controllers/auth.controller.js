@@ -68,7 +68,6 @@ export const login = asyncHandler(async (req, res, next) => {
 export const protect = asyncHandler(async (req, res, next) => {
   // @ check if token exist
   const { token } = req.cookies;
-  console.log(token)
   if (!token)
     return next(
       new ApiError(

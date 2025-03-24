@@ -64,7 +64,7 @@ export const checkOutSessionId = asyncHandler(async (req, res, next) => {
 
   const finalePrice = order.totalOrderPriceAfterDiscount ? order.totalOrderPriceAfterDiscount : order.totalOrderPrice
   try {
-    const paymentReponse = await MyFatooraService.getMyFatooraLink(finalePrice, user)
+    const paymentReponse = await MyFatooraService.getMyFatooraLink(finalePrice, { user, shippingData})
     order.paymentStatus = "Pending"
     order.shippingData = shippingData
     order.paymentId = `${paymentReponse.Data.InvoiceId}`

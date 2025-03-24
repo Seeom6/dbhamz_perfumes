@@ -26,7 +26,7 @@ const DashboardBrand = () => {
   return (
     <div className="w-full">
       <div className="w-full flex flex-col mb-6 justify-start items-start gap-5">
-        <button onClick={()=>navigate("/dashboard/add-brand")} className="w-44 h-11 text-medium bg-[#0F5FC2] rounded-lg text-white font-bold">
+        <button onClick={()=>navigate("/dashboard/brands/add")} className="w-44 h-11 text-medium bg-[#0F5FC2] rounded-lg text-white font-bold">
           {/* {isPending ? <Loading/> : "حفظ"} */}
           اضافة ماركة
         </button>
