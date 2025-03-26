@@ -24,49 +24,92 @@ export const convertCurrency = (amount, fromCurrency, toCurrency) => {
   return (amount * rate).toFixed(2);
 };
 
-export async function getMyFatooraLink(totalPrice, { user, shippingData }) {
+export async function getMyFatooraLink(totalPrice, { user, shippingData, orderId }) {
+  const exchangePrice = convertCurrency(
+    totalPrice,
+    "KWD",
+    shippingData.paymentCurrency
+  );
   try {
-    const url = `${EnvVar.myFatoora_base_url}/${MyFatooraVersion}/${MyFatootaEndPoints.sendPayment}`;
+    const url = `${EnvVar.myFatoora_base_url}/v2/SendPayment`;
 
-    const exchangePrice = convertCurrency(
-      totalPrice,
-      "KWD",
-      shippingData.paymentCurrency
-    );
+    // Validate required fields
+    if (!user?.firstName || !user?.lastName) {
+      throw new ApiError("Customer name is required", 400);
+    }
 
-    const phoneDigits = user.phone.replace(/\D/g, "");
-    const customerMobile = phoneDigits.slice(-11);
+    if (!user.phone) {
+      throw new ApiError("Customer phone is required", 400);
+    }
+
+    // Format phone number
+    const phoneDigits = user.phone.replace(/\D/g, '');
+    const customerMobile = phoneDigits.length >= 11 ? phoneDigits.slice(-11) : phoneDigits;
 
     const body = {
+      // Required fields
       NotificationOption: NotificationOptions.link,
-      CustomerName: user.firstName + " " + user.lastName,
-      InvoiceValue: exchangePrice,
+      InvoiceValue: exchangePrice, // Use InvoiceValue instead of InvoiceAmount
+      CurrencyIso: shippingData.paymentCurrency || "KWD",
+      
+      // Customer information
+      CustomerName: `${user.firstName} ${user.lastName}`.substring(0, 50), // Max 50 chars
+      CustomerEmail: user.email || "no-email@example.com",
       CustomerMobile: customerMobile,
-      CallBackUrl: EnvVar.myFatoora_call_backu_rl,
-      ErrorUrl: EnvVar.myFatoora_error_url,
-      DisplayCurrencyIso: shippingData.paymentCurrency || "KWD",
-      CustomerEmail: user.email || "example@example.com",
-      // CustomerReference: "ref1",
-      // CustomerCivilId: "12345678",
+      CustomerReference: orderId.toString().substring(0, 50),
+      Language: "AR", // Arabic language
+      
+      // Payment callback URLs
+      CallBackUrl: `${EnvVar.myFatoora_call_back_url}?orderId=${orderId}`,
+      ErrorUrl: `${EnvVar.myFatoora_error_url}?orderId=${orderId}`,
+      
+      // Invoice items (required)
       InvoiceItems: [
         {
-          ItemName: "Product 01",
+          ItemName: `Order ${orderId}`.substring(0, 100), // Max 100 chars
           Quantity: 1,
-          UnitPrice: exchangePrice,
-        },
+          UnitPrice: exchangePrice
+        }
       ],
+      
+      // Optional UI customization
+      DisplayCurrencyIso: shippingData.paymentCurrency || "KWD",
+      UserDefinedValues: [
+        { Name: "themeColor", Value: "#4f46e5" }
+      ]
     };
 
     const headers = {
-      Accept: "application/json",
-      Authorization: "Bearer " + EnvVar.myFatoora_api_key,
-      "Content-Type": "application/json",
+      Authorization: `Bearer ${EnvVar.myFatoora_api_key}`,
+      "Content-Type": "application/json"
     };
 
     const response = await axios.post(url, body, { headers });
+    
+    if (!response.data.IsSuccess) {
+      throw new ApiError(
+        `MyFatoora error: ${response.data.Message}`,
+        400,
+        response.data.ValidationErrors
+      );
+    }
+
     return response.data;
-  } catch (e) {
-    throw new ApiError("MyFatoora payment error. Please try again.", 400);
+
+  } catch (error) {
+    console.error("MyFatoora API Error Details:", error.response?.data || error.message);
+    
+    if (error.response?.data?.ValidationErrors) {
+      const validationErrors = error.response.data.ValidationErrors
+        .map(err => `${err.Name}: ${err.Error}`)
+        .join(", ");
+      throw new ApiError(`Validation failed: ${validationErrors}`, 400);
+    }
+    
+    throw new ApiError(
+      error.message || "Payment processing failed. Please try again.",
+      error.statusCode || 500
+    );
   }
 }
 async function getPaymetStatus(id, key) {

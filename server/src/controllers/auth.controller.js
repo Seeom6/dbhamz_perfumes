@@ -14,6 +14,7 @@ export const signup = asyncHandler(async (req, res, next) => {
   
   const getPhone = await User.findOne({phone : phoneNumber})
 
+  console.log(getPhone , phoneNumber)
   if(getPhone) return next(new ApiError("هذا الرقم مسجل من قبل"))
 
   const user = await User.create({
@@ -66,7 +67,6 @@ export const login = asyncHandler(async (req, res, next) => {
 
 // @ implement authentication
 export const protect = asyncHandler(async (req, res, next) => {
-  // @ check if token exist
   const { token } = req.cookies;
   if (!token)
     return next(
@@ -75,16 +75,13 @@ export const protect = asyncHandler(async (req, res, next) => {
       )
     );
 
-  // @ verify token to check if something had changed
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
   if (!decoded)
     return next(new ApiError("Unauthorized - please try to login again", 401));
 
-  // @ check if user still in data base
   const currentUser = await User.findById(decoded.userId);
   if (!currentUser) return next(new ApiError("user Not found", 401));
 
-  // @ check if user change his password
 
   if (currentUser.passwordChangedAt) {
     const passChangedTimeStamp = parseInt(

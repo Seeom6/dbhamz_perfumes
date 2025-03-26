@@ -24,8 +24,27 @@ const getUserById = async (id, throwError = true) => {
     return user;
 }
 
+const updateUser = async (id, updateData, throwError = true) => {
+    try {
+        const user = await User.findByIdAndUpdate(
+            id,
+            { $set: updateData }, // Apply updates
+            { new: true} // Return the updated document & validate fields
+        );
+
+        if (!user && throwError) {
+            throw new ApiError("User not found for update", 404);
+        }
+
+        return user; // Return updated user data
+    } catch (error) {
+        throw new ApiError("Error while updating user", 500);
+    }
+};
+
 
 export const UserService = {
     getUserByEmail,
-    getUserById
+    getUserById,
+    updateUser
 }

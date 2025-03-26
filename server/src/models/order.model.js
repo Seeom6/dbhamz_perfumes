@@ -13,9 +13,9 @@ const orderSchema = new mongoose.Schema({
         ref: "Product",
       },
       price: Number,
-      quantity: {
-        type: Number,
-      },
+      quantity: Number,
+      productImage: String, // Add this field
+      productName: String, // Optional: for easier reference
     }
   ],
   paymentId: {

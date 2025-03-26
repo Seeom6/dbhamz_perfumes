@@ -34,7 +34,7 @@ const ProductCard = ({ product }) => {
         </div>
         <div>
           <p className="text-regular text-ford font-semibold">
-            {product?.brand?.name}
+            {product?.brand?.name.toUpperCase()}
           </p>
           <p className="text-large text-[#616161] font-semibold">
             {product?.name}

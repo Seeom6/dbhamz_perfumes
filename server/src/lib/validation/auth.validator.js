@@ -5,24 +5,25 @@ import validator from "../../middleware/validator.middleware.js";
 import ApiError from "../ApiError.js";
 import User from "../../models/user.model.js";
 
+
+
 export const signupValidator = [
   check("firstName")
     .isLength({ min: 3 })
-    .withMessage("First name must be at least 3 chars")
+    .withMessage("يجب أن يكون الاسم الأول على الأقل 3 أحرف")
     .isLength({ max: 30 })
-    .withMessage("Too long first name")
+    .withMessage("الاسم الأول طويل جداً")
     .notEmpty()
-    .withMessage("First name is required"),
+    .withMessage("الاسم الأول مطلوب"),
 
   check("lastName")
     .isLength({ min: 3 })
-    .withMessage("Last name must be at least 3 chars")
+    .withMessage("يجب أن يكون الاسم الأخير على الأقل 3 أحرف")
     .isLength({ max: 30 })
-    .withMessage("Too long last name")
+    .withMessage("الاسم الأخير طويل جداً")
     .notEmpty()
-    .withMessage("last name is required")
+    .withMessage("الاسم الأخير مطلوب")
     .custom((val, { req }) => {
-      console.log("ddddddddddddddd")
       if (val && req.body.firstName) {
         req.body.slug = slugify(req.body.firstName + "-" + val);
       }
@@ -32,51 +33,43 @@ export const signupValidator = [
   check("email")
     .optional()
     .isEmail()
-    .withMessage("Invalid email address")
+    .withMessage("بريد إلكتروني غير صالح")
     .custom(async (value) => {
       const user = await User.findOne({ email: value });
-
-      if (user) throw new ApiError("E-mail already exist", 400);
+      if (user) throw new ApiError("البريد الإلكتروني موجود بالفعل", 400);
       return true;
     }),
 
   check("password")
     .notEmpty()
-    .withMessage("Password is required")
+    .withMessage("كلمة المرور مطلوبة")
     .isLength({ min: 6 })
-    .withMessage("Password must be at least 6 characters"),
+    .withMessage("يجب أن تكون كلمة المرور على الأقل 6 أحرف")
+,
 
   check("phone")
-  .notEmpty()
-  .withMessage("Phone number is required")
-  .custom((value) => {
-    const supportedCountries = ["SA", "AE", "OM", "KW", "QA"];
-    const isValid = supportedCountries.some((country) =>
-      isValidPhoneNumber(value, country)
-    );
-
-    if (!isValid) {
-      throw new Error("الرقم غير صحيح او هذا الرقم غير موجود");
-    }
-    return true;
-  })
-  .custom(async (value) => {
-    const user = await User.findOne({ phone: value });
-    if (user) {
-      throw new Error("Phone number already exists");
-    }
-    return true;
-  })
+    .notEmpty()
+    .withMessage("رقم الهاتف مطلوب")
+    .custom((value) => {
+      const supportedCountries = ["SA", "AE", "OM", "KW", "QA"];
+      const isValid = supportedCountries.some((country) =>
+        isValidPhoneNumber(value, country)
+      );
+      if (!isValid) {
+        throw new Error("الرقم غير صحيح أو غير مدعوم");
+      }
+      return true;
+    })
     .custom(async (value) => {
       const user = await User.findOne({ phone: value });
-
-      if (user) throw new ApiError("Phone number already exist", 400);
+      if (user) {
+        throw new Error("رقم الهاتف موجود بالفعل");
+      }
       return true;
     }),
 
   validator,
 ];
-
 export const loginValidator = [
   check("email").optional().isEmail().withMessage("Invalid email address"),
 

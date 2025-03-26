@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Select from "react-select";
 
 const CouponForm = ({
@@ -14,6 +14,13 @@ const CouponForm = ({
   error,
   handleAddCoupon,
 }) => {
+  // Effect to handle delivery type selection
+  useEffect(() => {
+    if (selectedGiftMethod?.value === "delivery") {
+      setDiscountPercentage("0");
+    }
+  }, [selectedGiftMethod, setDiscountPercentage]);
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-md mb-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -39,7 +46,12 @@ const CouponForm = ({
             value={discountPercentage}
             onChange={(e) => setDiscountPercentage(e.target.value)}
             placeholder="اُدخل نسبة الخصم"
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md ${
+              selectedGiftMethod?.value === "delivery" ? "bg-gray-100" : ""
+            }`}
+            disabled={selectedGiftMethod?.value === "delivery"}
+            min="0"
+            max="100"
           />
         </div>
 
@@ -61,7 +73,7 @@ const CouponForm = ({
             الخصم{" "}
           </label>
           <Select
-          dir="rtl"
+            dir="rtl"
             options={couponOptions}
             value={selectedGiftMethod}
             onChange={handlePackageSizeChange}

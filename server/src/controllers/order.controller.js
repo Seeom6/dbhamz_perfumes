@@ -54,66 +54,119 @@ export const checkOutSession = asyncHandler(async (req, res, next) => {
     return next(new ApiError("فشل في إنشاء الدفع مع myFatoora", 500));
   }
 });
-
+// controllers/payment.controller.js
 export const checkOutSessionId = asyncHandler(async (req, res, next) => {
-
-  // Fetch the cart
-  const { shippingData } = req.body
-  const order = await OrderService.getOrderById(req.params.id)
-  const user = await UserService.getUserById(req.user.id);
-
-  const finalePrice = order.totalOrderPriceAfterDiscount ? order.totalOrderPriceAfterDiscount : order.totalOrderPrice
+  const { shippingData } = req.body;
+  
   try {
-    const paymentReponse = await MyFatooraService.getMyFatooraLink(finalePrice, { user, shippingData})
-    order.paymentStatus = "Pending"
-    order.shippingData = shippingData
-    order.paymentId = `${paymentReponse.Data.InvoiceId}`
-    await order.save()
+    const order = await OrderService.getOrderById(req.params.id);
+    const user = await UserService.getUserById(req.user.id);
+
+    await UserService.updateUser(req.user.id, {
+      address: {
+        city: shippingData.city,
+        country: shippingData.country,
+        street: shippingData.street,
+        area: shippingData.area,
+      },
+    });
+    // Calculate final price with proper rounding
+    const finalPrice = Math.round(
+      (order.totalOrderPriceAfterDiscount || order.totalOrderPrice) + 
+      order.shippingPrice
+    );
+    const paymentResponse = await MyFatooraService.getMyFatooraLink(finalPrice, { 
+      user, 
+      shippingData,
+      orderId: order._id // Pass order ID for reference
+    });
+
+    // Update order status
+    await OrderService.updateOrder(order._id, {
+      paymentStatus: "Pending",
+      shippingData,
+      paymentId: paymentResponse.Data.InvoiceId,
+      paymentMethod: "card"
+    });
+
     res.status(200).json({
       success: true,
-      message: "تم إنشاء الطلب بنجاح",
-      paymentUrl: paymentReponse.Data.InvoiceURL,
+      message: "تم تحويلك إلى صفحة الدفع الآمن",
+      paymentUrl: paymentResponse.Data.InvoiceURL,
+      invoiceId: paymentResponse.Data.InvoiceId
     });
+
   } catch (error) {
-    return next(new ApiError("فشل في إنشاء الدفع مع myFatoora", 500));
+    return next(new ApiError("تعذر الاتصال بخدمة الدفع، يرجى المحاولة لاحقاً", 503));
   }
 });
-
-export const createOder = asyncHandler(async (req, res, next) => {
+export const createOrder = asyncHandler(async (req, res, next) => {
   let items = [];
   const taxPrice = 0;
-  const shippingPrice = 0;
+  
+  // Get products and build items array
   await Promise.all(
-      req.body.items.map(async (productInfo) => {
-        const product = await productService.getProductById(productInfo._id)
-        items.push({
-          product: product._id,
-          price: product.price,
-          quantity: productInfo.quantity
-        });
-      }))
+    req.body.items.map(async (productInfo) => {
+      const product = await productService.getProductById(productInfo._id);
+      items.push({
+        product: product._id,
+        price: product.price,
+        quantity: productInfo.quantity,
+        productImage: product.imageCover, // Store the image cover URL
+        productName: product.name, // Store product name for reference
+        productSlug: product.slug // Store product slug if needed
+      });
+    })
+  );
 
+  // Calculate total items
+  const totalItems = items.reduce((total, item) => total + item.quantity, 0);
+
+  // Calculate shipping price based on number of items
+  let shippingPrice = 0;
+  if (totalItems <= 1) {
+    shippingPrice = 4; 
+  } else if (totalItems <= 4) {
+    shippingPrice = 6; 
+  } else if (totalItems <= 6) {
+    shippingPrice = 8;
+  } else if (totalItems <= 8) {
+    shippingPrice = 10; 
+  } else if (totalItems <= 0) {
+    shippingPrice = 0; 
+  } else {
+    shippingPrice = 10; 
+  }
 
   const totalPrice = items.reduce((total, item) => total + (item.price * item.quantity), 0);
   const totalOrderPrice = totalPrice + taxPrice + shippingPrice;
+
   const order = await Order.create({
     user: req.user._id,
     cartItems: items,
     taxPrice,
-    shippingData: 0,
+    shippingPrice,
     totalOrderPrice,
     paymentMethod: "card",
     isPaid: false,
     paymentStatus: "INIT",
     paymentId: null,
     reference_id: "referance",
+    totalItems,
   });
+
   res.status(200).json({
     success: true,
     message: "تم انشاء الطلب بنجاح",
     orderId: order._id,
+    shippingPrice,
+    totalItems,
+    cartItems: order.cartItems.map(item => ({
+      ...item.toObject(),
+      productImage: item.productImage // Ensure image is included in response
+    }))
   });
-})
+});
 
 export const filterOrderForLoggedUser = asyncHandler(async (req, res, next) => {
   if (req.user.roles === "user") req.body.filterObj = { user: req.user._id };
@@ -155,16 +208,37 @@ export const getOrder = asyncHandler(async (req, res, next) => {
 });
 
 
-export const weebHook = asyncHandler(async (req, res, next) => {
-  const { Data } = req.body;
-  const payment = await OrderService.getOrderByPaymentId(Data.InvoiceId)
-  payment.paymentStatus = Data.TransactionStatus
-  await payment.save()
-  res.json({
+export const webHook = asyncHandler(async (req, res, next) => {
+  try {
+    const { Data } = req.body;
+    
+    if (!Data || !Data.InvoiceId) {
+      return next(new ApiError("بيانات الويب هوك غير صالحة - رقم الفاتورة مفقود", 400));
+    }
 
-  }) ;
-})
-
+    const order = await OrderService.getOrderByPaymentId(Data.InvoiceId);
+    
+    order.paymentStatus = Data.TransactionStatus;
+    
+    // Update isPaid if payment is successful
+    if (Data.TransactionStatus === "SUCCESS" || Data.TransactionStatus === "Paid") {
+      order.isPaid = true;
+      order.paidAt = new Date();
+    }
+    
+    await order.save();
+    
+    res.status(200).json({
+      success: true,
+      message: "تم معالجة الويب هوك بنجاح",
+      orderId: order._id,
+      status: order.paymentStatus
+    });
+    
+  } catch (error) {
+    next(new ApiError("فشل في معالجة الويب هوك", 500));
+  }
+});
 export const applyingCoupon = asyncHandler(async (req, res, next) => {
   const order = await OrderService.getOrderById(req.params.id)
   const coupon = await CouponService.getValidCoupon(req.body.coupon)

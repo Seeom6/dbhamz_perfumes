@@ -1,41 +1,30 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
+import { ThreeDots } from "react-loader-spinner";
+
+// Context & Utilities
+import { Context } from "../../context/StatContext";
+import { convertCurrency } from "../../utils/currency";
+import HandleError from "../../utils/GlobalError";
+import { countries } from "../../utils/data";
+import { useApplyCoupon, useCheckOut, useGetOrder } from "../../utils/Api/OrderEndPoint";
+
+// Components
 import HeaderImage from "../../components/HeaderImage";
 import Loading from "../../components/Loading";
-import { Context } from "../../context/StatContext";
-import { redirect, useNavigate, useParams } from "react-router-dom";
-import {
-  useApplyCoupon,
-  useCheckOut,
-  useGetOrder,
-} from "../../utils/Api/OrderEndPoint";
-import { convertCurrency } from "../../utils/currency";
 import Error from "../../components/Error";
-import { toast } from "react-toastify";
-import HandleError from "../../utils/GlobalError";
-import { useQueryClient } from "@tanstack/react-query";
-import { countries } from "../../utils/data";
 
 const OrderData = () => {
-  const param = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const {
-    userData,
-    isLogin,
-    cartItems,
-    totalPrice,
-    incQty,
-    currency,
-    onRemove,
-    onAdd,
-    decQty,
-    toggleCartItemQuantity,
-    totalQuantities,
-    isAddCartLoading,
-    qty,
-  } = useContext(Context);
-  const [route, setRoute] = useState("");
+  const { userData, currency } = useContext(Context);
+  
+  // State management
   const [coupon, setCoupon] = useState("");
+  const [formErrors, setFormErrors] = useState({});
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -45,294 +34,365 @@ const OrderData = () => {
     area: "",
     street: "",
     note: "",
-    paymentCurrency: "KWD", // Add paymentCurrency to formData
+    paymentCurrency: "KWD",
   });
-  const getCurrencyByCountry = (countryName) => {
-    const englishCountry = countries.find((c) => c.name === countryName);
 
-    if (englishCountry) {
-      return englishCountry.currency;
-    }
-    return "KWD"; // Default currency
-  };
+  // API Hooks
+  const { data: orderData, isError, error, isLoading } = useGetOrder(id);
+  const { mutate: applyCoupon, isPending: isCouponPending } = useApplyCoupon();
+  const { mutate: checkOut, isPending: isCheckoutPending } = useCheckOut();
 
-  const { data: orderData, isError, error, isLoading } = useGetOrder(param.id);
-  const { mutate: applyCoupon, isPending } = useApplyCoupon();
-  const {
-    mutate: checkOut,
-    isPending: isCheckPend,
-    isError: isCheckErr,
-  } = useCheckOut();
-  const [costPrice, setCostPrice] = useState(0);
-
-  const handleCoupon = (id) => {
-    applyCoupon(
-      { id, coupon },
-      {
-        onSuccess: (res) => {
-          queryClient.invalidateQueries(["orderData"]);
-          setCostPrice(res?.totalPriceAfterDiscount);
-        },
-        onError: (error) => {
-          toast.error(HandleError(error));
-        },
-      }
-    );
-  };
-
+  // Initialize form with user data
   useEffect(() => {
-    const currency = getCurrencyByCountry(userData?.country || "Kuwait");
-    setFormData({
-      firstName: userData?.firstName,
-      lastName: userData?.lastName,
-      phone: userData?.phone,
-      country: userData?.country,
-      city: userData?.city,
-      area: userData?.area,
-      street: userData?.street,
-      note: userData?.note,
-      paymentCurrency: currency,
-    });
-    setCostPrice(
-      orderData?.totalOrderPriceAfterDiscount
-        ? orderData?.totalOrderPriceAfterDiscount
-        : orderData?.totalOrderPrice
-    );
-  }, [orderData]);
+    if (userData) {
+      setFormData({
+        firstName: userData.firstName || "",
+        lastName: userData.lastName || "",
+        phone: userData.phone || "",
+        country: userData?.address?.country || "",
+        city: userData?.address?.city || "",
+        area: userData?.address?.area || "",
+        street: userData?.address?.street || "",
+        note: "",
+        paymentCurrency: getCurrencyByCountry(userData.country || "Kuwait"),
+      });
+    }
+  }, [userData]);
+
+  const getCurrencyByCountry = (countryName) => {
+    const country = countries.find((c) => c.name === countryName);
+    return country ? country.currency : "KWD";
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    if (!formData.firstName.trim()) errors.firstName = "الإسم الأول مطلوب";
+    if (!formData.lastName.trim()) errors.lastName = "إسم العائلة مطلوب";
+    if (!formData.phone.trim()) errors.phone = "رقم الهاتف مطلوب";
+    if (!formData.country.trim()) errors.country = "الدولة مطلوبة";
+    if (!formData.city.trim()) errors.city = "المدينة مطلوبة";
+    if (!formData.area.trim()) errors.area = "الحي مطلوب";
+    if (!formData.street.trim()) errors.street = "الشارع مطلوب";
+    
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    // If country is changing, update the currency too
-    if (name === "country") {
-      const currency = getCurrencyByCountry(value);
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-        paymentCurrency: currency,
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+      ...(name === "country" && { paymentCurrency: getCurrencyByCountry(value) }),
+    }));
+    if (formErrors[name]) setFormErrors(prev => ({ ...prev, [name]: "" }));
   };
 
-  if (isLoading) return <Loading elements={"h-screen"} />;
+  const handleCoupon = () => {
+    if (!coupon.trim()) {
+      toast.error("الرجاء إدخال كود الخصم");
+      return;
+    }
+    applyCoupon(
+      { id, coupon },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["orderData"]);
+          toast.success("تم تطبيق الكوبون بنجاح");
+        },
+        onError: (error) => toast.error(HandleError(error)),
+      }
+    );
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      toast.error("الرجاء إكمال جميع الحقول المطلوبة");
+      return;
+    }
+    checkOut(
+      { id, shippingData: formData },
+      {
+        onSuccess: (res) => {
+          if (res.paymentUrl) window.location.href = res.paymentUrl;
+        },
+        onError: (error) => toast.error(HandleError(error)),
+      }
+    );
+  };
+
+  if (isLoading) return <Loading elements="h-screen" />;
   if (isError) return <Error error={error} />;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    checkOut({id: param.id , shippingData: formData} , {onSuccess: (res)=>{
-      if (res.paymentUrl) {
-        window.location.href = res.paymentUrl || route;
-        setRoute(res.paymentUrl) 
-      }
-    }})
-  };
-
-  const totalPri = convertCurrency(costPrice, "KWD", currency);
-  const shippingPrice = convertCurrency(
-    orderData?.shippingPrice,
-    "KWD",
-    currency
-  );
-
-  const totalPriceAfterDis = convertCurrency(
-    orderData?.totalOrderPriceAfterDiscount,
-    "KWD",
-    currency
-  );
+  // Calculate prices
+  const subtotal = orderData?.totalOrderPrice || 0;
+  const discount = orderData?.totalOrderPriceAfterDiscount 
+    ? subtotal - orderData.totalOrderPriceAfterDiscount 
+    : 0;
+  const shipping = orderData?.shippingPrice || 0;
+  const total = (orderData?.totalOrderPriceAfterDiscount || subtotal) + shipping;
 
   return (
-    <div className="w-full flex justify-center items-center">
-      <div className="max-w-[1260px] w-full px-2.5 flex flex-col justify-center gap-8 sm:gap-14 md:gap-20 mb-20">
-        <HeaderImage
-          image={"../../../public/cartPerfume.png"}
-          title={"سلتك العطرية"}
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <HeaderImage 
+          image="../../../public/cartPerfume.png" 
+          title="سلتك العطرية"
+          className="mb-8"
         />
 
-        {
-          <div className="w-full flex flex-col md:flex-row justify-between items-start gap-4">
-            <form
-              className="w-full p-3 bg-fifed flex gap-4 flex-col items-center"
-              onSubmit={handleSubmit}
-            >
-              <h2 className="text-2xl font-bold ">بيانات الشحن</h2>
-              <p className="text-medium md:text-large text-ford">
-                من فضلك املأ البيانات بطريقة صحيحة حتى يصل إليك الطلب بالعنوان
-                الصحيح
-              </p>
-              <div className="w-full flex gap-6">
-                <div className="w-full">
-                  <input
-                    className="inputClass shadow-input"
-                    placeholder=" اسم الأول"
-                    type="text"
-                    name="firstName"
-                    required
-                    value={formData.firstName}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="w-full">
-                  <input
-                    className="inputClass shadow-input"
-                    placeholder=" اسم العائلة"
-                    type="text"
-                    name="lastName"
-                    value={formData.lastName}
-                    required
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-              <div className="w-full">
-                <input
-                  className="inputClass shadow-input"
-                  placeholder=" رقم الموبايل للتواصل"
-                  type="text"
-                  name="phone"
-                  required
-                  value={formData.phoneNumber}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="w-full flex gap-6">
-                <div className="w-full">
-                  <select
-                    className="inputClass shadow-input"
-                    name="country"
-                    value={formData.country}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="">اختر الدولة</option>
-                    {countries.map((country) => (
-                      <option key={country.currency} value={country.name}>
-                        {country.arabicName}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="w-full">
-                  <input
-                    className="inputClass shadow-input"
-                    placeholder=" المدينة"
-                    type="text"
-                    name="city"
-                    required
-                    value={formData.city}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-              <div className="w-full flex gap-6">
-                <div className="w-full">
-                  <input
-                    className="inputClass shadow-input"
-                    placeholder=" الحي"
-                    type="text"
-                    name="area"
-                    required
-                    value={formData.neighborhood}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="w-full">
-                  <input
-                    className="inputClass shadow-input"
-                    placeholder=" الشارع"
-                    type="text"
-                    required
-                    name="street"
-                    value={formData.street}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-              <div className="w-full">
-                <input
-                  className="inputClass shadow-input"
-                  placeholder=" ملاحظات  : "
-                  type="text"
-                  name="note"
-                  value={formData.reviews}
-                  onChange={handleChange}
-                />
-              </div>
-              <button
-                type="submit"
-                className="px-6 py-2 hidden md:block bg-primary w-full text-white rounded-lg hover:bg-blue-600"
-              >
-                {false ? <Loading width="24" height="24" /> : "حفظ"}
-              </button>
-            </form>
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Shipping Form - Left Column */}
+          <div className="lg:w-2/3">
+            <div className="bg-white p-6 rounded-xl shadow-sm">
+              <h2 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-4">
+                <span className="text-primary">بيانات</span> الشحن
+              </h2>
+              
+              <form onSubmit={handleSubmit}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Name Fields */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">الإسم الأول*</label>
+                    <input
+                      className={`w-full px-4 py-3 rounded-lg border ${formErrors.firstName ? "border-red-500" : "border-gray-300"} focus:ring-2 focus:ring-primary focus:border-transparent`}
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleChange}
+                    />
+                    {formErrors.firstName && (
+                      <p className="mt-1 text-sm text-red-600">{formErrors.firstName}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">إسم العائلة*</label>
+                    <input
+                      className={`w-full px-4 py-3 rounded-lg border ${formErrors.lastName ? "border-red-500" : "border-gray-300"} focus:ring-2 focus:ring-primary focus:border-transparent`}
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleChange}
+                    />
+                    {formErrors.lastName && (
+                      <p className="mt-1 text-sm text-red-600">{formErrors.lastName}</p>
+                    )}
+                  </div>
 
-            <div className="w-full">
-              <div className="w-full flex gap-2.5 flex-col justify-center items-center bg-fifed rounded-xl p-5 shadow-sm">
-                <p className="text-2xl font-bold">ملخص الطلب</p>
-                <div className="w-full flex justify-between px-5 md:px-10 h-14 items-center">
-                  <p className="text-lg md:text-xl">تكلفة الطلب:</p>
-                  <p className="text-lg md:text-xl">
-                    {" "}
-                    {currency} {totalPrice}
-                  </p>
+                  {/* Phone */}
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">رقم الهاتف*</label>
+                    <input
+                      className={`w-full px-4 py-3 rounded-lg border ${formErrors.phone ? "border-red-500" : "border-gray-300"} focus:ring-2 focus:ring-primary focus:border-transparent`}
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                    />
+                    {formErrors.phone && (
+                      <p className="mt-1 text-sm text-red-600">{formErrors.phone}</p>
+                    )}
+                  </div>
+
+                  {/* Address Fields */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">الدولة*</label>
+                    <select
+                      className={`w-full px-4 py-3 rounded-lg border ${formErrors.country ? "border-red-500" : "border-gray-300"} focus:ring-2 focus:ring-primary focus:border-transparent`}
+                      name="country"
+                      value={formData.country}
+                      onChange={handleChange}
+                    >
+                      <option value="">اختر الدولة</option>
+                      {countries.map((c) => (
+                        <option key={c.currency} value={c.name}>
+                          {c.arabicName}
+                        </option>
+                      ))}
+                    </select>
+                    {formErrors.country && (
+                      <p className="mt-1 text-sm text-red-600">{formErrors.country}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">المدينة*</label>
+                    <input
+                      className={`w-full px-4 py-3 rounded-lg border ${formErrors.city ? "border-red-500" : "border-gray-300"} focus:ring-2 focus:ring-primary focus:border-transparent`}
+                      name="city"
+                      value={formData.city}
+                      onChange={handleChange}
+                    />
+                    {formErrors.city && (
+                      <p className="mt-1 text-sm text-red-600">{formErrors.city}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">الحي*</label>
+                    <input
+                      className={`w-full px-4 py-3 rounded-lg border ${formErrors.area ? "border-red-500" : "border-gray-300"} focus:ring-2 focus:ring-primary focus:border-transparent`}
+                      name="area"
+                      value={formData.area}
+                      onChange={handleChange}
+                    />
+                    {formErrors.area && (
+                      <p className="mt-1 text-sm text-red-600">{formErrors.area}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">الشارع*</label>
+                    <input
+                      className={`w-full px-4 py-3 rounded-lg border ${formErrors.street ? "border-red-500" : "border-gray-300"} focus:ring-2 focus:ring-primary focus:border-transparent`}
+                      name="street"
+                      value={formData.street}
+                      onChange={handleChange}
+                    />
+                    {formErrors.street && (
+                      <p className="mt-1 text-sm text-red-600">{formErrors.street}</p>
+                    )}
+                  </div>
+
+                  {/* Note */}
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">ملاحظات (اختياري)</label>
+                    <textarea
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent"
+                      name="note"
+                      rows="3"
+                      value={formData.note}
+                      onChange={handleChange}
+                    />
+                  </div>
                 </div>
 
-                <div className="w-full flex justify-between px-5 md:px-10 h-14 items-center">
-                  <p className="text-lg md:text-xl">تكلفة التوصيل: </p>
-                  <p className="text-lg md:text-xl">
-                    {" "}
-                    {currency} {shippingPrice}
-                  </p>
-                </div>
+                <button
+                  type="submit"
+                  className="mt-6 w-full bg-primary text-white py-3 rounded-lg hover:bg-primary-dark transition-colors duration-300 flex justify-center items-center"
+                  disabled={isCheckoutPending}
+                >
+                  {isCheckoutPending ? (
+                    <ThreeDots color="#FFF" height={24} width={24} />
+                  ) : (
+                    "إتمام الشراء"
+                  )}
+                </button>
+              </form>
+            </div>
+          </div>
 
-                <div className="w-full flex justify-between px-5 md:px-10 h-14 items-center">
-                  <p className="text-lg md:text-xl">تكلفة الطلب بعد الخصم: </p>
-                  <p className="text-lg md:text-xl">
-                    {" "}
-                    {currency} {totalPriceAfterDis}
-                  </p>
-                </div>
+          {/* Order Summary - Right Column */}
+          <div className="lg:w-1/3">
+            <div className="bg-white p-6 rounded-xl shadow-sm sticky top-8">
+              <h2 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-4">
+                <span className="text-primary">ملخص</span> الطلب
+              </h2>
+              
+              {/* Products List */}
+              <div className="space-y-4 mb-6 max-h-96 overflow-y-auto pr-2">
+                {orderData?.cartItems?.map(item => (
+                  <div key={item._id} className="flex justify-between items-start border-b pb-4">
+                    <div className="flex items-start gap-3">
+                      <img 
+                        src={item.productImage} 
+                        alt={item.product?.name} 
+                        className="w-16 h-16 object-cover rounded"
+                      />
+                      <div>
+                        <p className="font-medium text-gray-800">{item.product?.name}</p>
+                        <p className="text-gray-500 text-sm">
+                          {item.quantity} × {convertCurrency(item.price, "KWD", currency)}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="font-medium text-gray-800">
+                      {convertCurrency(item.price * item.quantity, "KWD", currency)}
+                    </p>
+                  </div>
+                ))}
+              </div>
 
-                <div className="w-full flex justify-between px-5 md:px-10 h-14 items-center">
-                  <p className="text-lg md:text-xl">التكلفة الكلية: </p>
-                  <p className="text-lg md:text-xl">
-                    {" "}
-                    {currency} {totalPri}
-                  </p>
+              {/* Bill Breakdown */}
+              <div className="space-y-3 border-t pt-4">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">المجموع:</span>
+                  <span className="font-medium">{convertCurrency(subtotal, "KWD", currency)}</span>
+                </div>
+                
+                {discount > 0 && (
+                  <div className="flex justify-between text-green-600">
+                    <span>الخصم:</span>
+                    <span>-{convertCurrency(discount, "KWD", currency)}</span>
+                  </div>
+                )}
+                
+                <div className="flex justify-between">
+                  <span className="text-gray-600">الشحن:</span>
+                  <span className="font-medium">{convertCurrency(shipping, "KWD", currency)}</span>
+                </div>
+                
+                <div className="flex justify-between font-bold text-lg mt-3 pt-3 border-t">
+                  <span>المجموع النهائي:</span>
+                  <span className="text-primary">{convertCurrency(total, "KWD", currency)}</span>
                 </div>
               </div>
-              <div className="w-full mt-9">
-                <p>هل لديك كوبون خصم ؟</p>
-                <div className="w-full flex gap-3">
+
+              {/* Coupon Section */}
+              <div className="mt-6 pt-4 border-t">
+                <h3 className="text-lg font-medium text-gray-800 mb-3">تطبيق كوبون خصم</h3>
+                <div className="flex gap-2">
                   <input
-                    className="inputClass shadow-input"
-                    placeholder=" أدخل الكوبون"
-                    type="text"
-                    name="phoneNumber"
+                    className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent"
+                    placeholder="أدخل كود الخصم"
+                    value={coupon}
                     onChange={(e) => setCoupon(e.target.value)}
-                  />{" "}
+                  />
                   <button
-                    onClick={() => handleCoupon(param.id)}
-                    className="px-6 py-2 bg-primary w-2/5 text-white rounded-lg hover:bg-blue-600"
+                    onClick={handleCoupon}
+                    className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors duration-300 flex items-center justify-center"
+                    disabled={isCouponPending}
                   >
-                    {false ? <Loading width="24" height="24" /> : "تأكيد"}
+                    {isCouponPending ? (
+                      <ThreeDots color="#FFF" height={20} width={20} />
+                    ) : (
+                      "تطبيق"
+                    )}
                   </button>
+                </div>
+              </div>
+
+              {/* Payment Methods */}
+              <div className="mt-6 pt-4 border-t">
+                <h3 className="text-lg font-medium text-gray-800 mb-3">طرق الدفع</h3>
+                <div className="flex flex-wrap gap-2">
+                  <div className="border rounded-lg p-2">
+                    <img src="/assets/visaCard.jpeg" alt="Visa" className="h-8" />
+                  </div>
+                  <div className="border rounded-lg p-2">
+                    <img src="/assets/masterCard.png" alt="Mastercard" className="h-8" />
+                  </div>
+                  <div className="border rounded-lg p-2">
+                    <img src="/assets/mada.jpeg" alt="Mada" className="h-8" />
+                  </div>
+                  <div className="border rounded-lg p-2">
+                    <img src="/assets/apple.png" alt="Mada" className="h-8" />
+                  </div>
+                  <div className="border rounded-lg p-2">
+                    <img src="/assets/google.png" alt="Mada" className="h-8" />
+                  </div>
+
+                </div>
+                <div className="mt-3 flex items-center gap-2 text-sm text-gray-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span>مدفوعات آمنة عبر MyFatoora</span>
                 </div>
               </div>
             </div>
           </div>
-        }
-        <button
-          onClick={handleSubmit}
-          type="submit"
-          className="px-6 py-2 block md:hidden bg-primary w-full text-white rounded-lg hover:bg-blue-600"
-        >
-          {isCheckPend ? <Loading width="24" height="24" /> : "دفع"}
-        </button>
+        </div>
       </div>
     </div>
   );

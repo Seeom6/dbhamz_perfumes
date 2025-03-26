@@ -610,6 +610,27 @@ export const GetOrder = async (id) => {
     }
   }
 };
+export const GetMyOrders = async () => {
+  try {
+    const res = await globalAxios.get(`/order/my-order`);
+    return res?.data?.data;
+  } catch (error) {
+    // Handle different error scenarios
+    if (err) {
+      // Server responded with a status code outside the 2xx range
+      const errorMessage = HandleError(err) || "An unknown error occurred";
+      throw new Error(errorMessage); // Throw the error
+    } else if (err.request) {
+      // The request was made but no response was received
+      throw new Error(
+        "No response from the server. Please check your connection."
+      );
+    } else {
+      // Something happened in setting up the request
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
+  }
+};
 
 
 

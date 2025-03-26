@@ -1,69 +1,106 @@
 import React from "react";
+import { FiGift, FiTrash2 } from "react-icons/fi";
 
-const CouponList = ({ coupons, userIdToGift, setUserIdToGift, handleDeleteCoupon }) => {
+const CouponList = ({
+  coupons,
+  userIdToGift,
+  setUserIdToGift,
+  handleDeleteCoupon,
+  handleGiftToAll,
+  handleGiftToNewCustomers,
+  isGiftingToAll,
+  isGiftingToNew,
+  setIsGiftingToAll,
+  setIsGiftingToNew,
+}) => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-        الكوبانات الموجودة
-      </h2>
+    <div className="mt-8">
+      <h2 className="text-xl font-semibold mb-4">قائمة الكوبونات</h2>
+      
       {coupons?.length === 0 ? (
-        <p className="text-gray-500 text-center">لا توجد كوبونات مضافة حتى الآن.</p>
+        <p className="text-center py-4">لا توجد كوبونات متاحة</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {coupons?.map((coupon) => (
-            <div
-              key={coupon._id}
-              className="relative bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden"
-              style={{ minHeight: "400px" }} // Adjust height as needed
-            >
-              {/* Coupon Content */}
-              <div className="p-6 text-white flex flex-col justify-between h-full">
-                {/* Coupon Header */}
-                <div className="text-center">
-                  <p className="text-2xl font-bold mb-2">كوبون الخصم</p>
-                  <p className="text-sm bg-white/20 px-3 py-1 rounded-full inline-block">
-                    {coupon.code}
-                  </p>
-                </div>
-
-                {/* Coupon Details */}
-                <div className="text-center">
-                  <p className="text-4xl font-bold mb-4">{coupon.name}</p>
-                  <p className="text-lg font-semibold">
-                    نسبة الخصم: %{coupon.discount}
-                  </p>
-                  <p className="text-sm mt-2">
-                    تاريخ الانتهاء: {new Date(coupon.expired).toLocaleDateString()}
-                  </p>
-                </div>
-
-                {/* Buttons and Input */}
-                <div className="mt-6 space-y-2">
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleDeleteCoupon(coupon?._id)}
-                      className="flex-1 bg-white text-purple-600 py-2 px-4 rounded-lg hover:bg-gray-100 transition-colors"
-                    >
-                      حذف
-                    </button>
-                    <button
-                      // onClick={() => handleGiftCoupon(coupon._id)}
-                      className="flex-1 bg-white text-blue-600 py-2 px-4 rounded-lg hover:bg-gray-100 transition-colors"
-                    >
-                      إهداء
-                    </button>
-                  </div>
-                  <input
-                    type="text"
-                    value={userIdToGift}
-                    onChange={(e) => setUserIdToGift(e.target.value)}
-                    placeholder="إسم الزبون"
-                    className="w-full p-2 border border-white/30 rounded-lg bg-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white"
-                  />
-                </div>
-              </div>
-            </div>
-          ))}
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  الكود
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  الخصم
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  تاريخ الانتهاء
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  النوع
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  الإجراءات
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {coupons?.map((coupon) => (
+                <tr key={coupon._id}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {coupon.name}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {coupon.discount}%
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {new Date(coupon.expired).toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {coupon.type || "عام"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <div className="flex justify-end space-x-2">
+                      <button
+                        onClick={() => {
+                          setIsGiftingToAll(coupon._id);
+                          handleGiftToAll(coupon._id);
+                        }}
+                        disabled={isGiftingToAll === coupon._id}
+                        className={`flex items-center px-3 py-1 rounded-md ${
+                          isGiftingToAll === coupon._id
+                            ? "bg-gray-300 text-gray-600"
+                            : "bg-green-100 text-green-800 hover:bg-green-200"
+                        }`}
+                      >
+                        <FiGift className="ml-1" />
+                        للجميع
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsGiftingToNew(coupon._id);
+                          handleGiftToNewCustomers(coupon._id);
+                        }}
+                        disabled={isGiftingToNew === coupon._id}
+                        className={`flex items-center px-3 py-1 rounded-md ${
+                          isGiftingToNew === coupon._id
+                            ? "bg-gray-300 text-gray-600"
+                            : "bg-blue-100 text-blue-800 hover:bg-blue-200"
+                        }`}
+                      >
+                        <FiGift className="ml-1" />
+                        للجدد
+                      </button>
+                      <button
+                        onClick={() => handleDeleteCoupon(coupon._id)}
+                        className="flex items-center px-3 py-1 rounded-md bg-red-100 text-red-800 hover:bg-red-200"
+                      >
+                        <FiTrash2 className="ml-1" />
+                        حذف
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>

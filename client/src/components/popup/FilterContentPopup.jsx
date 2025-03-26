@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Popup from "../Popup";
 import { useAllBrands } from "../../utils/Api/BrandEndPoint";
 import Select from "react-select";
 
-const FilterContentPopup = ({ isFilterPopupOpen, setIsFilterPopupOpen, onFilterSubmit }) => {
+const FilterContentPopup = ({ 
+  isFilterPopupOpen, 
+  setIsFilterPopupOpen, 
+  onFilterSubmit,
+  initialBrandFilter 
+}) => {
   const { data: brands, isLoading } = useAllBrands();
   const packageSizes = [50, 75, 80, 90, 100, 120, 125, 150, 175, 200, 250];
 
@@ -13,31 +18,39 @@ const FilterContentPopup = ({ isFilterPopupOpen, setIsFilterPopupOpen, onFilterS
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedPackageSizes, setSelectedPackageSizes] = useState([]);
 
-  // Convert packageSizes to options for react-select
+  // Initialize brand filter if it comes from URL
+  useEffect(() => {
+    if (initialBrandFilter) {
+      setSelectedBrand(initialBrandFilter);
+    }
+  }, [initialBrandFilter]);
+
   const packageSizeOptions = packageSizes.map((size) => ({
     value: size,
     label: `${size} مل`,
   }));
 
-  // Handle package size selection
   const handlePackageSizeChange = (selectedOptions) => {
     setSelectedPackageSizes(selectedOptions);
   };
 
-  // Handle filter submission
   const handleFilterSubmit = () => {
     const filters = {
       minPrice: minPrice ? Number(minPrice) : null,
       maxPrice: maxPrice ? Number(maxPrice) : null,
-      brand: selectedBrand,
+      brand: selectedBrand || null,
       packageSizes: selectedPackageSizes.map((option) => option.value),
     };
 
-    // Pass filters to the parent component or API
     onFilterSubmit(filters);
-
-    // Close the popup (optional)
     setIsFilterPopupOpen(false);
+  };
+
+  const handleResetFilters = () => {
+    setMinPrice("");
+    setMaxPrice("");
+    setSelectedBrand(initialBrandFilter || ""); // Preserve brand from URL if exists
+    setSelectedPackageSizes([]);
   };
 
   return (
@@ -68,7 +81,7 @@ const FilterContentPopup = ({ isFilterPopupOpen, setIsFilterPopupOpen, onFilterS
           </div>
         </div>
 
-        {/* Brand Filter (Dropdown) */}
+        {/* Brand Filter */}
         <div className="w-full flex flex-col justify-start bg-fifed p-2">
           <p className="text-large font-semibold border-b mb-3">البراند</p>
           <select
@@ -98,13 +111,21 @@ const FilterContentPopup = ({ isFilterPopupOpen, setIsFilterPopupOpen, onFilterS
           />
         </div>
 
-        {/* Filter Button */}
-        <button
-          className="w-full text-xl font-bold bg-primary py-2.5 text-white rounded-lg"
-          onClick={handleFilterSubmit}
-        >
-          فلتر
-        </button>
+        {/* Action Buttons */}
+        <div className="flex gap-2">
+          <button
+            className="w-full text-xl font-bold bg-primary py-2.5 text-white rounded-lg"
+            onClick={handleFilterSubmit}
+          >
+            فلتر
+          </button>
+          <button
+            className="w-full text-xl font-bold bg-gray-300 py-2.5 text-gray-800 rounded-lg"
+            onClick={handleResetFilters}
+          >
+            إعادة تعيين
+          </button>
+        </div>
       </div>
     </Popup>
   );

@@ -10,6 +10,7 @@ import HeaderSideBar from "./HeaderSideBar";
 import { IoIosMenu, IoIosClose } from "react-icons/io";
 import { Context } from "../context/StatContext"; // Import the Context
 import CustomSingleValue from "./CustomFlag";
+import CurrencyPopup from "./popup/CurrencyPopup";
 
 const Header = () => {
   const navigation = useNavigate();
@@ -17,7 +18,7 @@ const Header = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { data: getMe, isError, error, isLoading } = useGetMe();
   const { currency } = useContext(Context); // Access the active currency from Context
-
+ const [isCurrencyPopupOpen, setIsCurrencyPopupOpen] = useState(false);
   // Find the active country based on the currency
   const activeCountry = countries.find((country) => country.currency === currency);
 
@@ -28,8 +29,10 @@ const Header = () => {
       navigation("/login");
     }
   };
+ 
 
   return (
+ 
     <div className={` ${NotAccessRoute.includes(pathname) ? "hidden" : ''} h-[68px] md:h-[100px] w-full fixed flex z-50 bg-white items-center justify-around md:justify-center shadow-regularShadow px-2.5 mb-5`}>
       <div className="max-w-[1240px] w-full relative h-full flex justify-between items-center">
         <div className="w-11 h-11 md:w-20 md:h-16" onClick={checkUser}>
@@ -39,12 +42,13 @@ const Header = () => {
           <SearchBar />
           <Links />
         </div>
-        <div className="currency-display">
+        <div 
+        className="currency-display cursor-pointer" 
+        onClick={() => setIsCurrencyPopupOpen(true)}
+      >
         {activeCountry && (
           <div className="flex items-center gap-3">
-            <CustomSingleValue
-              data={activeCountry.value}
-            />
+            <CustomSingleValue data={activeCountry.value} />
             <span className="text-[10px] md:text-medium">{activeCountry.currency}</span>
           </div>
         )}
@@ -54,6 +58,10 @@ const Header = () => {
         </div>
         <HeaderSideBar setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
       </div>
+      <CurrencyPopup
+        isOpen={isCurrencyPopupOpen}
+        onClose={() => setIsCurrencyPopupOpen(false)}
+      />
     </div>
   );
 };

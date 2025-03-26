@@ -30,9 +30,20 @@ async function getOrderByPaymentId(paymentId){
     return order
 }
 
-
+async function updateOrder(id, updateData) {
+    const updatedOrder = await OrderModel.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true, runValidators: true }
+    );
+    if (!updatedOrder) {
+      throw new ApiError("Order not found", 404);
+    }
+    return updatedOrder;
+  }
 export const OrderService = {
     getMyOrders,
     getOrderById,
     getOrderByPaymentId,
+    updateOrder
 }

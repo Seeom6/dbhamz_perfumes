@@ -25,6 +25,7 @@ import DashboardHome from "./pages/dashboard/DashboardHome";
 import AddProduct from "./pages/dashboard/AddProduct";
 import { ToastContainer } from "react-toastify";
 import NotFound from './pages/NotFount';
+import Brands from "./pages/Brands";
 
 // Create a layout wrapper component
 const MainLayout = ({ children }) => {
@@ -59,6 +60,7 @@ function App() {
             <Route path="/success" element={<Success />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/order/:id" element={<OrderData/>} />
+            <Route path="/brands" element={<Brands/>} />
             
             {/* Dashboard Routes - No Header/Footer */}
             <Route path="/dashboard" element={<DashboardLayout />}>

@@ -7,80 +7,133 @@ import { toast } from "react-toastify";
 import { countries } from "../../utils/data";
 import { useQueryClient } from "@tanstack/react-query";
 
-const SignupPopup = ({ onClose, onSignupSuccess , onLoginClick }) => {
-
-  const param = useParams()
-  const queryClient = useQueryClient()
-    const navigate = useNavigate()
+const SignupPopup = ({ onClose, onSignupSuccess, onLoginClick }) => {
+  const param = useParams();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
     phone: "",
     password: "",
-    confirmPassword: "", // Add confirmPassword field
+    confirmPassword: "",
   });
   const [selectedCountry, setSelectedCountry] = useState({
-    code: "+966", // Default country code (Saudi Arabia)
-    flag: "SA", // Default flag (Saudi Arabia)
+    code: "+966",
+    flag: "SA",
   });
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to control dropdown visibility
-  const [passwordError, setPasswordError] = useState(""); // State to handle password mismatch error
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [errors, setErrors] = useState({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [isPending, setIsPending] = useState(false);
+
+  const { mutate: SignUp } = useSignup();
 
   const handleCountryChange = (country) => {
-    setSelectedCountry(country); // Update selected country
-    setIsDropdownOpen(false); // Close the dropdown after selection
+    setSelectedCountry(country);
+    setIsDropdownOpen(false);
   };
 
   const changing = (event) => {
+    const { name, value } = event.target;
     setForm((prevState) => ({
       ...prevState,
-      [event.target.name]: event.target.value,
+      [name]: value,
     }));
+    // Clear error when user types
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  const { mutate: SignUp, error, isPending } = useSignup();
+  const validateForm = () => {
+    const newErrors = {};
+    let isValid = true;
 
-  const formSubmitted = (e) => {
-    e.preventDefault();
-
-    // Check if password and confirmPassword match
-    if (form.password !== form.confirmPassword) {
-      setPasswordError("كلمة المرور غير متطابقة");
-      return; // Stop form submission if passwords do not match
+    if (!form.firstName.trim()) {
+      newErrors.firstName = "الأسم الاول مطلوب";
+      isValid = false;
+    } else if (form.firstName.length < 3) {
+      newErrors.firstName = "الأسم الاول يجب أن يكون 3 أحرف على الأقل";
+      isValid = false;
     }
 
-    // Clear password error if passwords match
-    setPasswordError("");
+    if (!form.lastName.trim()) {
+      newErrors.lastName = "الأسم الثاني مطلوب";
+      isValid = false;
+    } else if (form.lastName.length < 3) {
+      newErrors.lastName = "الأسم الثاني يجب أن يكون 3 أحرف على الأقل";
+      isValid = false;
+    }
 
-    // Remove leading zeros from the phone number
-    const cleanedPhoneNumber = form.phone.replace(/^0+/, "");
+    if (!form.phone.trim()) {
+      newErrors.phone = "رقم الهاتف مطلوب";
+      isValid = false;
+    }
 
-    // Combine the country code with the cleaned phone number
-    const fullPhoneNumber = `${selectedCountry.code}${cleanedPhoneNumber}`;
+    if (!form.password) {
+      newErrors.password = "كلمة المرور مطلوبة";
+      isValid = false;
+    } else if (form.password.length < 6) {
+      newErrors.password = "كلمة المرور يجب أن تكون 6 أحرف على الأقل";
+      isValid = false;
+    }
 
-    // Prepare the data to be sent (exclude confirmPassword)
-    const dataToSend = {
-      firstName: form.firstName,
-      lastName: form.lastName,
-      phone: fullPhoneNumber,
-      password: form.password,
-    };
+    if (form.password !== form.confirmPassword) {
+      newErrors.confirmPassword = "كلمة المرور غير متطابقة";
+      isValid = false;
+    }
 
-    SignUp(dataToSend, {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["getme"])
-        toast.success("مرحبا بك بعالم الاناقة");
-        onSignupSuccess(); // Trigger the onSignupSuccess callback
-        onClose(); // Close the popup after successful signup
-        if(param === "/cart"){
-          navigate("/cart");
-        }
-        navigate("/")
-      },
-      onError: () => {
-        toast.error(error.message);
-      },
-    });
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const formSubmitted = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) return;
+
+    setIsPending(true);
+
+    try {
+      const cleanedPhoneNumber = form.phone.replace(/^0+/, "");
+      const fullPhoneNumber = `${selectedCountry.code}${cleanedPhoneNumber}`;
+
+      const dataToSend = {
+        firstName: form.firstName,
+        lastName: form.lastName,
+        phone: fullPhoneNumber,
+        password: form.password,
+      };
+
+      await new Promise((resolve, reject) => {
+        SignUp(dataToSend, {
+          onSuccess: () => {
+            queryClient.invalidateQueries(["getme"]);
+            toast.success("مرحبا بك بعالم الاناقة");
+            onSignupSuccess();
+            onClose();
+            if (param === "/cart") {
+              navigate("/cart");
+            } else {
+              navigate("/");
+            }
+            resolve();
+          },
+          onError: (error) => {
+            toast.error(error.message || "حدث خطأ أثناء التسجيل");
+            reject(error);
+          },
+        });
+      });
+    } catch (error) {
+      console.error("Signup error:", error);
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return (
@@ -89,6 +142,7 @@ const SignupPopup = ({ onClose, onSignupSuccess , onLoginClick }) => {
         <button
           onClick={onClose}
           className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+          disabled={isPending}
         >
           &times;
         </button>
@@ -99,24 +153,32 @@ const SignupPopup = ({ onClose, onSignupSuccess , onLoginClick }) => {
             <div>
               <p className="w-full flex flex-col items-start">الأسم الاول</p>
               <input
-                onChange={(e) => changing(e)}
-                className="inputClass shadow-input"
+                onChange={changing}
+                className={`inputClass shadow-input ${errors.firstName ? "border-red-500" : ""}`}
                 name="firstName"
                 type="text"
                 placeholder="الأسم الاول"
+                disabled={isPending}
               />
+              {errors.firstName && (
+                <p className="text-red-500 text-sm text-right">{errors.firstName}</p>
+              )}
             </div>
 
             {/* Last Name Input */}
             <div>
               <p className="w-full flex flex-col items-start">الأسم الثاني</p>
               <input
-                onChange={(e) => changing(e)}
-                className="inputClass shadow-input"
+                onChange={changing}
+                className={`inputClass shadow-input ${errors.lastName ? "border-red-500" : ""}`}
                 name="lastName"
                 type="text"
                 placeholder="الأسم الثاني"
+                disabled={isPending}
               />
+              {errors.lastName && (
+                <p className="text-red-500 text-sm text-right">{errors.lastName}</p>
+              )}
             </div>
 
             {/* Phone Input */}
@@ -127,22 +189,23 @@ const SignupPopup = ({ onClose, onSignupSuccess , onLoginClick }) => {
                 <div className="relative">
                   <button
                     type="button"
-                    className="flex h-10 items-center gap-2 p-2 border border-gray-300 rounded-lg bg-white"
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)} // Toggle dropdown visibility
+                    className={`flex h-10 items-center gap-2 p-2 border ${errors.phone ? "border-red-500" : "border-gray-300"} rounded-lg bg-white`}
+                    onClick={() => !isPending && setIsDropdownOpen(!isDropdownOpen)}
+                    disabled={isPending}
                   >
                     <CustomSingleValue data={selectedCountry.flag} />
                     <span>{selectedCountry.code}</span>
                   </button>
-                  {/* Dropdown Menu */}
                   {isDropdownOpen && (
                     <div className="absolute z-10 mt-2 w-40 bg-white border border-gray-300 rounded-lg shadow-lg">
                       {countries.map((country) => (
                         <button
-                          onClick={() => handleCountryChange(country)}
                           key={country.code}
+                          type="button"
+                          onClick={() => handleCountryChange(country)}
                           className="flex md:py-1 w-full justify-around hover:bg-blue-300 cursor-pointer text-small md:text-medium border-b border-l-transparent"
                         >
-                          {<CustomSingleValue data={country.value} />}
+                          <CustomSingleValue data={country.value} />
                           <p className="font-bold">{country.code}</p>
                         </button>
                       ))}
@@ -151,46 +214,58 @@ const SignupPopup = ({ onClose, onSignupSuccess , onLoginClick }) => {
                 </div>
                 {/* Phone Input */}
                 <input
-                  onChange={(e) => changing(e)}
-                  className="inputClass shadow-input flex-1"
+                  onChange={changing}
+                  className={`inputClass shadow-input flex-1 ${errors.phone ? "border-red-500" : ""}`}
                   name="phone"
                   type="number"
                   placeholder="123456789"
                   inputMode="numeric"
+                  disabled={isPending}
                 />
               </div>
+              {errors.phone && (
+                <p className="text-red-500 text-sm text-right">{errors.phone}</p>
+              )}
             </div>
 
             {/* Password Input */}
             <div>
               <p className="w-full flex flex-col items-start">كلمة المرور</p>
               <input
-                onChange={(e) => changing(e)}
-                className="inputClass shadow-input"
+                onChange={changing}
+                className={`inputClass shadow-input ${errors.password ? "border-red-500" : ""}`}
                 name="password"
                 type="password"
                 placeholder="كلمة المرور"
+                disabled={isPending}
               />
+              {errors.password && (
+                <p className="text-red-500 text-sm text-right">{errors.password}</p>
+              )}
             </div>
 
             {/* Confirm Password Input */}
             <div>
               <p className="w-full flex flex-col items-start">تأكيد كلمة المرور</p>
               <input
-                onChange={(e) => changing(e)}
-                className="inputClass shadow-input"
+                onChange={changing}
+                className={`inputClass shadow-input ${errors.confirmPassword ? "border-red-500" : ""}`}
                 name="confirmPassword"
                 type="password"
                 placeholder="تأكيد كلمة المرور"
+                disabled={isPending}
               />
-              {/* Display error if passwords do not match */}
-              {passwordError && (
-                <p className="text-red-500 text-sm mt-1">{passwordError}</p>
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-sm text-right">{errors.confirmPassword}</p>
               )}
             </div>
 
             <div className="w-full flex justify-center">
-              <button type="submit" className="button-class bg-dashboard w-3/4">
+              <button
+                type="submit"
+                className={`button-class bg-dashboard w-3/4 ${isPending ? "opacity-70 cursor-not-allowed" : ""}`}
+                disabled={isPending}
+              >
                 {isPending ? <Loading width="24" height="24" /> : "إنشاء حساب"}
               </button>
             </div>
@@ -200,10 +275,18 @@ const SignupPopup = ({ onClose, onSignupSuccess , onLoginClick }) => {
               <Link
                 to="/forgot-password"
                 className="text-blue-500 hover:underline"
+                onClick={(e) => isPending && e.preventDefault()}
               >
                 نسيت كلمة المرور؟
               </Link>
-              <button onClick={onLoginClick} className="text-blue-500 hover:underline">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  !isPending && onLoginClick();
+                }}
+                className="text-blue-500 hover:underline"
+                disabled={isPending}
+              >
                 تسجيل الدخول
               </button>
             </div>
