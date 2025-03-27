@@ -174,7 +174,7 @@ const SearchBar = () => {
                         className="w-8 h-8 object-contain ml-3 rounded-md"
                       />
                       <div className="flex flex-col items-end">
-                        <span className="text-sm text-gray-700">{product.title}</span>
+                        <span className="text-sm text-gray-700">{product.name}</span>
                         <span className="text-xs text-gray-500 line-clamp-1">{product.description}</span>
                       </div>
                     </button>
