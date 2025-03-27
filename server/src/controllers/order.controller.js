@@ -9,6 +9,22 @@ import { CouponType } from "../models/coupon.model.js"
 import { MyFatooraService} from "../service/payments/myFatura/myFatura.service.js";
 import productService from "../service/product.service.js";
 
+
+import crypto from 'crypto';
+
+// Add this verification function (can be in a separate utils file if preferred)
+const verifySignature = (receivedSig, payload) => {
+  const secret = process.env.MYFATOORA_WEBHOOK_SECRET;
+  const hmac = crypto.createHmac('sha256', secret);
+  hmac.update(JSON.stringify(payload));
+  const expectedSig = hmac.digest('hex');
+  return crypto.timingSafeEqual(
+    Buffer.from(receivedSig),
+    Buffer.from(expectedSig)
+  );
+};
+
+
 const taxPrice = 0;
 const shippingPrice = 0;
 
@@ -110,7 +126,7 @@ export const createOrder = asyncHandler(async (req, res, next) => {
       const product = await productService.getProductById(productInfo._id);
       items.push({
         product: product._id,
-        price: product.price,
+        price: product.priceAfterDiscount ?product.priceAfterDiscount: product.price ,
         quantity: productInfo.quantity,
         productImage: product.imageCover, // Store the image cover URL
         productName: product.name, // Store product name for reference
@@ -207,38 +223,48 @@ export const getOrder = asyncHandler(async (req, res, next) => {
   });
 });
 
-
-export const webHook = asyncHandler(async (req, res, next) => {
+export const webHook = async (req, res) => {
   try {
-    const { Data } = req.body;
-    
-    if (!Data || !Data.InvoiceId) {
-      return next(new ApiError("بيانات الويب هوك غير صالحة - رقم الفاتورة مفقود", 400));
+    const signature = req.headers['x-fatoorah-signature'];
+    const payload = req.body;
+
+    // Verify signature
+    if (!verifySignature(signature, payload)) {
+      return res.status(401).send('Invalid signature');
     }
 
-    const order = await OrderService.getOrderByPaymentId(Data.InvoiceId);
-    
-    order.paymentStatus = Data.TransactionStatus;
-    
-    // Update isPaid if payment is successful
-    if (Data.TransactionStatus === "SUCCESS" || Data.TransactionStatus === "Paid") {
-      order.isPaid = true;
-      order.paidAt = new Date();
+    const orderId = payload.UserDefinedField;
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).send('Order not found');
     }
-    
+
+    // Update order based on payment status
+    switch (payload.InvoiceStatus) {
+      case 'Paid':
+        order.isPaid = true;
+        order.paidAt = new Date();
+        order.paymentStatus = 'paid';
+        break;
+      case 'Failed':
+        order.paymentStatus = 'failed';
+        break;
+      case 'Expired':
+        order.paymentStatus = 'expired';
+        break;
+    }
+
     await order.save();
-    
-    res.status(200).json({
-      success: true,
-      message: "تم معالجة الويب هوك بنجاح",
-      orderId: order._id,
-      status: order.paymentStatus
-    });
-    
-  } catch (error) {
-    next(new ApiError("فشل في معالجة الويب هوك", 500));
+    res.status(200).send('Webhook processed');
+  } catch (err) {
+    res.status(500).send('Webhook processing failed');
   }
-});
+};
+
+
+
+
 export const applyingCoupon = asyncHandler(async (req, res, next) => {
   const order = await OrderService.getOrderById(req.params.id)
   const coupon = await CouponService.getValidCoupon(req.body.coupon)

@@ -12,10 +12,12 @@ import {
     applyingCoupon,
     checkOutSessionId
 } from "../controllers/order.controller.js";
+import { directVerifyPayment } from '../controllers/payment.controller.js';
 
 
 const Router = express.Router()
 
+Router.get('/direct-verify/:paymentId', directVerifyPayment);
 Router.post("/weeb-hook/fatoorah", webHook)
 
 Router.route("/").get(protect , allowedTo("user","admin") , filterOrderForLoggedUser ,getAllOrders)

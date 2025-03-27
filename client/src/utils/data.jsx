@@ -1,7 +1,4 @@
-import image1 from "/assets/perfume6.png";
-import image2 from "/assets/perfume2.png";
-import image3 from "/assets/perfume9.png";
-import image4 from "/assets/perfumeSpecial.png";
+
 
 import brand from "/assets/brand.png";
 import brand1 from "/assets/brand1.png";
@@ -9,15 +6,7 @@ import brand2 from "/assets/brand2.png";
 import brand3 from "/assets/brand3.png";
 import brand4 from "/assets/brand4.png";
 
-import perfume1 from "/assets/perfume1.png";
-import perfume2 from "/assets/perfume2.png";
-import perfume3 from "/assets/perfume3.png";
-import perfume4 from "/assets/perfume4.png";
-import perfume5 from "/assets/perfume5.png";
-import perfume6 from "/assets/perfume6.png";
-import perfume7 from "/assets/perfume7.png";
-import perfume8 from "/assets/perfume8.png";
-import perfume9 from "/assets/perfume9.png";
+
 
 import profileImg from "/assets/profileImg.png";
 
@@ -27,6 +16,7 @@ import { BsBoxFill } from "react-icons/bs";
 import { GiWallet } from "react-icons/gi";
 import { FaFileInvoiceDollar } from "react-icons/fa6";
 import { RiCoupon2Fill } from "react-icons/ri";
+import { BiSolidOffer } from "react-icons/bi";
 
 export const dashboardLinks = [
   {
@@ -38,6 +28,11 @@ export const dashboardLinks = [
     href: "/dashboard/customer",
     name: " الزبائن",
     icon: <BsPersonFill />,
+  },
+  {
+    href: "/dashboard/offers",
+    name: " العروض",
+    icon: <BiSolidOffer />,
   },
   {
     href: "/dashboard/products",
@@ -60,23 +55,8 @@ export const dashboardLinks = [
     icon: <RiCoupon2Fill />,
   },
 ];
-export const NotAccessRoute = [
-  "/login",
-  "/dashboard/add-product",
-  "/dashboard/",
-  "/dashboard",
-  "/dashboard/products",
-  "/dashboard/brands",
-  "/dashboard/orders",
-  "/dashboard/costumer",
-  "/dashboard/add-brand",
-  "/dashboard/products/add",
-  "/signup/",
-  "/signup",
-  "/dashboard/customer",
-  "/dashboard/coupon"
-];
-export const navLink = [
+
+export const navLinkForFooter = [
   {
     href: "/",
     name: "الصفحة الرئيسة",
@@ -106,29 +86,31 @@ export const navLink = [
     name: " تسجيل الدخول",
   },
 ];
+export const navLink = [
+  {
+    href: "/",
+    name: "الصفحة الرئيسة",
+  },
+  {
+    href: "/products",
+    name: "جميع المنتجات",
+  },
+  {
+    href: "/special-products",
+    name: "المنتجات المميزة",
+  },
+  {
+    href: "/brands",
+    name: " الماركات",
+  },
 
-export const offersInfo = [
   {
-    image: image4,
-    buttonTitle: "bay it now",
-    offerTitle: "any thing ",
+    href: "/about",
+    name: "من نحن",
   },
-  {
-    image: image1,
-    buttonTitle: "bay it now",
-    offerTitle: "any thing ",
-  },
-  {
-    image: image2,
-    buttonTitle: "bay it now",
-    offerTitle: "any thing ",
-  },
-  {
-    image: image3,
-    buttonTitle: "bay it now",
-    offerTitle: "any thing ",
-  },
+
 ];
+
 
 
 export const countries = [
@@ -162,199 +144,7 @@ export const Brands = [
   },
 ];
 
-export const specialProducts = [
-  {
-    img: perfume1,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume2,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume3,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume4,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume5,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume6,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume7,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume8,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume9,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-];
-export const products = [
-  {
-    img: perfume1,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume2,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume3,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume4,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume5,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume6,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume7,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume8,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume9,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume1,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume2,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume3,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume4,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume5,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume6,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume7,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume8,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-  {
-    img: perfume9,
-    brandName: "مميز",
-    perfumeName: "blue",
-    price: "60.0 ",
-    paymentCurrency: "د.ك",
-  },
-];
+
 
 export const customer = [
   {

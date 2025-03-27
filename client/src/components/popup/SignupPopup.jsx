@@ -116,11 +116,6 @@ const SignupPopup = ({ onClose, onSignupSuccess, onLoginClick }) => {
             toast.success("مرحبا بك بعالم الاناقة");
             onSignupSuccess();
             onClose();
-            if (param === "/cart") {
-              navigate("/cart");
-            } else {
-              navigate("/");
-            }
             resolve();
           },
           onError: (error) => {

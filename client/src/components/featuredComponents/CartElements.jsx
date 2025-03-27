@@ -6,7 +6,7 @@ import { Context } from "../../context/StatContext";
 
 const CartElements = ({ data, onRemove, toggleCartItemQuantity}) => {
   const { currency } = useContext(Context);
-  const convertedPrice = convertCurrency(data?.price, "KWD", currency);
+  const convertedPrice = convertCurrency(data?.priceAfterDiscount ?data?.priceAfterDiscount: data?.price , "KWD", currency);
   return (
     <div className="flex flex-col sm:flex-row items-center w-full justify-between p-4 border-b border-gray-200 shadow-sm shadow-primary sm:gap-5">
       <div className="flex justify-between w-full md:w-fit items-center space-x-4">

@@ -1,18 +1,16 @@
 import React from "react";
 import logo from "/assets/logo.png";
-import { navLink, NotAccessRoute } from "../utils/data.jsx";
-import { Link, useLocation } from "react-router-dom";
-import { FaPhone, FaInstagram , FaFacebookF, FaWhatsapp } from "react-icons/fa";
-import { MdEmail } from "react-icons/md";
+import { navLinkForFooter } from "../utils/data.jsx";
+import { Link } from "react-router-dom";
+import { FaPhone, FaInstagram, FaWhatsapp } from "react-icons/fa";
+
 
 const Footer = () => {
   const whatsappUrl = `https://wa.me/${+96566621132}?`;
 
-  const pathname = useLocation().pathname;
   return (
     <div
-      className={`${
-        NotAccessRoute.includes(pathname) ? "hidden" : ""
+      className={`
       } w-full flex justify-center flex-col b items-center`}
     >
       <div className="max-w-[1240px] w-full bg-primary p-5 md:p-20 flex flex-col md:flex-row justify-between md:justify-center gap-6 items-center md:items-start">
@@ -22,7 +20,7 @@ const Footer = () => {
         <div className="w-full flex justify-between md:justify-around">
           <div>
             <p className="font-bold text-[22px] mb-2">الأقسام</p>
-            {navLink.map((item) => (
+            {navLinkForFooter.map((item) => (
               <Link to={item.href}
                 key={item.href}
                 className="text-[#111] block font-semibold text-small md:text-medium leading-8"

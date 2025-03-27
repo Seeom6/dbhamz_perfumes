@@ -8,7 +8,7 @@ import Error from "./../components/Error";
 import FilterContentPopup from "./../components/popup/FilterContentPopup";
 import { useAllProducts } from "./../utils/Api/ApiEndPoint";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { FaAngleDown } from "react-icons/fa";
 
 const AllProducts = () => {
   const [itemsToShow, setItemsToShow] = useState(14);
@@ -72,7 +72,7 @@ const AllProducts = () => {
 
   return (
     <div className="w-full flex justify-center items-center">
-      <div className="max-w-[1260px] mt-[80px] md:mt-[115px] w-full px-2.5 flex justify-center gap-8 sm:gap-14 md:gap-20 mb-20">
+      <div className="max-w-[1260px] mt-[40px] md:mt-0 w-full px-2.5 flex justify-center gap-8 sm:gap-14 md:gap-20 mb-20">
         {/* Filtration Component (Visible on Large Screens) */}
         <div className="max-w-[247px] w-full min-w-[200px] h-screen hidden lg:block">
           <Filtration 
@@ -126,7 +126,7 @@ const AllProducts = () => {
                 className="px-6 py-3 bg-white text-primary border border-primary rounded-full hover:bg-primary hover:text-white transition-colors duration-300 flex items-center gap-2 shadow-sm hover:shadow-md"
               >
                 <span>عرض المزيد</span>
-                <ChevronDownIcon className="h-5 w-5" />
+                <FaAngleDown className="h-5 w-5" />
               </button>
             )}
 

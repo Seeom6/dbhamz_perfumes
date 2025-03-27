@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAllBrands } from "../utils/Api/BrandEndPoint";
 import { useNavigate } from 'react-router-dom';
-import image from "/assets/dbhamz1.png"
+import image from "/assets/best5.jpg"
 import HeaderImage from '../components/HeaderImage';
 
 const Brands = () => {
@@ -43,7 +43,7 @@ const Brands = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto mt-[80px] md:mt-[115px]">
+      <div className="max-w-7xl mx-auto mt-[0px] md:mt-0">
         <HeaderImage
           image={image}
           title={"استكشف عطورنا الفريدة واختر ما يناسبك"}

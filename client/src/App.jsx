@@ -26,15 +26,17 @@ import AddProduct from "./pages/dashboard/AddProduct";
 import { ToastContainer } from "react-toastify";
 import NotFound from './pages/NotFount';
 import Brands from "./pages/Brands";
+import Offer from "./pages/dashboard/Offer";
+import PaymentStatus from "./pages/PaymentStatus";
 
 // Create a layout wrapper component
 const MainLayout = ({ children }) => {
   const location = useLocation();
-  const isDashboardRoute = location.pathname.startsWith('/dashboard');
+  const isDashboardRoute = location.pathname.startsWith('/dashboard') || location.pathname.startsWith("/login") || location.pathname.startsWith("/signup")
   
   return (
     <>
-      {!isDashboardRoute && <Header />}
+      {!isDashboardRoute && <div className="h-fit"><Header /></div>}
       {children}
       {!isDashboardRoute && <Footer />}
     </>
@@ -61,6 +63,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/order/:id" element={<OrderData/>} />
             <Route path="/brands" element={<Brands/>} />
+            <Route path="/payment-status/:id" element={<PaymentStatus />} />
             
             {/* Dashboard Routes - No Header/Footer */}
             <Route path="/dashboard" element={<DashboardLayout />}>
@@ -70,6 +73,7 @@ function App() {
               <Route path="brands" element={<DashboardBrand />} />
               <Route path="brands/add" element={<AddBrand />} />
               <Route path="orders" element={<Orders />} />
+              <Route path="offers" element={<Offer />} />
               <Route path="customer" element={<Customers />} />
               <Route path="coupon" element={<Coupons />} />
             </Route>

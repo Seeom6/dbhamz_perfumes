@@ -677,3 +677,78 @@ export const GetOrders = async () => {
     }
   }
 };
+
+
+
+
+
+
+
+
+
+export const getOffers = async (filters = {}) => {
+  try {
+    const res = await globalAxios.get("/offers", {
+      params: filters
+    });
+    return res?.data?.data;
+  } catch (error) {
+    HandleError(error);
+    throw error;
+  }
+};
+
+// @ GET Get Single Offer EndPoint
+export const getOffer = async (id) => {
+  try {
+    const res = await globalAxios.get(`/offers/${id}`);
+    return res?.data?.data;
+  } catch (error) {
+    HandleError(error);
+    throw error;
+  }
+};
+
+// @ POST Create Offer EndPoint
+export const createOffer = async (formData) => {
+  try {
+    const res = await globalAxios.post("/offers", formData);
+    return res?.data?.data;
+  } catch (error) {
+    HandleError(error);
+    throw error;
+  }
+};
+
+// @ PATCH Update Offer EndPoint
+export const updateOffer = async (id, formData) => {
+  try {
+    const res = await globalAxios.patch(`/offers/${id}`, formData);
+    return res?.data?.data;
+  } catch (error) {
+    HandleError(error);
+    throw error;
+  }
+};
+
+// @ DELETE Delete Offer EndPoint
+export const deleteOffer = async (id) => {
+  try {
+    const res = await globalAxios.delete(`/offers/${id}`);
+    return res?.data;
+  } catch (error) {
+    HandleError(error);
+    throw error;
+  }
+};
+
+// @ PATCH Toggle Offer Status EndPoint
+export const toggleOfferStatus = async (id) => {
+  try {
+    const res = await globalAxios.patch(`/offers/${id}/toggle-status`);
+    return res?.data?.data;
+  } catch (error) {
+    HandleError(error);
+    throw error;
+  }
+};

@@ -60,8 +60,8 @@ export async function getMyFatooraLink(totalPrice, { user, shippingData, orderId
       Language: "AR", // Arabic language
       
       // Payment callback URLs
-      CallBackUrl: `${EnvVar.myFatoora_call_back_url}?orderId=${orderId}`,
-      ErrorUrl: `${EnvVar.myFatoora_error_url}?orderId=${orderId}`,
+      CallBackUrl: `${EnvVar.myFatoora_call_back_url}/payment-status/${orderId}?status=success`,
+      ErrorUrl: `${EnvVar.myFatoora_error_url}/payment-status/${orderId}?status=failed`,
       
       // Invoice items (required)
       InvoiceItems: [

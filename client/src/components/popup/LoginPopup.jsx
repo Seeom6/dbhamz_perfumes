@@ -65,10 +65,6 @@ const LoginPopup = ({ onClose, onLoginSuccess, onSignupClick }) => {
         toast.success("مرحباً بك مجدداً");
         onLoginSuccess(); // Trigger the onLoginSuccess callback
         onClose(); // Close the popup after successful login
-        if(param === "/cart"){
-          navigate("/cart");
-        }
-        navigate("/profile")
       },
       onError: (err) => {
         console.log(err)

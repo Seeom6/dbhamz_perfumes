@@ -115,7 +115,23 @@ const OrderData = () => {
       { id, shippingData: formData },
       {
         onSuccess: (res) => {
-          if (res.paymentUrl) window.location.href = res.paymentUrl;
+          if (res.paymentUrl) {
+            // Open payment in new tab
+            const paymentWindow = window.open(res.paymentUrl, '_blank');
+            
+            // Optional: Poll for payment status
+            const pollInterval = setInterval(() => {
+              refetch().then(({ data }) => {
+                if (data?.isPaid) {
+                  clearInterval(pollInterval);
+                  navigate(`/payment-status/${id}?status=success`);
+                } else if (data?.paymentStatus === 'Failed') {
+                  clearInterval(pollInterval);
+                  navigate(`/payment-status/${id}?status=failed`);
+                }
+              });
+            }, 5000);
+          }
         },
         onError: (error) => toast.error(HandleError(error)),
       }
@@ -131,14 +147,14 @@ const OrderData = () => {
     ? subtotal - orderData.totalOrderPriceAfterDiscount 
     : 0;
   const shipping = orderData?.shippingPrice || 0;
-  const total = (orderData?.totalOrderPriceAfterDiscount || subtotal) + shipping;
+  const total = (orderData?.totalOrderPriceAfterDiscount || subtotal) ;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <HeaderImage 
-          image="../../../public/cartPerfume.png" 
+          image="/assets/cartPerfume.png" 
           title="سلتك العطرية"
           className="mb-8"
         />
@@ -315,8 +331,14 @@ const OrderData = () => {
 
               {/* Bill Breakdown */}
               <div className="space-y-3 border-t pt-4">
+                
                 <div className="flex justify-between">
-                  <span className="text-gray-600">المجموع:</span>
+                  <span className="text-gray-600">الشحن:</span>
+                  <span className="font-medium">{convertCurrency(shipping, "KWD", currency)}</span>
+                </div>
+                
+                <div className="flex justify-between">
+                  <span className="text-gray-600"> المجموع مع أضافة قيمة الشحن: </span>
                   <span className="font-medium">{convertCurrency(subtotal, "KWD", currency)}</span>
                 </div>
                 
@@ -326,12 +348,6 @@ const OrderData = () => {
                     <span>-{convertCurrency(discount, "KWD", currency)}</span>
                   </div>
                 )}
-                
-                <div className="flex justify-between">
-                  <span className="text-gray-600">الشحن:</span>
-                  <span className="font-medium">{convertCurrency(shipping, "KWD", currency)}</span>
-                </div>
-                
                 <div className="flex justify-between font-bold text-lg mt-3 pt-3 border-t">
                   <span>المجموع النهائي:</span>
                   <span className="text-primary">{convertCurrency(total, "KWD", currency)}</span>

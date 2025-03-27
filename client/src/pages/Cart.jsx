@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import HeaderImage from "../components/HeaderImage";
-import dbhamz from "/assets/dbhamz2.png";
+import dbhamz from "/assets/cartPerfume.png";
 import CartElements from "../components/featuredComponents/CartElements";
 import { Context } from "../context/StatContext.jsx";
 import { AiOutlineShopping } from "react-icons/ai";
@@ -27,6 +27,7 @@ const Cart = () => {
   const { mutate: createOrder, isPending } = useCreateOrder();
 
   const handleCheckout = () => {
+    console.log(isLogin)
     if (!isLogin) {
       return setIsLoginPopupOpen(true);
     }
@@ -49,7 +50,7 @@ const Cart = () => {
 
   return (
     <div className="w-full flex justify-center items-center">
-      <div className="max-w-[1260px] mt-[80px] md:mt-[115px] w-full px-2.5 flex flex-col justify-center gap-8 sm:gap-14 md:gap-20 mb-20">
+      <div className="max-w-[1260px] mt-[40px] md:mt-0 w-full px-2.5 flex flex-col justify-center gap-8 sm:gap-14 md:gap-20 mb-20">
         <HeaderImage image={dbhamz} title={"سلتك العطرية"} />
         <div className="w-full">
           {cartItems.length < 1 && (

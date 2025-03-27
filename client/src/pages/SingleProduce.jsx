@@ -54,7 +54,7 @@ const SingleProduce = () => {
   const currentData = similarData.slice(offset, offset + itemsPerPage);
   return (
     <div className="w-full flex justify-center items-center">
-      <div className="max-w-[1260px] mt-[80px] md:mt-[115px] w-full px-2.5 flex flex-col justify-center gap-8 sm:gap-14 md:gap-20 mb-20">
+      <div className="max-w-[1260px] mt-[40px] md:mt-0 w-full px-2.5 flex flex-col justify-center gap-8 sm:gap-14 md:gap-20 mb-20">
         <ProductInfo data={singleProduct} />
         <div className="w-full flex justify-start relative">
           <span className="absolute w-full h-0.5 md:h-1 left-0 top-[12px] lg:top-7 bg-primary"></span>

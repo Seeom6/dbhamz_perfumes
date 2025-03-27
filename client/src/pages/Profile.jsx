@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Context } from "../context/StatContext";
-import image from "/assets/perfume6.png";
+import image from "/assets/best10.jpg";
 import HeaderImage from "./../components/HeaderImage";
 import UserProfile from "../components/profile/UserProfile";
 import { Link } from "react-router-dom";
@@ -59,7 +59,7 @@ const Profile = () => {
 
   return (
     <div className="w-full flex justify-center items-center bg-gray-50 py-10">
-      <div className="max-w-[1260px] mt-[80px] md:mt-[115px] w-full px-4 flex flex-col justify-center gap-8 sm:gap-14 md:gap-20">
+      <div className="max-w-[1260px] mt-[40px] md:mt-0 w-full px-4 flex flex-col justify-center gap-8 sm:gap-14 md:gap-20">
         <HeaderImage
           image={image}
           title={"أهلاً بك في عالمك الخاص من العطور"}

@@ -20,6 +20,12 @@ const orderSchema = new mongoose.Schema({
   ],
   paymentId: {
     type: String,
+    required: true // Make it required if using MyFatoorah
+  },
+  paymentStatus: {
+    type: String,
+    enum: ['pending', 'paid', 'failed', 'expired'],
+    default: 'pending'
   },
   taxPrice : {
     type: Number,
@@ -85,6 +91,10 @@ const orderSchema = new mongoose.Schema({
     note: {
       type: String,
       default: null,
+    },
+    paymentGateway: {
+      type: String,
+      default: 'myfatoorah'
     },
   }
 }, {timestamps : true});
