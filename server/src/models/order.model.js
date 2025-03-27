@@ -20,7 +20,6 @@ const orderSchema = new mongoose.Schema({
   ],
   paymentId: {
     type: String,
-    required: true // Make it required if using MyFatoorah
   },
   paymentStatus: {
     type: String,
