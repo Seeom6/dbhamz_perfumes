@@ -59,7 +59,7 @@ export const StateContext = ({ children }) => {
     const savedCart = getCartFromLocalStorage();
     if (savedCart.length > 0) {
       setCartItems(savedCart);
-      const totalPrice = savedCart.reduce((total, item) => total + item.price * item.quantity, 0);
+      const totalPrice = savedCart.reduce((total, item) => total + item.priceAfterDiscount * item.quantity, 0);
       const totalQuantities = savedCart.reduce((total, item) => total + item.quantity, 0);
       const priceOnChangeCurrency = convertCurrency(totalPrice, "KWD", currency);
       setTotalPrice(priceOnChangeCurrency);
@@ -74,7 +74,7 @@ export const StateContext = ({ children }) => {
 
   // Recalculate totalPrice whenever currency changes
   useEffect(() => {
-    const totalPriceInKWD = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    const totalPriceInKWD = cartItems.reduce((total, item) => total + item.priceAfterDiscount * item.quantity, 0);
     const convertedTotalPrice = convertCurrency(totalPriceInKWD, "KWD", currency);
     setTotalPrice(convertedTotalPrice);
   }, [currency, cartItems]);
@@ -83,7 +83,7 @@ export const StateContext = ({ children }) => {
     setIsAddCartLoading(true);
     const checkProInCart = cartItems.find((item) => item._id === product._id);
 
-    const totalPriceInKWD = product.price * quantity;
+    const totalPriceInKWD = product.priceAfterDiscount * quantity;
     const convertedTotalPrice = convertCurrency(totalPriceInKWD, "KWD", currency);
 
     setTotalPrice((prevTotalPrice) => prevTotalPrice + convertedTotalPrice);

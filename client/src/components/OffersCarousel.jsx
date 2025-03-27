@@ -93,11 +93,7 @@ const OffersCarousel = () => {
                     <p className="text-sm md:text-base line-clamp-2">{offer.description}</p>
                   )}
                   <div className="flex items-center mt-2">
-                    <span className={`text-xs px-2 py-1 rounded-md ${
-                      offer.isActive ? 'bg-green-500' : 'bg-red-500'
-                    }`}>
-                      {offer.isActive ? 'عرض نشط' : 'عرض منتهي'}
-                    </span>
+
                     {offer.endDate && (
                       <span className="text-xs mr-2 text-gray-300">
                         ينتهي في: {new Date(offer.endDate).toLocaleDateString('ar-EG')}
